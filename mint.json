@@ -224,7 +224,7 @@
         {
             "group": "Developer Tools",
             "pages": [
-                "developers/developer-tools/transacion-acceleration",
+                "developers/developer-tools/transaction-acceleration",
                 "developers/developer-tools/solana-actions&blinks",
                 "developers/developer-tools/solayer-cli",
                 "developers/developer-tools/solana-agent-kit"

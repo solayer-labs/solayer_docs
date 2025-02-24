@@ -6,7 +6,7 @@ title: "Solayer API endpoint"
 
 This endpoint retrieves protocol-wide statistics, including the current APY, number of depositors, epoch details, TVL (Total Value Locked), and more.
 
----
+<br />
 
 ## Overview
 
@@ -16,12 +16,12 @@ GET https://app.solayer.org/api/info
 ```
 
 **Description**  
-This endpoint returns a JSON object that contains various protocol-level data, such as APY, epoch start/end times, the sSOL conversion ratio, token TVL, and more.
+- This endpoint returns a JSON object that contains various protocol-level data, such as APY, epoch start/end times, the sSOL conversion ratio, token TVL, and more.
 
 **Authentication**  
 - Not required
 
----
+<br />
 
 ## Response Parameters
 
@@ -43,12 +43,12 @@ Below is an example JSON response and the description of each field.
 | **ssud_apy**      | Number       | APY for the sSUD token.                                                     |
 | **ssud_holders**  | Number       | Number of sSUD token holders.                                               |
 | **token_tvl_usd** | Object       | Key-value pairs representing each token’s TVL in USD.                       |
-| **tvl_sol**       | String/Number | Total TVL of the protocol denominated in SOL.                               |
-| **tvl_usd**       | String/Number | Total TVL of the protocol in USD.                                           |
+| **tvl_sol**       | Number       | Total TVL of the protocol denominated in SOL.                               |
+| **tvl_usd**       | Number       | Total TVL of the protocol in USD.                                           |
 
-Inside **token_tvl_usd**, each key (for example, `sBBSOL`, `sBNSOL`, `sBSOL`, etc.) corresponds to a specific token’s TVL in USD.
+Inside `token_tvl_usd`, each key (for example, `sBBSOL`, `sBNSOL`, `sBSOL`, etc.) corresponds to a specific token’s TVL in USD.
 
----
+<br />
 
 ## Example Usage
 

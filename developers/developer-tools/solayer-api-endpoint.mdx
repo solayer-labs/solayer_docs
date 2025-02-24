@@ -1,0 +1,68 @@
+---
+title: "Solayer API endpoint"
+sidebar_label: "GET /api/info"
+---
+
+# Solayer API endpoint 
+
+This endpoint retrieves protocol-wide statistics, including the current APY, number of depositors, epoch details, TVL (Total Value Locked), and more.
+
+---
+
+## Overview
+
+**Endpoint**  
+```
+GET https://app.solayer.org/api/info
+```
+
+**Description**  
+This endpoint returns a JSON object that contains various protocol-level data, such as APY, epoch start/end times, the sSOL conversion ratio, token TVL, and more.
+
+**Authentication**  
+- Not required
+
+---
+
+## Response Parameters
+
+Below is an example JSON response and the description of each field.
+
+
+### Field Descriptions:
+
+| Field              | Type          | Description                                                                 |
+|------------------- |------------- |-----------------------------------------------------------------------------|
+| **apy**           | Number       | Current annual percentage yield (APY) of the protocol.                      |
+| **depositors**    | Number       | Total number of depositors.                                                 |
+| **epoch**         | Number       | The current epoch number.                                                   |
+| **epoch_diff_time** | String     | Remaining (or elapsed) time for the current epoch (e.g., `33h46m8s`).       |
+| **epoch_end_time** | Number      | Unix timestamp (in milliseconds) when the current epoch ends.               |
+| **epoch_start_time** | Number    | Unix timestamp (in milliseconds) when the current epoch started.            |
+| **ssol_holders**  | Number       | Number of sSOL token holders.                                               |
+| **ssol_to_sol**   | Number       | Conversion ratio from sSOL to SOL (e.g., `1 sSOL = ssol_to_sol SOL`).       |
+| **ssud_apy**      | Number       | APY for the sSUD token.                                                     |
+| **ssud_holders**  | Number       | Number of sSUD token holders.                                               |
+| **token_tvl_usd** | Object       | Key-value pairs representing each token’s TVL in USD.                       |
+| **tvl_sol**       | String/Number | Total TVL of the protocol denominated in SOL.                               |
+| **tvl_usd**       | String/Number | Total TVL of the protocol in USD.                                           |
+
+Inside **token_tvl_usd**, each key (for example, `sBBSOL`, `sBNSOL`, `sBSOL`, etc.) corresponds to a specific token’s TVL in USD.
+
+---
+
+## Example Usage
+
+```bash
+curl -X GET "https://app.solayer.org/api/info"
+```
+
+**Sample Response**:
+```json
+{
+  "apy": 8.99,
+  "depositors": 302924,
+  "epoch": 747,
+  ...
+}
+```

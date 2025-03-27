@@ -65,6 +65,48 @@
         },
 
 
+                {
+            "group": "SOL Staking",
+            "pages": [
+                "assets/ssol/overview",
+                "assets/ssol/universal-liquidity-layer",
+                "assets/mega-validator/delegate-tokens",
+                {
+                    "group": "Mega Validator",
+                    "pages": [
+                        "assets/mega-validator/transaction-acceleration/endoavs",
+                        "assets/mega-validator/transaction-acceleration/swqos",
+                        "assets/mega-validator/yield-optimization"
+                    ]
+                }
+            ]
+        },
+
+        {
+            "group": "sUSD",
+            "pages": [
+                 "assets/susd/yield-bearing-stablecoin/what-is-susd",
+                {
+                    "group": "Decentralized RFQ Protocol",
+                    "pages": [
+                        "assets/susd/decentralized-rfq-protocol/overview",
+                        "assets/susd/decentralized-rfq-protocol/stakeholders"
+                    ]
+                },
+                {
+                    "group": "Protocol Info",
+                    "pages": [
+                        "assets/susd/protocol-info/litepaper",
+                        "assets/susd/protocol-info/transparency&security",
+                        "assets/susd/protocol-info/oracle&price_feeds",
+                        "assets/susd/protocol-info/eligibility&risks",
+                        "assets/susd/protocol-info/faqs"
+                    ]
+                }
+            ]
+        },
+
+
         {
             "group": "Emerald Card",
             "pages": [
@@ -130,46 +172,7 @@
                 "infinisvm/advanced_ux/zk-login"
             ]
         },
-        {
-            "group": "sSOL & Mega Validator",
-            "pages": [
-                "assets/ssol/overview",
-                "assets/ssol/universal-liquidity-layer",
-                "assets/mega-validator/delegate-tokens",
-                {
-                    "group": "Mega Validator",
-                    "pages": [
-                        "assets/mega-validator/transaction-acceleration/endoavs",
-                        "assets/mega-validator/transaction-acceleration/swqos",
-                        "assets/mega-validator/yield-optimization"
-                    ]
-                }
-            ]
-        },
 
-        {
-            "group": "sUSD",
-            "pages": [
-                 "assets/susd/yield-bearing-stablecoin/what-is-susd",
-                {
-                    "group": "Decentralized RFQ Protocol",
-                    "pages": [
-                        "assets/susd/decentralized-rfq-protocol/overview",
-                        "assets/susd/decentralized-rfq-protocol/stakeholders"
-                    ]
-                },
-                {
-                    "group": "Protocol Info",
-                    "pages": [
-                        "assets/susd/protocol-info/litepaper",
-                        "assets/susd/protocol-info/transparency&security",
-                        "assets/susd/protocol-info/oracle&price_feeds",
-                        "assets/susd/protocol-info/eligibility&risks",
-                        "assets/susd/protocol-info/faqs"
-                    ]
-                }
-            ]
-        },
 
 
 

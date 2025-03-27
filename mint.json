@@ -67,18 +67,14 @@
                 "documentation/get-started/introduction"
             ]
         },
+
         {
-            "group": "$LAYER",
-            "pages": [
-                "documentation/Tokenomics"
-            ]
-        },
-        {
-            "group": "Security",
+            "group": "Security & Tokenomics",
             "pages": [
                 "documentation/security/overview",
                 "documentation/security/multisignature-committees",
-                "documentation/security/audits"
+                "documentation/security/audits",
+                "documentation/Tokenomics"
             ]
         },
         {
@@ -89,49 +85,7 @@
                 "documentation/resources/brand-kit"
             ]
         },
-        {
-            "group": "Community",
-            "pages": [
-                {
-                    "group": "Epochs",
-                    "pages": [
-                        "documentation/community/epochs/overview",
-                        "documentation/community/epochs/epoch-0",
-                        "documentation/community/epochs/epoch-1",
-                        "documentation/community/epochs/epoch-2"
-                    ]
-                },
-                {
-                    "group": "Solayer Valley Episodes",
-                    "pages": [
-                        "documentation/community/milestone/overview",
-                        {
-                            "group": "Episode 1",
-                            "pages": [
-                                "documentation/community/milestone/episode-1/episode-1",
-                                "documentation/community/milestone/episode-1/eligibility-guide",
-                                "documentation/community/milestone/episode-1/rewards-claiming-guide"
-                            ]
-                        },
-                        {
-                            "group": "Episode 2",
-                            "pages": [
-                                "documentation/community/milestone/episode-2/episode-2",
-                                "documentation/community/milestone/episode-2/eligibility-guide",
-                                "documentation/community/milestone/episode-2/rewards-claiming-guide"
-                            ]
-                        },
-                        {
-                            "group": "Savings Account",
-                            "pages": [
-                                "documentation/community/milestone/savings-account/savings-account",
-                                "documentation/community/milestone/savings-account/unlocking-guide"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
+
         {
             "group": "InfiniSVM",
             "pages": [

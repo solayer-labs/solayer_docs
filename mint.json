@@ -179,14 +179,6 @@
         },
 
         {
-            "group": "InfiniSVM",
-            "pages": [
-                "infinisvm/infinisvm/overview",
-                "infinisvm/infinisvm/whyhardwareacceleration"
-            ]
-        },
-
-        {
             "group": "Solayer",
             "pages": [
                 "resources/litepapers",
@@ -204,8 +196,8 @@
         {
             "group": "Security",
             "pages": [
-                "infinisvm/infinisvm/overview",
-                "infinisvm/infinisvm/whyhardwareacceleration"
+                "resources/security/audits",
+                "resources/security/multisignature-committees"
             ]
         },
 

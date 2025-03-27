@@ -153,9 +153,6 @@
             ]
         },
 
-
-
-
         {
             "group": "Developer Tools",
             "pages": [
@@ -171,7 +168,48 @@
             "pages": [
                 "developers/learn-svm/guideline"
             ]
+        },
+
+        {
+            "group": "InfiniSVM",
+            "pages": [
+                "infinisvm/infinisvm/overview",
+                "infinisvm/infinisvm/whyhardwareacceleration"
+            ]
+        },
+
+        {
+            "group": "Solayer",
+            "pages": [
+                "resources/litepapers",
+                "resources/solayer-programs"
+            ]
+        },
+
+        {
+            "group": "$Layer",
+            "pages": [
+                "resources/tokenomics"
+            ]
+        },
+
+        {
+            "group": "Security",
+            "pages": [
+                "infinisvm/infinisvm/overview",
+                "infinisvm/infinisvm/whyhardwareacceleration"
+            ]
+        },
+
+        {
+            "group": "Brand",
+            "pages": [
+                "resources/brand-kit.mdx"
+            ]
         }
+
+
+        
     ],
     "footerSocials": {
         "x": "https://x.com/solayer_labs",

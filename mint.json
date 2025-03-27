@@ -68,7 +68,7 @@
         {
             "group": "Emerald Card",
             "pages": [
-                "documentation/Emerald-Card/card.mdx",
+                "documentation/Emerald-Card/card",
                 "documentation/Emerald-Card/portfolio"
             ]
         },

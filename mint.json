@@ -71,6 +71,14 @@
         },
 
         {
+            "group": "InfiniSVM",
+            "pages": [
+                "documentation/infinisvm"
+            ]
+        },
+
+
+        {
             "group": "SOL Staking",
             "pages": [
                 "assets/ssol/overview",
@@ -204,7 +212,7 @@
         {
             "group": "Brand",
             "pages": [
-                "resources/brand-kit.mdx"
+                "resources/brand-kit"
             ]
         }
 

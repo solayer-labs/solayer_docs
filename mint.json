@@ -22,10 +22,6 @@
             "name": "InfiniSVM",
             "url": "infinisvm"
         },
-        {
-            "name": "Assets",
-            "url": "assets"
-        },
         
         {
             "name": "Developers",
@@ -67,6 +63,18 @@
                 "documentation/get-started/introduction"
             ]
         },
+
+
+        {
+            "group": "Emerald Card",
+            "pages": [
+                "documentation/Emerald-Card/card.mdx",
+                "documentation/Emerald-Card/portfolio"
+            ]
+        },
+
+
+        
 
         {
             "group": "Security & Tokenomics",
@@ -162,18 +170,8 @@
                 }
             ]
         },
-        {
-            "group": "Portfolio",
-            "pages": [
-                "assets/portfolio/overview"
-            ]
-        },
-        {
-            "group": "Emerald Card",
-            "pages": [
-                "assets/emerald-card/overview"
-            ]
-        },
+
+
 
         {
             "group": "Developer Tools",

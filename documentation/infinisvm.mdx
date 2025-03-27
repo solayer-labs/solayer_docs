@@ -1,87 +1,8 @@
 ---
-title: "Overview"
+title: Overview
 ---
-## **InfiniSVM**
-### **The Next-Generation High-Performance Blockchain**
 
-Solayer InfiniSVM is a breakthrough blockchain architecture designed to scale a single, global state machine with **unprecedented throughput, near-zero latency, and robust composability**. Unlike conventional scaling methods that rely on vertical scaling or fragmented sharded rollups, **Solayer InfiniSVM** maintains atomic state transitions by **distributing workloads across microservices and specialized hardware accelerators**.
-
-<Frame><img src="https://github.com/SolayerDev/solayer_docs/blob/V2/images/infinisvm/architecture.png?raw=true" alt="" /></Frame>
-
-
-<br/>
-
-
-## **Performance at the Limits of Hardware**
-Solayer InfiniSVM pushes blockchain performance to the limits, targeting:
-
-- **1M+ Transactions Per Second (TPS)**  
-- **100Gbps+ Network Bandwidth**  
-- **Ultra-Low Transaction Latency**  
-
-With below architecture, Solayer supports **next-generation applications that demand high throughput, low fees, and seamless composability**—empowering both developers and users.
-
-<br/>
-
-## **Key Innovations in Solayer InfiniSVM**
-
-### **Hardware-Accelerated Execution**
-Solayer offloads critical blockchain operations—including **signature verification, transaction filtering, pre-execution simulation, scheduling, and storage**—to distinct, **highly optimized hardware clusters**. This division enables **massive parallelization** and eliminates bottlenecks in transaction processing.
-
-### **Ultra-Fast Communication with InfiniBand RDMA**
-To achieve near-microsecond inter-node communication, Solayer integrates **InfiniBand RDMA (Remote Direct Memory Access)**, enabling extreme-speed data transfers and minimal overhead across the network.
-
-- Leverages RDMA & Infiniband
-- Bypasses traditional os network stacks
-- Enables remote memory operations
-- Minimizes CPU involvement
-
-### **Software-Defined Network**
-Software-Defined Network (SDN) architecture separates the control plane from the data plane, enabling programmable, high-performance blockchain networking. By leveraging a logically centralized controller, Solayer achieves real-time network optimization, dynamic routing, and efficient transaction propagation at scale.
-
-- Programmatic network control
-- Custom protocol implementation
-- Maintains line-rate performance
-
-### **Multi Executor**
-Solayer’s Multi Executor is **sharded across multiple nodes**, allowing for **massive-scale account data storage with optimized load balancing**. This ensures high efficiency and reliability, even under extreme network conditions.
-
-- Speculative transaction execution
-- Fine granied scheduling 
-- Database sharding with RDMA
-- Concurrent transaction exeuction
-
-
-### **Hybrid Consensus: Proof-of-Authority + Proof-of-Stake**
-Solayer employs a **hybrid Proof-of-Authority (PoA) and Proof-of-Stake (PoS) consensus mechanism**. Transactions undergo **speculative execution before reaching the sequencer**, minimizing re-execution delays while maintaining security and finality.
-
-- Proof of Authority +  Proof of Stake
-- Megaleader + decentralized group of verifiers 
-- Fallback consensus on Solana
-
-<br/>
-
-## **Enhanced Developer & User Experience**
-
-### **Composable Hooks for On-Chain Automation**
-Developers can **embed post-transaction logic directly within the chain** using **Solayer Hooks**. This enables **automated arbitrage, liquidations, accounting, and more**, making smart contract interactions smoother and more powerful.
-
-### **Advanced Transaction Features**
-- **Jumbo Transactions**: Aggregate multiple operations into a single execution.  
-- **Cross-Chain Calls**: Seamless interoperability across multiple blockchain ecosystems.  
-- **Built-in OAuth Support**: Simplified authentication and user onboarding.  
-
-<br/>
-
-## **The Future of Scalable Blockchain**
-By combining **hardware acceleration, parallel execution, and cutting-edge network optimizations**, Solayer InfiniSVM redefines what’s possible in blockchain technology. It delivers a **high-performance, low-cost, developer-friendly ecosystem**, setting a new standard for scalability and efficiency in decentralized applications.
-
-**Welcome to the future of blockchain scaling with Solayer InfiniSVM.**
-
-<br/>
-
-## Explore the InfiniSVM section for further details.
-
+### To learn more, head over to the InfiniSVM section.
   <Card
     title="InfiniSVM"
     icon="microchip"
@@ -89,3 +10,87 @@ By combining **hardware acceleration, parallel execution, and cutting-edge netwo
   >
     Infinitely Scalable, Hardware-Accelerated Blockchain.
   </Card>
+
+## **InfiniSVM**
+### **The Next-Generation High-Performance Blockchain**
+
+Solayer InfiniSVM is a next-generation blockchain architecture designed to scale a single global state machine with **unprecedented throughput, ultra-low latency, and strong composability**.  
+
+Unlike traditional scaling methods that rely on vertical scaling or fragmented rollups, InfiniSVM ensures **atomic state transitions** by distributing workloads across **microservices and hardware accelerators**.
+
+<Frame><img src="https://github.com/SolayerDev/solayer_docs/blob/V2/images/infinisvm/architecture.png?raw=true" alt="" /></Frame>
+
+<br />
+
+## **Pushing Blockchain to the Limits**
+
+InfiniSVM delivers performance at the boundaries of hardware capability:
+
+- **1M+ Transactions Per Second (TPS)**  
+- **100Gbps+ Network Bandwidth**  
+- **Ultra-Low Latency**
+
+This enables **next-gen applications** that demand high throughput, low fees, and seamless composability—empowering both developers and users.
+
+<br />
+
+## **Key Innovations**
+
+### **Hardware-Accelerated Execution**
+InfiniSVM offloads critical blockchain tasks—like **signature verification, transaction filtering, pre-execution simulation, scheduling, and storage**—to **specialized hardware clusters**, enabling **massive parallelization** and eliminating bottlenecks.
+
+<br />
+
+### **InfiniBand RDMA: Ultra-Fast Communication**
+By integrating **InfiniBand RDMA (Remote Direct Memory Access)**, InfiniSVM achieves near-microsecond inter-node communication:
+
+- Remote memory operations without CPU involvement  
+- Bypasses traditional OS network stacks  
+- Zero-copy, high-speed data transfers
+
+<Frame><img src="https://github.com/de-duke/solayer_docs_v2/blob/v2-updated/images/infinisvm/rdma&infiniband.png?raw=true" alt="" /></Frame>
+
+
+<br />
+
+### **Software-Defined Networking (SDN)**
+SDN separates the control and data planes for **programmable, real-time network control**. This allows:
+
+- Dynamic routing and traffic optimization  
+- Custom protocol deployment  
+- Consistent line-rate performance at scale
+
+<Frame><img src="https://github.com/SolayerDev/solayer_docs/blob/V2/images/infinisvm/gsdn.png?raw=true" alt="" /></Frame>
+
+<br />
+
+### **Multi Executor Architecture**
+The Multi Executor system distributes execution across multiple shards with RDMA-backed storage. It supports:
+
+- **Speculative execution**  
+- **Fine-grained scheduling**  
+- **Massively sharded account storage**  
+- **Concurrent transaction processing**
+
+<Frame><img src="https://github.com/SolayerDev/solayer_docs/blob/V2/images/infinisvm/gmulti.png?raw=true" alt="" /></Frame>
+
+<br />
+
+### **Hybrid Consensus: POAS (PoA + PoS)**
+InfiniSVM utilizes a hybrid **Proof-of-Authority and Stake (PoAS)** model:
+
+- **Speculative execution** before sequencing  
+- **Megaleader model** with decentralized verifiers  
+- **Fallback consensus** secured by Solana  
+
+<Frame><img src="https://github.com/SolayerDev/solayer_docs/blob/V2/images/infinisvm/gpoas.png?raw=true" alt="" /></Frame>
+
+<br />
+
+## **A New Standard for Blockchain Performance**
+
+Solayer InfiniSVM fuses **hardware acceleration**, **parallel execution**, and **network-level optimization** to deliver a **scalable, developer-friendly, and cost-efficient blockchain infrastructure**.  
+
+It’s more than just faster—it’s the foundation for the next era of decentralized applications.
+
+**Welcome to the future of blockchain scaling with Solayer InfiniSVM.**

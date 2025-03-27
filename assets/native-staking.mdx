@@ -1,1 +1,78 @@
+---
+title: Native Staking
+description: Overview of Solayer's validator infrastructure and native SOL staking support.
+---
+
+# Native SOL Staking Overview
+
+At **Solayer Labs**, our core strength lies in deep engineering of blockchain infrastructure, especially on **Solana** and **SVM technologies**. This document provides an overview of our validator and staking infrastructure, specifically designed for **institutional partners** evaluating the performance, yield, and integration potential of our systems.
+
+<br />
+
+## Solayer Validator
+
+We operate a **high-performance Solana validator**, optimized both on the hardware and software levels to maximize staking returns.
+
+### Hardware-Level Optimization
+- Located in a **key data center in Ashburn, VA**, near subsea fiber cables.
+- Equipped with **enterprise-grade hardware**, fiber optic networking, and custom infrastructure.
+
+### Software-Level Optimization
+- Optimized validator node code to **maximize leader block rewards**.
+- These rewards are **shared with institutional partners**, enhancing staking returns.
+
+<br />
+
+## Performance
+
+- **13+% APY** historical returns to the Solayer sSOL stake pool.
+- Institutional partners benefit from:
+  - **0% commission**
+  - **100% MEV kickback**
+  - **2–4% additional APY** from shared leader block rewards
+
+<br />
+
+## Validator Details
+
+- **Vote Account:** `SLaYv7tCwetrFGbPCRnqpHswG5qqKino78EYpbGF7xY`
+- **Identity:** `SLAY6uN1zZpXBTfbuDDCesNmM5D288xrz8uYvfS3n41`
+- Listed on:
+  - [Stakewiz](https://stakewiz.com)
+  - [Solana Compass](https://solanacompass.com)
+  - [SVT One](https://svt.one)
+  - [Validators.app](https://validators.app)
+  - [Solana Beach](https://solanabeach.io)
+
+Institutional partners can **define custom fee structures** and share rewards with their own end users.
+
+<br />
+
+## Integration Guide
+
+Stake delegation is simple, whether you're using CLI tools, code-based integration, or UI platforms.
+
+### Method 1: Solana CLI
+```bash
+solana delegate-stake \
+  --stake-authority <KEYPAIR> \
+  <STAKE_ACCOUNT_ADDRESS> \
+  SLaYv7tCwetrFGbPCRnqpHswG5qqKino78EYpbGF7xY \
+  --fee-payer <KEYPAIR>
+```
+- Replace `<KEYPAIR>` and `<STAKE_ACCOUNT_ADDRESS>` with your credentials
+- Full guide available via [Anza](https://docs.anza.xyz/cli/examples/delegate-stake)
+
+### Method 2: JavaScript/TypeScript
+Use `@solana/web3.js` to create and delegate a stake account programmatically. A sample snippet is included in the full developer guide [here](https://docs.solana.com).
+
+### Method 3: Web-Based UIs
+You can delegate directly from any of the following platforms:
+- [Stakewiz → Profile → Delegate](https://stakewiz.com)
+- [Solana Compass → Profile → Delegate](https://solanacompass.com)
+- [Solana Beach → Profile → Delegate](https://solanabeach.io)
+
+<br />
+
+If you're an institutional partner interested in integration, please [contact us](mailto:team@solayer.xyz) to discuss your setup, fee structure, and staking requirements.
 

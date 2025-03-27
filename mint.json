@@ -26,6 +26,11 @@
         {
             "name": "Developers",
             "url": "developers"
+        },
+
+        {
+            "name": "Resources",
+            "url": "resources"
         }
     ],
 
@@ -58,27 +63,33 @@
     ],
     "navigation": [
         {
-            "group": "Get Started",
+            "group": "Solayer",
             "pages": [
-                "documentation/get-started/introduction"
+                "documentation/get-started/introduction",
+                "documentation/resources/litepapers"
             ]
         },
 
-
-                {
+        {
             "group": "SOL Staking",
             "pages": [
                 "assets/ssol/overview",
-                "assets/ssol/universal-liquidity-layer",
-                "assets/mega-validator/delegate-tokens",
+                "assets/mega-validator/transaction-acceleration/swqos",
                 {
                     "group": "Mega Validator",
                     "pages": [
                         "assets/mega-validator/transaction-acceleration/endoavs",
-                        "assets/mega-validator/transaction-acceleration/swqos",
                         "assets/mega-validator/yield-optimization"
                     ]
-                }
+                },
+                {
+                    "group": "sSOL",
+                    "pages": [
+                        "assets/ssol/universal-liquidity-layer",
+                        "assets/mega-validator/delegate-tokens"
+                    ]
+                },
+                "assets/native-staking"
             ]
         },
 
@@ -92,16 +103,6 @@
                         "assets/susd/decentralized-rfq-protocol/overview",
                         "assets/susd/decentralized-rfq-protocol/stakeholders"
                     ]
-                },
-                {
-                    "group": "Protocol Info",
-                    "pages": [
-                        "assets/susd/protocol-info/litepaper",
-                        "assets/susd/protocol-info/transparency&security",
-                        "assets/susd/protocol-info/oracle&price_feeds",
-                        "assets/susd/protocol-info/eligibility&risks",
-                        "assets/susd/protocol-info/faqs"
-                    ]
                 }
             ]
         },
@@ -110,31 +111,10 @@
         {
             "group": "Emerald Card",
             "pages": [
-                "documentation/Emerald-Card/card",
-                "documentation/Emerald-Card/portfolio"
+                "documentation/Emerald-Card/card"
             ]
         },
 
-
-        
-
-        {
-            "group": "Security & Tokenomics",
-            "pages": [
-                "documentation/security/overview",
-                "documentation/security/multisignature-committees",
-                "documentation/security/audits",
-                "documentation/Tokenomics"
-            ]
-        },
-        {
-            "group": "Resources",
-            "pages": [
-                "documentation/resources/solayer-programs",
-                "documentation/resources/litepapers",
-                "documentation/resources/brand-kit"
-            ]
-        },
 
         {
             "group": "InfiniSVM",

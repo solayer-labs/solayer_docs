@@ -1,0 +1,45 @@
+---
+title: Faucet
+description: Get devnet SOL tokens for testing and development
+---
+
+The Solayer Devnet Faucet provides developers with devnet 0.1 SOL to pay for fees while deploying programs or testing transactions on the Solayer devnet. 
+
+## Receive Devnet SOL using the CLI
+
+### 1. Configure your Solana CLI
+
+First, check your current configuration:
+
+```bash
+solana config get
+```
+
+Set your RPC configuration to Solayer's devnet:
+
+```bash
+solana config set --url https://internalnet-rpc.solayer.org
+```
+
+### 2. Request an Airdrop
+
+Use the following command to request an airdrop of 0.1 SOL (devnet) to your wallet:
+
+```bash
+solana airdrop <insert wallet address> --url https://internalnet-rpc.solayer.org
+```
+
+Replace `<insert wallet address>` with your development wallet's public key.
+
+## Receive Devnet SOL using Solayer's Block Explorer
+
+For a more user-friendly experience, you can use the faucet interface on Solayer's block explorer:
+
+1. Visit [Solayer Block Explorer](https://explorer.solayer.org)
+2. Navigate to the Faucet section
+3. Enter your wallet address
+4. Request your 0.1 devnet SOL
+
+<Note>
+Each wallet address can receive 0.1 SOL per request through either the CLI or block explorer interface.
+</Note>

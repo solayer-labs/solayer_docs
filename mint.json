@@ -160,11 +160,14 @@
                 "infinisvm/advanced_ux/zk-login"
             ]
         },
-
-
+        
         {
-            "group": "InfiniSVM (Devnet)",
+            "group": "InfiniSVM Devnet",
             "pages": [
+                "developers/devnet/overview",
+                "developers/devnet/api-reference",
+                "developers/devnet/explorer",
+                "developers/devnet/faucet"
             ]
         },
         

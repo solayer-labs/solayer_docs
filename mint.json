@@ -86,12 +86,12 @@
             "group": "SOL Staking",
             "pages": [
                 "assets/ssol/overview",
-                "assets/mega-validator/transaction-acceleration/swqos",
                 {
                     "group": "Mega Validator",
                     "pages": [
                         "assets/mega-validator/transaction-acceleration/endoavs",
-                        "assets/mega-validator/yield-optimization"
+                        "assets/mega-validator/yield-optimization",
+                        "assets/mega-validator/transaction-acceleration/swqos"
                     ]
                 },
                 {

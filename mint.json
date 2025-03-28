@@ -73,7 +73,11 @@
         {
             "group": "InfiniSVM",
             "pages": [
-                "documentation/infinisvm"
+                "documentation/infinisvm",
+                "documentation/devnet/overview",
+                "documentation/devnet/api-reference",
+                "documentation/devnet/explorer",
+                "documentation/devnet/faucet"
             ]
         },
 
@@ -158,16 +162,6 @@
                 "infinisvm/advanced_ux/cross-chain_contract_call",
                 "infinisvm/advanced_ux/jumbo_transaction",
                 "infinisvm/advanced_ux/zk-login"
-            ]
-        },
-        
-        {
-            "group": "InfiniSVM Devnet",
-            "pages": [
-                "developers/devnet/overview",
-                "developers/devnet/api-reference",
-                "developers/devnet/explorer",
-                "developers/devnet/faucet"
             ]
         },
         

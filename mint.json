@@ -22,6 +22,11 @@
             "name": "InfiniSVM",
             "url": "infinisvm"
         },
+
+        {
+            "name": "Tutorials",
+            "url": "tutorials"
+        },
         
         {
             "name": "Developers",
@@ -32,6 +37,7 @@
             "name": "Resources",
             "url": "resources"
         }
+
     ],
 
 
@@ -164,6 +170,34 @@
                 "infinisvm/advanced_ux/zk-login"
             ]
         },
+
+        {
+            "group": "Emerald Card",
+            "pages": [
+                    {
+                    "group": "Issuance Rrocedure",
+                    "pages": [
+                        "tutorials/register",
+                        "tutorials/kyc",
+                        "tutorials/digital_wallets"
+                    ]
+                },
+                {
+                    "group": "Usage",
+                    "pages": [
+                        "tutorials/details",
+                        "tutorials/topup",
+                        "tutorials/history",
+                        "tutorials/freeze"
+                    ]
+                }
+            ]
+        },
+
+
+
+
+        
         
         {
             "group": "Developer Tools",

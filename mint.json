@@ -245,6 +245,14 @@
         },
 
         {
+            "group": "Legal",
+            "pages": [
+                "resources/legal/e-sign",
+                "resources/legal/card-terms"
+            ]
+        },
+
+        {
             "group": "Brand",
             "pages": [
                 "resources/brand-kit"

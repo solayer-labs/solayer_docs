@@ -247,8 +247,10 @@
         {
             "group": "Legal",
             "pages": [
+                "resources/legal/opening-account",
                 "resources/legal/e-sign",
-                "resources/legal/card-terms"
+                "resources/legal/us-card-terms",
+                "resources/legal/intl-card-terms"
             ]
         },
 

@@ -189,8 +189,8 @@
         {
             "group": "sUSD",
             "pages": [
-                "tutorials/ssol/deposit",
-                "tutorials/ssol/withdraw",
+                "tutorials/susd/deposit",
+                "tutorials/susd/withdraw",
                 "tutorials/cross/cross"
             ]
         },

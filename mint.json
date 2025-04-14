@@ -176,6 +176,26 @@
             ]
         },
 
+
+        {
+            "group": "sSOL",
+            "pages": [
+                "tutorials/ssol/stake",
+                "tutorials/native/staking",
+                "tutorials/ssol/unstake"
+            ]
+        },
+
+        {
+            "group": "sUSD",
+            "pages": [
+                "tutorials/ssol/deposit",
+                "tutorials/ssol/withdraw",
+                "tutorials/cross/cross"
+            ]
+        },
+        
+
         {
             "group": "Emerald Card",
             "pages": [

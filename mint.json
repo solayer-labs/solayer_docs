@@ -275,7 +275,8 @@
                 "resources/legal/e-sign",
                 "resources/legal/us-card-terms",
                 "resources/legal/intl-card-terms",
-                "resources/legal/prohibition"
+                "resources/legal/prohibition",
+                "resources/legal/card-eligibility"
                     ]
                 }
   

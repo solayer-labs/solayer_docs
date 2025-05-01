@@ -203,7 +203,7 @@
                     "group": "Issuance Procedure",
                     "pages": [
                         "tutorials/register",
-                        "tutorials/kyc",
+                        "tutorials/kyc"
                     ]
                 },
                 "tutorials/digital_wallets",

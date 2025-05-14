@@ -209,6 +209,7 @@
                 },
                 "tutorials/digital_wallets",
                 "tutorials/alipay",
+                "tutorials/venmo",
                 {
                     "group": "Usage",
                     "pages": [

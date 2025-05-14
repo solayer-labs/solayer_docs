@@ -1,10 +1,10 @@
 ---
-title: Price Feeds for sUSD, sSOL, and Layer
+title: Token Price Feeds
 description: How to fetch and use real-time price feeds for Solayer tokens using Pyth Network
 ---
 
 # Solayer Token Price Feeds Guide  
-This guide explains how to fetch real-time price feeds for `sUSD`, `sSOL`, and `Layer` using [Pyth Network](https://pyth.network/).<br/>
+This guide explains how to fetch real-time price feeds for `sUSD`, `sSOL`, and `Layer` using [Pyth Network](https://pyth.network/).
 It is intended for developers integrating on-chain or off-chain price functionality into applications or smart contracts.
 
 <br/>
@@ -25,35 +25,32 @@ Solayer tokens are supported on Pyth Network with live, decentralized price feed
 
 ## How to Use Pyth Price Feeds
 
-You can consume these feeds in two ways:<br/>
+You can consume these feeds in two ways:
 on-chain (Solana programs) and off-chain (apps, bots, bridges, etc).
 
-<br/>
 
 ### 1. On-Chain: Using Real-Time Data in Solana Programs
 
 Solana programs can directly use Pyth's price data via CPI.
 
-<br/>
 
-**Steps:**<br/>
-1. Locate the Pyth price account from the links above<br/>
-2. Pass the price account as an input to your smart contract<br/>
-3. In the contract, deserialize and access:<br/>
-  • `price`<br/>
-  • `confidence_interval`<br/>
-  • `expo`<br/>
-4. Always validate:<br/>
-  • `status == Trading`<br/>
+**Steps:**
+1. Locate the Pyth price account from the links above
+2. Pass the price account as an input to your smart contract
+3. In the contract, deserialize and access:
+  • `price`
+  • `confidence_interval`
+  • `expo`
+4. Always validate:
+  • `status == Trading`
   • the publish time is recent enough (i.e. not stale)
 
-<br/>
 
 Reference: [Using Real-Time Data in Solana Programs](https://docs.pyth.network/price-feeds/use-real-time-data/solana)
 
 <br/>
 
-### 2. Off-Chain: Using Real-Time Price Data (Recommended)
+### 2. Off-Chain: Using Real-Time Price Data
 
 Pyth recommends using `hermes-client` or calling the `get_price_updates` API for secure off-chain usage.
 
@@ -67,12 +64,11 @@ To fetch signed, binary-encoded price updates:
 curl "https://hermes.pyth.network/api/get_price_updates?ids[]=Crypto.sUSD/USD::RR&binary=true"
 ```
 
-This method is suitable for:<br/>
-• Secure data ingestion<br/>
-• Cross-chain bridging<br/>
+This method is suitable for:
+• Secure data ingestion
+• Cross-chain bridging
 • Price verification in backend systems
 
-<br/>
 
 Reference: [Fetch Price Updates](https://docs.pyth.network/price-feeds/fetch-price-updates)
 
@@ -80,20 +76,15 @@ Reference: [Fetch Price Updates](https://docs.pyth.network/price-feeds/fetch-pri
 
 ### Deprecated / Not Recommended
 
-• `price-service-sdk` is deprecated and should not be used.<br/>
-• The `api/latest_price` HTTP endpoint is still functional but not recommended for production use:<br/>
-  - It is not cryptographically verified<br/>
-  - It may be deprecated in the future<br/>
+• `price-service-sdk` is deprecated and should not be used.
+• The `api/latest_price` HTTP endpoint is still functional but not recommended for production use:
+  - It is not cryptographically verified
+  - It may be deprecated in the future
   - Use only for internal dashboards or quick prototyping
 
 <br/>
 
 ## Additional Resources
 
-• [Pyth Developer Docs](https://docs.pyth.network/)<br/>
-• [Pyth Discord](https://discord.gg/pythnetwork)<br/>
+• [Pyth Developer Docs](https://docs.pyth.network/)
 • Feeds available on testnets via `pythnet` and `devnet`
-
-<br/>
-
-Need this guide in Korean or want it embedded in the Solayer integration section? Let us know.

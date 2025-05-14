@@ -232,7 +232,8 @@
                 "developers/developer-tools/transaction-acceleration",
                 "developers/developer-tools/solana-actions&blinks",
                 "developers/developer-tools/solayer-cli",
-                "developers/developer-tools/solana-agent-kit"
+                "developers/developer-tools/solana-agent-kit",
+                "developers/developer-tools/solayer-price-feeds"
             ]
         },
 

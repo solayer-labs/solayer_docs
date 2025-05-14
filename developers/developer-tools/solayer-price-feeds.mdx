@@ -38,12 +38,12 @@ Solana programs can directly use Pyth's price data via CPI.
 1. Locate the Pyth price account from the links above
 2. Pass the price account as an input to your smart contract
 3. In the contract, deserialize and access:
-- `price`
-- `confidence_interval`
-- `expo`
+  - `price`
+  - `confidence_interval`
+  - `expo`
 4. Always validate:
-- `status == Trading`
-- the publish time is recent enough (i.e. not stale)
+  - `status == Trading`
+  - the publish time is recent enough (i.e. not stale)
 
 
 Reference: [Using Real-Time Data in Solana Programs](https://docs.pyth.network/price-feeds/use-real-time-data/solana)

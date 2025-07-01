@@ -1,10 +1,3 @@
----
-title: "Deploy Hello World Contract on Solayer Devnet"
-description: "This tutorial walks you through deploying a basic "Hello, Solayer!"" smart contract to the Solayer Devnet, using **only the Solana CLI."
----
-
-# 
-
 ## Prerequisites
 
 ### Install Rust \+ Cargo
@@ -119,7 +112,7 @@ solana airdrop 1
 solana balance  # Should show ~0.3 SOL
 ```
 
-> **Note**: You need at least 0.15 SOL for deployment
+> **Note**: You need at approxmiately 0.15 SOL for deployment
 
 ## Step 8: Deploy the Program
 
@@ -181,15 +174,3 @@ solana program show <PROGRAM_ID> -u https://devnet-rpc.solayer.org
 # Check transaction
 solana confirm <SIGNATURE> -v
 ```
-
----
-
-## Next Steps
-
-After successful deployment, your program is ready to:
-
-- Receive instruction calls from client applications
-- Be integrated into larger Solana dApps
-- Be upgraded using the upgrade authority keypair
-
-**Your program is now live on Solayer Devnet\! 🎉**

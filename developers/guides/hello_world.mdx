@@ -1,36 +1,31 @@
 ---
-title: "Deploy Smart Contract On Solayer Devnet"
-sidebarTitle: "Hello World"
-description: "This tutorial walks you through deploying a basic "Hello, Solayer!" smart contract to the Solayer Devnet, using only the Solana CLI.
-
-test
-"
+title: "Deploy Hello World Contract on Solayer Devnet"
+description: "This tutorial walks you through deploying a basic "Hello, Solayer!"" smart contract to the Solayer Devnet, using **only the Solana CLI."
 ---
+
+# 
 
 ## Prerequisites
 
-1. **Install Rust \+ Cargo**
+### Install Rust \+ Cargo
 
-   ```bash
-   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-   ```
-2. **Install Solana CLI v1.18.0\+**
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source ~/.cargo/env
+```
 
-   ```bash
-   sh -c "$(curl -sSfL https://release.solana.com/v1.18.0/install)"
-   ```
-3. **Install BPF Toolchain**
+### Install Solana CLI v1.18.0\+
 
-   ```bash
-   rustup component add rust-src
-   ```
-4. **Create or Import a Solana Wallet**
+```bash
+sh -c "$(curl -sSfL https://release.solana.com/v1.18.0/install)"
+export PATH="~/.local/share/solana/install/active_release/bin:$PATH"
+```
 
-   ```bash
-   solana-keygen new -o ./your-wallet-keypair.json
-   ```
+### Install BPF Toolchain
 
-   > Ensure the wallet is funded on Solayer Devnet. Get test Solana from [Solayer Faucet]([https://discord.gg/solana]\(https://explorer.solayer.org/faucet\)).
+```bash
+rustup component add rust-src
+```
 
 ---
 
@@ -42,9 +37,7 @@ cd solayer-hello
 cargo new --lib hello
 ```
 
----
-
-## Step 2: Configure `Cargo.toml`
+## Step 2: Configure Cargo.toml
 
 Edit `hello/Cargo.toml`:
 
@@ -60,8 +53,6 @@ solana-program = "1.18.0"
 [lib]
 crate-type = ["cdylib", "lib"]
 ```
-
----
 
 ## Step 3: Write the Hello World Program
 
@@ -85,28 +76,32 @@ fn process_instruction(
 }
 ```
 
----
-
 ## Step 4: Build the Program
 
 ```bash
-cargo build-bpf --manifest-path=hello/Cargo.toml --bpf-out-dir=dist
+cd hello
+cargo build-sbf --sbf-out-dir=../dist
+cd ..
 ```
 
-> This creates the binary at `dist/hello.so`
+> **Note**: Use `cargo build-sbf` (not `cargo build-bpf` as in older guides)
 
----
+This creates the binary at `dist/hello.so`
 
-## Step 5: Generate Program Keypair
+## Step 5: Generate Keypairs
 
 ```bash
-solana-keygen new -o hello_program-keypair.json
+# Generate program keypair
+solana-keygen new -o hello_program-keypair.json --no-bip39-passphrase
+
+# Generate wallet keypair
+solana-keygen new -o your-wallet-keypair.json --no-bip39-passphrase
+
+# Get your program ID
 solana address -k hello_program-keypair.json
 ```
 
-> Save the **Program ID** (public key) — you’ll need it for deployment.
-
----
+**Save the Program ID** - you'll need it for deployment verification.
 
 ## Step 6: Configure Solayer Devnet
 
@@ -115,9 +110,18 @@ solana config set --url https://devnet-rpc.solayer.org
 solana config set -k ./your-wallet-keypair.json
 ```
 
----
+## Step 7: Fund Your Wallet
 
-## Step 7: Deploy the Program
+```bash
+# Request test SOL (may need multiple attempts)
+solana airdrop 2
+solana airdrop 1
+solana balance  # Should show ~0.3 SOL
+```
+
+> **Note**: You need at least 0.15 SOL for deployment
+
+## Step 8: Deploy the Program
 
 ```bash
 solana program deploy \
@@ -129,37 +133,63 @@ solana program deploy \
   -k ./your-wallet-keypair.json
 ```
 
----
+> **Note**: This deploys a new program. To upgrade an existing program, use the same command with the existing program's keypair.
 
-## Step 8: Verify Deployment
+## Step 9: Verify Deployment
 
 ```bash
-solana program show <PROGRAM_ID> -u https://devnet-rpc.solayer.org
+solana program show <YOUR_PROGRAM_ID> -u https://devnet-rpc.solayer.org
 ```
+
+> **Note**: May show formatting error - this is safe to ignore
 
 ---
 
 ## Expected Results
 
-- ✅ **Deployment Cost**: ~0.16 SOL
-- ✅ **Program Logs**: “Hello, Solayer\!”
+- ✅ **Deployment Cost**: ~0.15 SOL
+- ✅ **Program Logs**: "Hello, Solayer\!"
 - ✅ **Status**: Successfully deployed and callable
-
----
-
-## Step 9: Test the Program
-
-```bash
-solana transfer --allow-unfunded-recipient --fund-recipient <PROGRAM_ID> 0.001
-```
+- ✅ **Program ID**: Unique address for your deployed program
 
 ---
 
 ## Troubleshooting
 
-- **Build Fails**: Ensure correct Rust \+ Solana CLI versions.
-- **Insufficient Funds**: Request SOL from Solayer faucet/Discord.
-- **RPC Errors**: Double-check URL and use `--use-rpc` flag.
-- **Program Show Issues**: Minor formatting bugs — safe to ignore.
+| Issue                                | Solution                                                  |
+| ------------------------------------ | --------------------------------------------------------- |
+| **Build fails with lock file error** | Delete `Cargo.lock` and rebuild                           |
+| **Insufficient funds error**         | Request more SOL: `solana airdrop 1`                      |
+| **RPC connection issues**            | Ensure using `--use-rpc` flag                             |
+| **Program show formatting error**    | Safe to ignore - deployment was successful                |
+| **Transfer to program fails**        | Expected behavior - programs cannot receive SOL transfers |
 
 ---
+
+## Quick Commands Reference
+
+```bash
+# Check balance
+solana balance
+
+# Check current config
+solana config get
+
+# Get program info
+solana program show <PROGRAM_ID> -u https://devnet-rpc.solayer.org
+
+# Check transaction
+solana confirm <SIGNATURE> -v
+```
+
+---
+
+## Next Steps
+
+After successful deployment, your program is ready to:
+
+- Receive instruction calls from client applications
+- Be integrated into larger Solana dApps
+- Be upgraded using the upgrade authority keypair
+
+**Your program is now live on Solayer Devnet\! 🎉**

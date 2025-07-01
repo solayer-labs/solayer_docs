@@ -1,4 +1,91 @@
 ---
-title: "New file"
+title: "Deploying an NFT on Solayer Devnet"
 description: "Description of your new file."
 ---
+
+This guide covers deploying your first NFT on Solayer Devnet using decentralized storage via IPFS. Full code examples are available on [GitHub](https://github.com/solayer-labs/solayer-devs).
+
+## Prerequisites
+
+- **Node.js (v18+) & npm** installed
+- **Basic terminal knowledge**
+- **Image file** for your NFT
+
+## Step 1: Initial Project Setup
+
+Create a dedicated project directory and initialize Node.js:
+
+```bash
+mkdir solayer-nft && cd solayer-nft
+npm init -y
+npm install dotenv
+```
+
+Set up your project structure and configure `package.json` to use ES modules.
+
+## Step 2: Environment Configuration
+
+Create `.env.example` as a template:
+
+```env
+# Example
+PRIVATE_KEY=YOUR_PRIVATE_KEY
+IPFS_URL=YOUR_IPFS_URL
+```
+
+Copy this to `.env` and fill in your details securely.
+
+## Step 3: Configuration Module
+
+Create `config/index.js` to centrally manage settings.
+
+## Step 4: Development Environment Validation
+
+Automate checks using `scripts/setup.js`.
+
+## Step 5: Upload NFT Image to IPFS
+
+- Sign up on [Pinata.cloud](https://pinata.cloud)
+- Upload your NFT image
+- Copy the IPFS URL from your dashboard
+
+## Step 6: NFT Metadata
+
+Create NFT metadata in `assets/nft-metadata.json`:
+
+```json
+{
+  "name": "My First NFT",
+  "description": "Description of your NFT",
+  "image": "YOUR_IPFS_URL"
+}
+```
+
+## Step 7: NFT Deployment
+
+Create deployment script `scripts/deploy_nft.js` to:
+
+- Read NFT metadata
+- Set up blockchain transactions
+- Mint NFT on Solayer Devnet
+
+Run your deployment script to mint the NFT.
+
+## Step 8: (Optional) API Server
+
+Deploy a local API server using `server/api.js` to track and manage NFT deployments.
+
+## Step 9: Verification
+
+Verify NFT deployment on [Solana Explorer](https://explorer.solayer.org) using the deployment address.
+
+## Troubleshooting Tips
+
+- **Low funds?** Use `solana airdrop 1`.
+- **Metadata issues?** Validate JSON structure.
+
+## Additional Resources & Support
+
+- Visit [GitHub Repo](https://github.com/solayer-labs/solayer-devs) for updated code.
+- For support, join the [Discord channel](https://discord.gg/solayerlabs).
+

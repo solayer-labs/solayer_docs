@@ -7,7 +7,7 @@ This guide covers deploying your first NFT on Solayer Devnet using decentralized
 
 ## Prerequisites
 
-- **Node.js (v18+) & npm** installed
+- **Node.js (v18\+) & npm** installed
 - **Basic terminal knowledge**
 - **Image file** for your NFT
 
@@ -39,15 +39,242 @@ Copy this to `.env` and fill in your details securely.
 
 Create `config/index.js` to centrally manage settings.
 
+```javascript
+import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
+
+// Load environment variables
+dotenv.config();
+
+// Validate required environment variables
+const requiredEnvVars = [
+  'SOLANA_RPC_URL',
+  'SOLANA_KEYPAIR_PATH'
+];
+
+const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+if (missingVars.length > 0) {
+  console.error('❌ Missing required environment variables:', missingVars.join(', '));
+  console.error('Please check your .env file');
+  process.exit(1);
+}
+
+// Expand tilde in keypair path
+function expandPath(filepath) {
+  if (filepath.startsWith('~/')) {
+    return path.join(process.env.HOME, filepath.slice(2));
+  }
+  return filepath;
+}
+
+const config = {
+  solana: {
+    rpcUrl: process.env.SOLANA_RPC_URL,
+    keypairPath: expandPath(process.env.SOLANA_KEYPAIR_PATH),
+    network: process.env.NETWORK || 'devnet',
+    commitment: 'confirmed'
+  },
+  
+  ipfs: {
+    pinataJwt: process.env.PINATA_JWT,
+    gateway: process.env.PINATA_GATEWAY || 'https://gateway.pinata.cloud'
+  },
+  
+  api: {
+    port: parseInt(process.env.PORT) || 3000,
+    nodeEnv: process.env.NODE_ENV || 'development'
+  },
+  
+  nft: {
+    defaultMetadataFile: process.env.DEFAULT_METADATA_FILE || 'assets/nft-metadata.json'
+  },
+  
+  // File paths
+  deploymentIndex: 'deployment-index.json',
+  
+  // Validation helper
+  validate() {
+    // Check if keypair file exists
+    if (!fs.existsSync(this.solana.keypairPath)) {
+      throw new Error(`Solana keypair not found at: ${this.solana.keypairPath}`);
+    }
+    
+    console.log('✅ Configuration validated');
+    return true;
+  },
+  
+  // Display configuration (without sensitive data)
+  display() {
+    console.log('📋 Configuration:');
+    console.log(`   Network: ${this.solana.network}`);
+    console.log(`   RPC URL: ${this.solana.rpcUrl}`);
+    console.log(`   Keypair: ${this.solana.keypairPath}`);
+    console.log(`   API Port: ${this.api.port}`);
+    console.log(`   IPFS Configured: ${this.ipfs.pinataJwt ? 'Yes' : 'No'}`);
+  }
+};
+
+export default config;
+```
+
 ## Step 4: Development Environment Validation
 
 Automate checks using `scripts/setup.js`.
 
+```javascript
+import { execSync } from 'child_process';
+import fs from 'fs';
+import config from '../config/index.js';
+
+async function checkSolanaInstallation() {
+  try {
+    const version = execSync('solana --version', { encoding: 'utf8' });
+    console.log('✅ Solana CLI installed:', version.trim());
+    return true;
+  } catch (error) {
+    console.error('❌ Solana CLI not found. Please install it:');
+    console.error('   curl -sSf https://release.solana.com/v1.18.26/install | sh');
+    return false;
+  }
+}
+
+async function checkKeypair() {
+  try {
+    if (!fs.existsSync(config.solana.keypairPath)) {
+      console.log('🔑 No keypair found. Generating new keypair...');
+      execSync(`solana-keygen new --outfile ${config.solana.keypairPath} --no-bip39-passphrase`, { stdio: 'inherit' });
+    }
+    
+    const address = execSync('solana address', { encoding: 'utf8' }).trim();
+    console.log('✅ Wallet address:', address);
+    return address;
+  } catch (error) {
+    console.error('❌ Failed to setup keypair:', error.message);
+    return null;
+  }
+}
+
+async function configureSolana() {
+  try {
+    console.log('⚙️ Configuring Solana CLI...');
+    execSync(`solana config set --url ${config.solana.rpcUrl} --commitment ${config.solana.commitment}`, { stdio: 'inherit' });
+    console.log('✅ Solana CLI configured');
+  } catch (error) {
+    console.error('❌ Failed to configure Solana CLI:', error.message);
+  }
+}
+
+async function checkBalance() {
+  try {
+    const balance = execSync('solana balance', { encoding: 'utf8' }).trim();
+    console.log('💰 Current balance:', balance);
+    
+    if (balance.includes('0 SOL') || balance.includes('0.00')) {
+      console.log('🪂 Requesting airdrop...');
+      execSync('solana airdrop 1', { stdio: 'inherit' });
+      
+      // Wait a moment and check again
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      const newBalance = execSync('solana balance', { encoding: 'utf8' }).trim();
+      console.log('💰 New balance:', newBalance);
+    }
+  } catch (error) {
+    console.error('❌ Failed to check balance:', error.message);
+  }
+}
+
+async function createSampleMetadata() {
+  const metadataPath = config.nft.defaultMetadataFile;
+  
+  if (!fs.existsSync(metadataPath)) {
+    console.log('📄 Creating sample metadata file...');
+    
+    const sampleMetadata = {
+      name: "My First Solayer NFT",
+      symbol: "SLYR1",
+      description: "My first NFT deployed on Solayer devnet using secure deployment",
+      image: "https://gateway.pinata.cloud/ipfs/YOUR_IPFS_HASH_HERE",
+      attributes: [
+        {
+          trait_type: "Network",
+          value: "Solayer Devnet"
+        },
+        {
+          trait_type: "Deployment",
+          value: "Secure"
+        },
+        {
+          trait_type: "Storage",
+          value: "IPFS"
+        }
+      ]
+    };
+    
+    fs.writeFileSync(metadataPath, JSON.stringify(sampleMetadata, null, 2));
+    console.log(`✅ Sample metadata created at: ${metadataPath}`);
+    console.log('⚠️  Remember to replace YOUR_IPFS_HASH_HERE with your actual IPFS hash');
+  } else {
+    console.log('✅ Metadata file already exists');
+  }
+}
+
+async function main() {
+  console.log('🚀 Setting up Solayer NFT deployment environment...\n');
+  
+  try {
+    // Validate configuration
+    config.validate();
+    config.display();
+    console.log('');
+    
+    // Check Solana installation
+    if (!(await checkSolanaInstallation())) {
+      process.exit(1);
+    }
+    
+    // Setup keypair
+    const address = await checkKeypair();
+    if (!address) {
+      process.exit(1);
+    }
+    
+    // Configure Solana CLI
+    await configureSolana();
+    
+    // Check/request balance
+    await checkBalance();
+    
+    // Create sample metadata
+    await createSampleMetadata();
+    
+    console.log('\n🎉 Setup complete! Next steps:');
+    console.log('1. Upload your image to IPFS (see IPFS section in main guide)');
+    console.log('2. Edit assets/nft-metadata.json with your IPFS hash');
+    console.log('3. Run: npm run deploy');
+    
+  } catch (error) {
+    console.error('❌ Setup failed:', error.message);
+    process.exit(1);
+  }
+}
+
+main();
+```
+
 ## Step 5: Upload NFT Image to IPFS
 
 - Sign up on [Pinata.cloud](https://pinata.cloud)
+
+  ![Devnet Nft Pinata 3 Pn](/images/dev-tutorials/devnet-nft-pinata-3.png)
+
+
 - Upload your NFT image
+
+  ![Devnet Nft Pinata 2 Pn](/images/dev-tutorials/devnet-nft-pinata-2.png)
 - Copy the IPFS URL from your dashboard
+
+![Devnet Nft Pinata 1 Pn](/images/dev-tutorials/devnet-nft-pinata-1.png)
 
 ## Step 6: NFT Metadata
 
@@ -55,25 +282,95 @@ Create NFT metadata in `assets/nft-metadata.json`:
 
 ```json
 {
-  "name": "My First NFT",
-  "description": "Description of your NFT",
-  "image": "YOUR_IPFS_URL"
+  "name": "Solayer Devnet NFT",
+  "symbol": "SLYR",
+  "description":" Testing NFT Deployment on Solayer Devnet!",
+  "image": "YOUR_IPFS_IMAGE_URL",
+  "attributes": [{"trait_type": "Network", "value": "Solayer"}]
 }
 ```
 
-## Step 7: NFT Deployment
+## \
+Step 7: NFT Deployment
 
-Create deployment script `scripts/deploy_nft.js` to:
+Create a deployment script `scripts/deploy_nft.js` to:
 
 - Read NFT metadata
 - Set up blockchain transactions
 - Mint NFT on Solayer Devnet
 
-Run your deployment script to mint the NFT.
+Below is a concise snippet of your deployment script (`scripts/deploy_nft.js`) focusing on the core functions. The full implementation (initialization, transaction confirmation, index updates, error handling, etc.) is available in the [GitHub repo](https://github.com/solayer-labs/solayer-devs/blob/main/solayer-nft-template/scripts/deploy_nft.js).
+
+```javascript
+import { Connection, Keypair, Transaction, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import {
+  createInitializeMintInstruction,
+  createAssociatedTokenAccountInstruction,
+  createMintToInstruction,
+  getMinimumBalanceForRentExemptMint,
+  MINT_SIZE,
+  TOKEN_PROGRAM_ID,
+  getAssociatedTokenAddress
+} from '@solana/spl-token';
+import fs from 'fs';
+import config from '../config/index.js';
+
+async function deployNFT(metadataFilePath) {
+  // 1. Read and validate NFT metadata
+  const metadata = JSON.parse(fs.readFileSync(metadataFilePath, 'utf8'));
+
+  // 2. Connect to Solayer Devnet
+  const connection = new Connection(config.solana.rpcUrl, { commitment: config.solana.commitment });
+  const payer = Keypair.fromSecretKey(/* loaded from config */);
+
+  // 3. Create metadata URI (e.g., upload to IPFS)
+  const metadataUri = await createMetadataUri(metadata);
+
+  // 4. Generate mint keypair & associated token account
+  const mintKeypair = Keypair.generate();
+  const tokenAccount = await getAssociatedTokenAddress(mintKeypair.publicKey, payer.publicKey);
+
+  // 5. Build and send mint transaction
+  const rent = await getMinimumBalanceForRentExemptMint(connection);
+  const { blockhash } = await connection.getLatestBlockhash();
+  const tx = new Transaction({ recentBlockhash: blockhash, feePayer: payer.publicKey })
+    .add(
+      SystemProgram.createAccount({
+        fromPubkey: payer.publicKey,
+        newAccountPubkey: mintKeypair.publicKey,
+        space: MINT_SIZE,
+        lamports: rent,
+        programId: TOKEN_PROGRAM_ID
+      }),
+      createInitializeMintInstruction(mintKeypair.publicKey, 0, payer.publicKey, payer.publicKey),
+      createAssociatedTokenAccountInstruction(payer.publicKey, tokenAccount, payer.publicKey, mintKeypair.publicKey),
+      createMintToInstruction(mintKeypair.publicKey, tokenAccount, payer.publicKey, 1)
+    );
+  tx.sign(payer, mintKeypair);
+
+  // 6. Send transaction
+  const signature = await connection.sendRawTransaction(tx.serialize());
+  console.log('🎉 NFT minted! Signature:', signature);
+}
+
+export { deployNFT };
+```
+
+## Step 7: Deploy NFT
+
+```bash
+node scripts/deploy_nft.js assests/nft-metadata-test.json
+```
+
+![Devnet Nft Deployment Screen](/images/dev-tutorials/devnet-nft-deployment-screen1)
+
+![Devnet Nft Deployment Screen](/images/dev-tutorials/devnet-nft-deployment-screen2)
 
 ## Step 8: (Optional) API Server
 
 Deploy a local API server using `server/api.js` to track and manage NFT deployments.
+
+Check the guide on [Github ](https://github.com/solayer-labs/solayer-devs)for additional steps to configure your server.
 
 ## Step 9: Verification
 
@@ -87,5 +384,4 @@ Verify NFT deployment on [Solana Explorer](https://explorer.solayer.org) using t
 ## Additional Resources & Support
 
 - Visit [GitHub Repo](https://github.com/solayer-labs/solayer-devs) for updated code.
-- For support, join the [Discord channel](https://discord.gg/solayerlabs).
-
+- For support, head over to the dev-support channel on Discord ([<u>https://discord.gg/solayerlabs</u>](https://discord.gg/solayerlabs)) and raise a ticket\! Our team's happy to help\!

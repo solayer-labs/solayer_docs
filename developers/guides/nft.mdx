@@ -1,0 +1,244 @@
+---
+title: "Deploying an NFT on Solayer Devnet"
+sidebarTitle: "Deploy NFT On Devnet"
+---
+
+This guide covers deploying your first NFT on Solayer Devnet using decentralized storage via IPFS. Full code examples are available on [GitHub](https://github.com/solayer-labs/solayer-devs/tree/main/solayer-nft-template).
+
+## Prerequisites
+
+- **Node.js (v18\+) & npm** installed
+- **Basic terminal knowledge**
+- **Image file** for your NFT
+- For **Intitial Enviornment Setup** refer [Hello Solayer](developers/guides/hello_world.mdx)
+
+## Step 1: Project Setup
+
+Create a dedicated project directory and initialize Node.js:
+
+```bash
+mkdir solayer-nft && cd solayer-nft
+npm init -y
+npm install dotenv
+```
+
+Set up your project structure and configure `package.json` to use ES modules.
+
+## Step 2: Environment Configuration
+
+Create `.env.example` as a template:
+
+```env
+# Example
+PRIVATE_KEY=YOUR_PRIVATE_KEY
+IPFS_URL=YOUR_IPFS_URL
+```
+
+Copy this to `.env` and fill in your details securely.
+
+<Note>
+  > The following code is a **trimmed snippet** from the full implementation available in the [solayer-labs/solayer-devs](https://github.com/solayer-labs/solayer-devs) GitHub repository. \
+  > \
+  > It highlights only the core functionality—for example, reading NFT metadata, building Solana transactions, and minting the NFT. For complete logic including validation, logging, error handling, environment setup, and deployment indexing, please refer to the respective full files:
+  >
+  > • [scripts/deploy_nft.js](https://github.com/solayer-labs/solayer-devs/blob/main/solayer-nft-template/scripts/deploy_nft.js)
+  >
+  > • [config/index.js](https://github.com/solayer-labs/solayer-devs/blob/main/solayer-nft-template/config/index.js)
+  >
+  > • [scripts/setup.js](https://github.com/solayer-labs/solayer-devs/blob/main/solayer-nft-template/scripts/setup.js)
+</Note>
+
+## Step 3: Configuration Module
+
+Create `config/index.js` to centrally manage settings.
+
+```javascript
+import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
+dotenv.config();
+
+// Fail fast if essential .env vars are missing
+['SOLANA_RPC_URL', 'SOLANA_KEYPAIR_PATH']
+  .filter(v => !process.env[v])
+  .length && process.exit(1);
+
+const expand = p => p.startsWith('~/')
+  ? path.join(process.env.HOME, p.slice(2))
+  : p;
+
+const config = {
+  solana: {
+    rpcUrl: process.env.SOLANA_RPC_URL,
+    keypairPath: expand(process.env.SOLANA_KEYPAIR_PATH),
+    commitment: 'confirmed'
+  },
+  nft: {
+    defaultMetadataFile: process.env.DEFAULT_METADATA_FILE || 'assets/nft-metadata.json'
+  },
+  validate() {
+    if (!fs.existsSync(this.solana.keypairPath)) throw new Error('Keypair not found');
+    return true;
+  },
+  display() {
+    console.log('RPC URL:', this.solana.rpcUrl);
+    console.log('Keypair:', this.solana.keypairPath);
+  }
+};
+
+export default config;
+```
+
+## Step 4: Development Environment Validation
+
+Automate checks using `scripts/setup.js`.
+
+```javascript
+import { execSync } from 'child_process';
+import fs from 'fs';
+import config from '../config/index.js';
+
+(async () => {
+  // 1. Check Solana CLI
+  try { execSync('solana --version'); } 
+  catch { console.error('Install Solana CLI'); process.exit(1); }
+
+  // 2. Ensure keypair exists
+  if (!fs.existsSync(config.solana.keypairPath)) {
+    execSync(`solana-keygen new --outfile ${config.solana.keypairPath} --no-bip39-passphrase`);
+  }
+
+  // 3. Configure CLI to Devnet
+  execSync(`solana config set --url ${config.solana.rpcUrl} --commitment confirmed`);
+
+  // 4. Airdrop if balance is zero
+  const bal = execSync('solana balance', { encoding: 'utf8' });
+  if (bal.startsWith('0')) execSync('solana airdrop 1');
+
+  // 5. Create sample metadata file if missing
+  if (!fs.existsSync(config.nft.defaultMetadataFile)) {
+    fs.writeFileSync(
+      config.nft.defaultMetadataFile,
+      JSON.stringify({ /* sample NFT metadata */ }, null, 2)
+    );
+  }
+
+  console.log('✅ Environment setup complete');
+})();
+```
+
+## Step 5: Upload NFT Image to IPFS
+
+- Sign up on [Pinata.cloud](https://pinata.cloud)
+
+  ![Devnet Nft Pinata 3 Pn](/images/dev-tutorials/devnet-nft-pinata-3.png)
+- Upload your NFT image
+
+  ![Devnet Nft Pinata 2 Pn](/images/dev-tutorials/devnet-nft-pinata-2.png)
+- Copy the IPFS URL from your dashboard
+
+  ![Devnet Nft Pinata 1 Pn](/images/dev-tutorials/devnet-nft-pinata-1.png)
+
+## Step 6: NFT Metadata
+
+Create NFT metadata in `assets/nft-metadata.json`:
+
+```json
+{
+  "name": "Solayer Devnet NFT",
+  "symbol": "SLYR",
+  "description":" Testing NFT Deployment on Solayer Devnet!",
+  "image": "YOUR_IPFS_IMAGE_URL",
+  "attributes": [{"trait_type": "Network", "value": "Solayer"}]
+}
+```
+
+## Step 7: NFT Deployment
+
+Create a deployment script `scripts/deploy_nft.js` to:
+
+- Read NFT metadata
+- Set up blockchain transactions
+- Mint NFT on Solayer Devnet
+
+Below is a concise snippet of your deployment script (`scripts/deploy_nft.js`) focusing on the core functions. The full implementation (initialization, transaction confirmation, index updates, error handling, etc.) is available in the [GitHub repo](https://github.com/solayer-labs/solayer-devs/blob/main/solayer-nft-template/scripts/deploy_nft.js).
+
+```javascript
+import { Connection, Keypair, Transaction, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import {
+  createInitializeMintInstruction,
+  createAssociatedTokenAccountInstruction,
+  createMintToInstruction,
+  getMinimumBalanceForRentExemptMint,
+  MINT_SIZE,
+  TOKEN_PROGRAM_ID,
+  getAssociatedTokenAddress
+} from '@solana/spl-token';
+import fs from 'fs';
+import config from '../config/index.js';
+
+async function deployNFT(metadataFilePath) {
+  // 1. Read and validate NFT metadata
+  const metadata = JSON.parse(fs.readFileSync(metadataFilePath, 'utf8'));
+
+  // 2. Connect to Solayer Devnet
+  const connection = new Connection(config.solana.rpcUrl, { commitment: config.solana.commitment });
+  const payer = Keypair.fromSecretKey(/* loaded from config */);
+
+  // 3. Create metadata URI (e.g., upload to IPFS)
+  const metadataUri = await createMetadataUri(metadata);
+
+  // 4. Generate mint keypair & associated token account
+  const mintKeypair = Keypair.generate();
+  const tokenAccount = await getAssociatedTokenAddress(mintKeypair.publicKey, payer.publicKey);
+
+  // 5. Build and send mint transaction
+  const rent = await getMinimumBalanceForRentExemptMint(connection);
+  const { blockhash } = await connection.getLatestBlockhash();
+  const tx = new Transaction({ recentBlockhash: blockhash, feePayer: payer.publicKey })
+    .add(
+      SystemProgram.createAccount({
+        fromPubkey: payer.publicKey,
+        newAccountPubkey: mintKeypair.publicKey,
+        space: MINT_SIZE,
+        lamports: rent,
+        programId: TOKEN_PROGRAM_ID
+      }),
+      createInitializeMintInstruction(mintKeypair.publicKey, 0, payer.publicKey, payer.publicKey),
+      createAssociatedTokenAccountInstruction(payer.publicKey, tokenAccount, payer.publicKey, mintKeypair.publicKey),
+      createMintToInstruction(mintKeypair.publicKey, tokenAccount, payer.publicKey, 1)
+    );
+  tx.sign(payer, mintKeypair);
+
+  // 6. Send transaction
+  const signature = await connection.sendRawTransaction(tx.serialize());
+  console.log('🎉 NFT minted! Signature:', signature);
+}
+
+export { deployNFT };
+```
+
+## Step 7: Deploy NFT
+
+```bash
+node scripts/deploy_nft.js assests/nft-metadata-test.json
+```
+![NFT CLI Ouput1](/images/dev-tutorials/nft-cli-output1.png)
+
+![NFT CLI Ouput2](/images/dev-tutorials/nft-cli-output2.png)
+
+## Step 8: (Optional) API Server
+
+Deploy a local API server using `server/api.js` to track and manage NFT deployments.
+
+Check the guide on [Github ](https://github.com/solayer-labs/solayer-devs)for additional steps to configure your server.
+
+## Step 9: Verification
+
+Verify NFT deployment on [Solayer Explorer](https://explorer.solayer.org) using the deployment address.
+
+
+## Additional Resources & Support
+
+- Visit [GitHub Repo](https://github.com/solayer-labs/solayer-devs) for updated code.
+- For support, head over to the dev-support channel on Discord ([<u>https://discord.gg/solayerlabs</u>](https://discord.gg/solayerlabs)) and raise a ticket\! Our team's happy to help\!

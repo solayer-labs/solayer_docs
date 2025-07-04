@@ -68,8 +68,6 @@ Add the latest Solana program dependency:
 cargo add solana-program
 ```
 
-**Update Edition:** Modern cargo defaults to edition "2024". For Solana programs, we need to enable the `edition2024` feature.
-
 Update your `Cargo.toml`:
 
 ```toml
@@ -86,8 +84,6 @@ solana-program = "2.3.0"
 [lib]
 crate-type = ["cdylib", "lib"]
 ```
-
-**Note:** This uses the latest edition 2024 with the required feature flag for Solana compatibility.
 
 ---
 

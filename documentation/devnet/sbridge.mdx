@@ -1,1 +1,104 @@
+---
+title: Solayer Bridge (sBridge)
+description: Canonical Cross-Chain Bridge for Solana and Solayer
+---
+
+# Solayer Bridge (sBridge)
+
+**Solayer Bridge (sBridge)** is a canonical, SVM-native cross-chain bridge purpose-built to connect Solana and Solayer with high throughput, deterministic security, and composable execution. It offers an execution-native bridge architecture, replacing generalized, exploit-prone multichain bridges with a protocol aligned tightly to the Solana Virtual Machine (SVM).
+
+## Overview
+
+sBridge enables:
+
+- **Asset transfer and wrapped token minting** between Solana and Solayer
+- **Cross-chain call execution**, such as swapping on Solayer and depositing LP on Solana in a single transaction
+- **Sub-3s optimistic finality for low-value txs**, and deterministic finality for high-value txs
+- **Hardware-backed ED25519 multi-signatures** using guardian quorum
+- **Double-handling prevention** using Program Derived Addresses (PDAs)
+
+Unlike other bridges, sBridge is designed from the ground up to support **SVM-to-SVM communication**. It embraces SVM-specific architecture such as return-data handling, PDA proofs, and polling-based transaction indexing for reliability and performance.
+
+## Architecture: 3-Layer Bridge
+
+sBridge consists of three layers:
+
+1. **Origin Chain** – User invokes `bridgeAsset` or `crossChainCall`, creating a unique PDA as a proof-of-intent.
+2. **Guardian Network (Off-Chain)** – Guardians poll transactions via RPC, validate signatures, and submit a threshold-signed proof.
+3. **Destination Chain** – Bridge program verifies multi-sig via Solana’s precompile and executes the asset transfer or cross-chain instruction.
+
+```plaintext
+User → [Origin Chain (PDA + Bridge Program)] → [Guardian Network] → [Destination Chain (PDA Check + Execution)]
+```
+
+## On-chain Program
+
+### Asset Bridge
+
+- **`bridgeAssetSourceChain`**: Initiated on Solana (or origin chain). Tokens are deducted, a fee is extracted, and a bridge vault locks the asset. A PDA is generated based on `(sender, recipient, mint, amount, nonce, txId)`.
+- **`bridgeAssetTargetChain`**: Invoked on Solayer (or destination chain). After guardian multi-sig is verified, tokens are released or wrapped tokens minted.
+
+### Cross-Chain Call
+
+Users can sign serialized transactions (e.g., Solana LP deposit) on Solayer and dispatch it cross-chain. The leader guardian decodes and simulates the payload, then executes it directly.
+
+```ts
+await bridgeClient.crossChainCall({
+  serializedTx: serializedCrossChainTransaction,
+});
+```
+
+This enables **multi-leg transactions** like:
+
+- Solayer swap → Solana LP deposit → All in one signed tx
+
+## Off-chain Guardian Network
+
+- **Leader–Follower Model**: Guardians gossip signed payloads. A rotating leader aggregates multi-sigs and submits to destination chain.
+- **Poll-based indexing**: No reliance on fragile WebSocket subscriptions. Guardians poll RPC endpoints for new bridge transactions.
+- **ED25519 multi-sig**: All signatures are generated using hardware-backed HSMs and verified via Solana’s precompile.
+
+## Reliability & Failure Recovery
+
+- **Replay protection**: All bridge actions generate unique PDAs. Existing PDAs are checked before any execution.
+- **Exactly-once semantics**: Guardians track high-water marks and nonces to prevent duplicate processing.
+- **Leader failover**: If a leader becomes unresponsive, a new one is elected via round-robin.
+
+## Dynamic Finality Model
+
+- **Fast-path finality**: < $1K txs execute after "confirmed" block state, finalizing in ~3s
+- **Slow-path finality**: High-value txs wait for irreversible finality on source chain
+- Misbehavior by guardians (e.g., signing before safe finality) can result in slashing or removal
+
+## Performance (Devnet Metrics)
+
+| Metric | sBridge | Avg. Multichain Bridge |
+|--------|---------|------------------------|
+| Median Finality (< $1K tx) | ~3 sec | ~8 sec |
+| Avg. Fee | 0.0006 SOL | 0.0014 SOL |
+| Throughput | ~1000 tx/s | ~400 tx/s |
+
+## Developer Integration
+
+```ts
+import { BridgeClient } from '@infini/svm-bridge';
+
+const bridgeClient = new BridgeClient(connection, wallet);
+
+await bridgeClient.bridgeAsset({
+  amount: 500_000,
+  mint: 'So11111111111111111111111111111111111111112',
+  recipient: recipientAddress,
+});
+```
+
+Try it now:
+
+1. `npm install -g @infini/cli`
+2. `infini config set cluster devnet`
+3. Use CLI to bridge SOL ↔ SOLR or trigger cross-chain calls
+
+## Security & Audits
+
+sBridge is undergoing formal audit by Trail of Bits (Q3 2025). The guardian network currently operates with a secure **5-of-7 threshold**, with plans to decentralize further to **7-of-11** by mainnet.
 

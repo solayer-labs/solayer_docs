@@ -1,0 +1,56 @@
+---
+title: "Solayer Token Advanced"
+description: "Description of your new file."
+---
+
+
+## Frequently Asked Questions
+
+### Can I create a token with a custom name and symbol?
+
+**For basic SPL tokens:** The `spl-token create-token` command creates a basic token mint without metadata (name/symbol). To add custom names and symbols, you have two options:
+
+**Option 1: Use Token-2022 with built-in metadata**
+
+```bash
+# Create token with metadata extension enabled
+spl-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb create-token --enable-metadata
+
+# Initialize metadata with custom name and symbol
+spl-token initialize-metadata [MINT_ADDRESS] "Your Token Name" "SYMBOL" "https://your-metadata-uri.com"
+```
+
+**Option 2: Use regular SPL tokens with Metaplex**
+
+```bash
+# Create basic SPL token
+spl-token create-token
+
+# Use Metaplex tools (like metaboss) to add metadata afterward
+```
+
+### What is the initial supply of a newly created token?
+
+When you run `spl-token create-token`, the token starts with **0 (zero) supply**. Creating a token mint only establishes the "blueprint" for your token - no actual tokens exist until you mint them.
+
+### How many tokens does the mint command create?
+
+The `spl-token mint` command requires you to specify the exact amount. There is no default amount.
+
+**Syntax:**
+
+```bash
+spl-token mint [MINT_ADDRESS] [AMOUNT]
+```
+
+**Examples:**
+
+```bash
+# Mint 1000 tokens
+spl-token mint 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgHU 1000
+
+# Mint 1 token
+spl-token mint 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgHU 1
+```
+
+**Note:** SPL tokens use 9 decimal places by default, so minting "1" actually creates 1.000000000 tokens from a user perspective.

@@ -1,0 +1,152 @@
+---
+title: 'Solayer Token Deployment'
+sidebarTitle: "Deploy Token On Devnet"
+---
+
+# Solayer Token Deployment And Interactions
+
+This guide provides step-by-step instructions for deploying SPL tokens on the Solayer network using the devnet RPC endpoint and mainly covering 4 actions. 
+1. Create token
+2. Create token account
+3. Mint tokens
+4. Transfer tokens 
+
+## Prerequisites
+
+- Agave (Solana CLI) installed (version 2.2.0 or higher)
+- SPL Token CLI installed (version 5.3.0 or higher)
+- Basic understanding of Solana tokens and accounts
+- For **Intitial Enviornment Setup** refer [Hello Solayer](developers/guides/hello_world.mdx) guide.
+
+## Installation and Setup
+
+### 1. Install Required Tools
+
+```bash
+# Install Agave (Solana CLI) - Latest stable version
+sh -c "$(curl -sSfL https://release.anza.xyz/stable/install)"
+
+# Install SPL Token CLI
+cargo install spl-token-cli
+
+# Verify installations
+solana --version
+spl-token --version
+```
+
+### 2. Configure Solana CLI for Solayer Devnet
+
+```bash
+# Set cluster to Solayer devnet
+solana config set --url https://devnet-rpc.solayer.org
+
+# Verify configuration
+solana config get
+```
+
+## Wallet Setup
+
+### 1. Create a New Wallet (if needed)
+
+```bash
+# Generate new keypair
+solana-keygen new --outfile ~/.config/solana/id.json
+
+# Or use existing wallet
+solana config set --keypair ~/.config/solana/id.json
+```
+
+### 2. Fund Your Wallet
+
+```bash
+# Check current balance
+solana balance
+
+# Request airdrop (you will have to repeat this process till your wallet has enough balance)
+solana airdrop 1
+
+# Verify balance
+solana balance
+```
+
+**Note**: Ensure you have at least 1-2 SOL for token creation and operations.
+
+## Token Deployment Process
+
+### 1. Create Token Mint
+
+```bash
+# Create a new token mint
+spl-token create-token
+
+# Example output:
+# Creating token 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgHU
+```
+
+### 2. Create Token Account
+
+```bash
+# Create token account for your wallet
+spl-token create-account [MINT_ADDRESS]
+
+# Example:
+# spl-token create-account 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgHU
+```
+
+### 3. Mint Tokens
+
+```bash
+# Mint tokens to your account
+spl-token mint [MINT_ADDRESS] [AMOUNT] [TOKEN_ACCOUNT]
+
+# Example:
+# spl-token mint 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgHU 1000
+```
+
+### 4. Transfer Tokens
+
+```bash
+# Transfer tokens to another account
+spl-token transfer [MINT_ADDRESS] [AMOUNT] [RECIPIENT] --allow-unfunded-recipient --fund-recipient
+
+# Example:
+# spl-token transfer 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgHU 100 9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM --allow-unfunded-recipient --fund-recipient
+```
+
+## Token Management Commands
+
+### Check Token Balance
+
+```bash
+# Check balance of a specific token
+spl-token balance [MINT_ADDRESS]
+
+# Example:
+# spl-token balance 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgHU
+```
+
+### Check Token Supply
+
+```bash
+# Check total supply of a token
+spl-token supply [MINT_ADDRESS]
+
+# Example:
+# spl-token supply 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgHU
+```
+
+### List All Token Accounts
+
+```bash
+# List all token accounts for your wallet
+spl-token accounts
+```
+
+## Additional Resources & Support
+
+- Visit **[GitHub Repo](https://github.com/solayer-labs/solayer-devs/tree/main/solayer-token-deployment)** for updated code.
+- For support, head over to the dev-support channel on Discord ([<u>https://discord.gg/solayerlabs</u>](https://discord.gg/solayerlabs)) and raise a ticket\! Our team's happy to help\!
+- **SPL Token Documentation**: [Solana SPL Token Guide]
+- **Agave (Solana) CLI Reference**: [Anza CLI Docs](https://docs.anza.xyz/cli)
+
+---

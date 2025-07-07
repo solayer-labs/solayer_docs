@@ -244,7 +244,9 @@
             "group": "Guides",
             "pages": [
                 "developers/guides/hello_world",
-                "developers/guides/nft"
+                "developers/guides/token-basics",
+                "developers/guides/devnet-nft"
+      
             ]
         },
       

@@ -1,56 +1,308 @@
 ---
-title: "Solayer Token Advanced"
-description: "Description of your new file."
+title: "Solayer Advanced Token Interactions"
+sidebarTitle: "Advanced Token Interactions"
 ---
 
+This comprehensive guide covers advanced token features and customizations available on the Solayer network using token extensions and advanced SPL token operations.
 
-## Frequently Asked Questions
+## Prerequisites
 
-### Can I create a token with a custom name and symbol?
+- For installation and basic setup, please refer to the [Solayer Token Deployment Guide](developers/guides/token-advanced.mdx)
+- Installing Agave (Solana CLI) and SPL Token CLI
 
-**For basic SPL tokens:** The `spl-token create-token` command creates a basic token mint without metadata (name/symbol). To add custom names and symbols, you have two options:
-
-**Option 1: Use Token-2022 with built-in metadata**
+## 1: Token Extensions Program with Built-in Metadata
 
 ```bash
 # Create token with metadata extension enabled
 spl-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb create-token --enable-metadata
 
-# Initialize metadata with custom name and symbol
-spl-token initialize-metadata [MINT_ADDRESS] "Your Token Name" "SYMBOL" "https://your-metadata-uri.com"
+# Initialize metadata with custom name, symbol, and URI
+spl-token initialize-metadata [MINT_ADDRESS] "Your Custom Token" "YCT" "https://your-metadata-uri.com/metadata.json"
+
+# Create token account
+spl-token create-account [MINT_ADDRESS] --owner [OWNER_ADDRESS]
+
+# Mint tokens
+spl-token mint [MINT_ADDRESS] 1000000
 ```
 
-**Option 2: Use regular SPL tokens with Metaplex**
+## 2: Regular SPL Token
 
 ```bash
 # Create basic SPL token
 spl-token create-token
-
-# Use Metaplex tools (like metaboss) to add metadata afterward
 ```
 
-### What is the initial supply of a newly created token?
+## 3. Transfer Fees
 
-When you run `spl-token create-token`, the token starts with **0 (zero) supply**. Creating a token mint only establishes the "blueprint" for your token - no actual tokens exist until you mint them.
-
-### How many tokens does the mint command create?
-
-The `spl-token mint` command requires you to specify the exact amount. There is no default amount.
-
-**Syntax:**
+Charge fees on every transfer:
 
 ```bash
-spl-token mint [MINT_ADDRESS] [AMOUNT]
+# Create token with transfer fee extension
+spl-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb create-token --transfer-fee 100 1000000
+
+# Parameters: basis points (100 = 1%), maximum fee (1000000 = 1 token if 6 decimals)
 ```
 
-**Examples:**
+## 4. Interest-Bearing Tokens
+
+Tokens that automatically accrue interest:
 
 ```bash
-# Mint 1000 tokens
-spl-token mint 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgHU 1000
+# Create interest-bearing token (rate in basis points)
+spl-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb create-token --interest-rate 500
 
-# Mint 1 token
-spl-token mint 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgHU 1
+# 500 basis points = 5% annual interest
 ```
 
-**Note:** SPL tokens use 9 decimal places by default, so minting "1" actually creates 1.000000000 tokens from a user perspective.
+## 5. Non-Transferable Tokens
+
+Create tokens that cannot be transferred (soul-bound):
+
+```bash
+# Create non-transferable token
+spl-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb create-token --enable-non-transferable
+```
+
+## 6. Permanent Delegate
+
+Set a permanent delegate with full control:
+
+```bash
+# Create token with permanent delegate
+spl-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb create-token --permanent-delegate [DELEGATE_ADDRESS]
+```
+
+## 7. Transfer Hook
+
+Execute custom logic on every transfer:
+
+```bash
+# Create token with transfer hook program
+spl-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb create-token --transfer-hook [HOOK_PROGRAM_ID]
+```
+
+## 8. Group Extension (New in 2025)
+
+Enable group configurations for token collections:
+
+```bash
+# Create token with group extension
+spl-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb create-token --enable-group
+
+# Initialize group configurations (done by mint authority)
+spl-token initialize-group [MINT_ADDRESS] --group-address [GROUP_ADDRESS]
+```
+
+## 9. Member Extension (New in 2025)
+
+Enable group member configurations for tokens that belong to groups:
+
+```bash
+# Create token with member extension
+spl-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb create-token --enable-member
+
+# Initialize member configurations (done by mint authority)
+spl-token initialize-member [MINT_ADDRESS] --member-address [MEMBER_ADDRESS]
+```
+
+## Account Extensions
+
+#### 1. Memo Required
+
+Require memo on incoming transfers:
+
+```bash
+# Create account with memo requirement
+spl-token create-account [MINT_ADDRESS] --enable-memo-required-on-incoming-transfers
+```
+
+#### 2. Immutable Ownership
+
+Prevent ownership changes:
+
+```bash
+# Create account with immutable ownership
+spl-token create-account [MINT_ADDRESS] --enable-immutable-ownership
+```
+
+#### 3. Default Account State
+
+Set default state for new accounts:
+
+```bash
+# Create token with default frozen state
+spl-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb create-token --default-account-state frozen
+```
+
+## Advanced Token Management
+
+### Multi-Extension Token Creation
+
+```bash
+# Create a comprehensive token with multiple extensions
+spl-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb create-token \
+  --enable-metadata \
+  --transfer-fee 50 500000 \
+  --interest-rate 250 \
+  --permanent-delegate [DELEGATE_ADDRESS] \
+  --decimals 6
+
+# Initialize metadata
+spl-token initialize-metadata [MINT_ADDRESS] "Premium Token" "PREM" "https://example.com/metadata.json"
+```
+
+### Group and Member Token Collections
+
+The Group and Member extensions enable sophisticated token collection management:
+
+```bash
+# 1. Create a parent token with group extension (represents the collection)
+COLLECTION_TOKEN=$(spl-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb create-token \
+  --enable-group \
+  --enable-metadata | grep 'Creating token' | awk '{print $3}')
+
+# 2. Initialize collection metadata
+spl-token initialize-metadata $COLLECTION_TOKEN "NFT Collection" "NFTC" "https://example.com/collection.json"
+
+# 3. Create member tokens that belong to the collection
+MEMBER_TOKEN_1=$(spl-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb create-token \
+  --enable-member \
+  --enable-metadata \
+  --decimals 0 | grep 'Creating token' | awk '{print $3}')
+
+# 4. Initialize member metadata
+spl-token initialize-metadata $MEMBER_TOKEN_1 "NFT #1" "NFT1" "https://example.com/nft1.json"
+
+# 5. Link member to group (done by appropriate authority)
+spl-token initialize-member $MEMBER_TOKEN_1 --member-address $COLLECTION_TOKEN
+```
+
+### Confidential Transfers
+
+Enable privacy features for transfers:
+
+```bash
+# Create token with confidential transfer support
+spl-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb create-token --enable-confidential-transfers
+
+# Configure confidential transfers for an account
+spl-token configure-confidential-transfer-account [TOKEN_ACCOUNT]
+```
+
+### Token Supply Management
+
+```bash
+# Create token with supply controls
+spl-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb create-token --enable-close-mint
+
+# Disable future minting
+spl-token set-authority [MINT_ADDRESS] mint --disable
+
+# Close mint account (if extension enabled)
+spl-token close-mint [MINT_ADDRESS]
+```
+
+## Advanced Transfer Operations
+
+### 1. Transfers with Fees
+
+```bash
+# Transfer with automatic fee calculation
+spl-token transfer [MINT_ADDRESS] 1000 [RECIPIENT] --fee-payer [FEE_PAYER_KEYPAIR]
+
+# Check fee information
+spl-token display [MINT_ADDRESS]
+```
+
+### 2. Transfers with Memos
+
+```bash
+# Transfer with required memo
+spl-token transfer [MINT_ADDRESS] 100 [RECIPIENT] --with-memo "Payment for services"
+```
+
+### 3. Bulk Operations
+
+```bash
+# Create multiple token accounts
+for i in {1..5}; do
+  spl-token create-account [MINT_ADDRESS]
+done
+
+# Batch mint to multiple accounts
+spl-token mint [MINT_ADDRESS] 1000 [ACCOUNT1]
+spl-token mint [MINT_ADDRESS] 1000 [ACCOUNT2]
+```
+
+## Token Metadata Management
+
+### 1. Update Metadata
+
+```bash
+# Update token metadata
+spl-token update-metadata [MINT_ADDRESS] "Updated Token Name" "UPD" "https://new-uri.com/metadata.json"
+
+# Add additional metadata fields
+spl-token update-metadata [MINT_ADDRESS] --additional-metadata "key1=value1,key2=value2"
+```
+
+### 2. Metadata Pointer
+
+```bash
+# Create token with metadata pointer to external program
+spl-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb create-token --metadata-pointer [METADATA_PROGRAM_ID]
+```
+
+## Authority Management
+
+### 1. Multi-Signature Setup
+
+```bash
+# Create multisig account
+spl-token create-multisig 2 [PUBKEY1] [PUBKEY2] [PUBKEY3]
+
+# Set multisig as token authority
+spl-token set-authority [MINT_ADDRESS] mint [MULTISIG_ADDRESS]
+```
+
+### 2. Authority Delegation
+
+```bash
+# Delegate token authority
+spl-token authorize [MINT_ADDRESS] mint [NEW_AUTHORITY]
+
+# Revoke authority
+spl-token authorize [MINT_ADDRESS] mint --disable
+```
+
+## Monitoring and Analytics
+
+### 1. Token Information
+
+```bash
+# Comprehensive token information
+spl-token display [MINT_ADDRESS]
+
+# Check all extensions
+spl-token display [MINT_ADDRESS] --verbose
+
+# Monitor token supply
+spl-token supply [MINT_ADDRESS]
+```
+
+### 2. Account Analysis
+
+```bash
+# List all token accounts with details
+spl-token accounts --verbose
+
+# Check specific account extensions
+spl-token account-info [TOKEN_ACCOUNT]
+```
+
+## Additional Resources & Support
+
+- Visit [**GitHub Repo**](https://github.com/solayer-labs/solayer-devs/tree/main/solayer-token-deployment) for updated code.
+- For support, head over to the dev-support channel on Discord ([<u>https://discord.gg/solayerlabs</u>](https://discord.gg/solayerlabs)) and raise a ticket\! Our team is happy to help\!
+- **Token-2022 Documentation**: [SPL Token-2022 Docs](https://spl.solana.com/token-2022)

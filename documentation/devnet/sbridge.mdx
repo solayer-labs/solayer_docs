@@ -1,6 +1,6 @@
 ---
-title: Solayer Bridge (sBridge)
-description: Canonical Cross-Chain Bridge for Solana and Solayer
+title: "Solayer Bridge (sBridge)"
+description: "Canonical Cross-Chain Bridge for Solana and Solayer"
 ---
 
 # Solayer Bridge (sBridge)
@@ -66,39 +66,14 @@ This enables **multi-leg transactions** like:
 
 ## Dynamic Finality Model
 
-- **Fast-path finality**: < $1K txs execute after "confirmed" block state, finalizing in ~3s
+- **Fast-path finality**: \< \$1K txs execute after "confirmed" block state, finalizing in ~3s
 - **Slow-path finality**: High-value txs wait for irreversible finality on source chain
 - Misbehavior by guardians (e.g., signing before safe finality) can result in slashing or removal
 
 ## Performance (Devnet Metrics)
 
-| Metric | sBridge | Avg. Multichain Bridge |
-|--------|---------|------------------------|
-| Median Finality (< $1K tx) | ~3 sec | ~8 sec |
-| Avg. Fee | 0.0006 SOL | 0.0014 SOL |
-| Throughput | ~1000 tx/s | ~400 tx/s |
-
-## Developer Integration
-
-```ts
-import { BridgeClient } from '@infini/svm-bridge';
-
-const bridgeClient = new BridgeClient(connection, wallet);
-
-await bridgeClient.bridgeAsset({
-  amount: 500_000,
-  mint: 'So11111111111111111111111111111111111111112',
-  recipient: recipientAddress,
-});
-```
-
-Try it now:
-
-1. `npm install -g @infini/cli`
-2. `infini config set cluster devnet`
-3. Use CLI to bridge SOL ↔ SOLR or trigger cross-chain calls
-
-## Security & Audits
-
-sBridge is undergoing formal audit by Trail of Bits (Q3 2025). The guardian network currently operates with a secure **5-of-7 threshold**, with plans to decentralize further to **7-of-11** by mainnet.
-
+| Metric                       | sBridge    | Avg. Multichain Bridge |
+| ---------------------------- | ---------- | ---------------------- |
+| Median Finality (\< \$1K tx) | ~3 sec     | ~8 sec                 |
+| Avg. Fee                     | 0.0006 SOL | 0.0014 SOL             |
+| Throughput                   | ~1000 tx/s | ~400 tx/s              |

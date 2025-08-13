@@ -262,7 +262,8 @@
         {
             "group": "$Layer",
             "pages": [
-                "resources/tokenomics"
+                "resources/tokenomics",
+                "resources/governance"
             ]
         },
 

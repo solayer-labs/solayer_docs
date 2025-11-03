@@ -2,24 +2,40 @@
 title: 'RFQ Stakeholders'
 ---
 
-## Users (Stablecoin Depositors) 
-Stablecoin Depositors drive the core functions of the protocol by locking USDC to mint sUSD, delegating sUSD to Exogenous AVSs (exoAVSs) to secure external systems, as well as withdrawing funds when necessary.
- - **Offering USDC for sUSD:** Users provide USDC in exchange for sUSD, specifying a commission rate (e.g., 1 basis point) along with their order.
- - **Commission Allocation:** The specified commission is pooled in the decentralized RFQ system to incentivize market makers.
+## Users (Stablecoin Depositors)
+Stablecoin depositors are the primary participants of the protocol.  
+They lock USDC to mint **sUSD**, delegate sUSD to **Exogenous AVSs (exoAVSs)** to secure external systems, and redeem their assets when necessary.
 
-## Qualified Liquidity Providers (QLPs, market makers) 
-QLPs subscribe for TBILL tokens by depositing USDC into the TBILL vault. In exchange, the QLPs receive TBILL tokens, which they self-custody in their private accounts, ensuring they retain control and ownership over their TBILL tokens. The QLPs will redeem their TBILL tokens for USDC from the TBILL Vault when processing withdrawals.
- - **Order Fulfillment:** Market makers can view and fulfill specific user orders from the RFQ system.
- 1. Receive USDC from the user.
- 2. Deposit the USDC to receive TBILL tokens.
- 3. Hold these TBILL tokens securely in their designated vault.
+- **Minting sUSD:** Users deposit USDC and receive sUSD, optionally setting a commission rate (e.g., 1 basis point) when creating an order.  
+- **Commission Allocation:** The specified commission is pooled in the decentralized RFQ system to reward Qualified Liquidity Providers (QLPs) that fulfill orders.  
 
+---
 
-| Stakeholder                           | Description                           |
-| ------------------------------------- | ------------------------------------- |
-| Token Issuer                          | Treasury Bills Institutional Liquidity Limited, the Token Issuer, is a registered professional fund established under the British Virgin Islands Securities and Investment Business Act 2010 and regulated by the British Virgin Islands Financial Services Commission.   |
-| Investment Manager                    | Adam Eve Capital is a registered fund management company regulated by the Monetary Authority of Singapore with an investment mandate for short-dated U.S. T-Bills. The sole purpose of the Investment Manager is to invest the Fund’s assets in segregated accounts with tier-one, regulated, and qualified custodians. |
-| Fintech Service Provider              | OpenEden Labs Pte Ltd, the developer of the TBILL Vault, is a financial technology company and not a regulated entity, depository, bank, or credit union.   |
+## Qualified Liquidity Providers (QLPs, Market Makers)
+QLPs provide liquidity within the RFQ system by subscribing to **cUSDO**, a tokenized representation of short-dated U.S. Treasury Bills issued on Solana.  
+By depositing USDC into the **cUSDO Vault**, QLPs receive cUSDO tokens which they self-custody and later redeem for USDC when processing withdrawals.
 
+- **Order Fulfillment Process:**  
+  1. QLPs receive USDC from users through the RFQ protocol.  
+  2. The received USDC is deposited into the cUSDO vault to mint **cUSDO**.  
+  3. QLPs hold cUSDO in self-custody and redeem it for USDC when fulfilling user withdrawals.  
 
+---
 
+## Underlying Issuance Structure
+The cUSDO token is part of a regulated tokenized Treasury framework operated by OpenEden.  
+It replaces the previous TBILL token, maintaining equivalent backing and operational logic.
+
+| Stakeholder | Description |
+| ------------ | ------------ |
+| **Token Issuer** | **OpenEden Digital Ltd**, a Bermuda-licensed digital asset business regulated by the **Bermuda Monetary Authority (BMA)**, issues the cUSDO token fully backed by U.S. Treasury Bills. |
+| **Investment Manager** | **Adam Eve Capital**, regulated by the **Monetary Authority of Singapore (MAS)**, manages the underlying U.S. Treasury Bill investments in segregated custodial accounts. |
+| **Fintech Service Provider** | **OpenEden Labs Pte. Ltd.**, responsible for operating the technical vault infrastructure used in the cUSDO issuance process. |
+
+---
+
+## Transition Note
+As of **2 November 2025**, all TBILL tokens previously held in Solana vaults have been **upgraded to cUSDO**.  
+All subsequent RFQ transactions and QLP operations are executed exclusively in **cUSDO**, ensuring uninterrupted functionality and consistent 1:1 USD collateralization.
+
+---

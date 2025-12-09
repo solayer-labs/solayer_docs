@@ -28,16 +28,28 @@ First, import the required modules and initialize the Solana Agent Kit with your
 ```ts
 import { SolanaAgentKit, createSolanaTools } from "solana-agent-kit";
 
-// Initialize with private key and optional RPC URL
+// Initialize with private key and RPC URL
+// For production, use Solayer mainnet:
 const agent = new SolanaAgentKit(
   "your-wallet-private-key-as-base58",
-  "https://api.mainnet-beta.solana.com",
+  "https://mainnet-rpc.solayer.org",
   "your-openai-api-key"
 );
+
+// For testing and development, use Solayer devnet:
+// const agent = new SolanaAgentKit(
+//   "your-wallet-private-key-as-base58",
+//   "https://devnet-rpc.solayer.org", // Devnet endpoint for testing only
+//   "your-openai-api-key"
+// );
 
 // Create LangChain tools
 const tools = createSolanaTools(agent);
 ```
+
+<Note>
+The devnet RPC endpoint (`https://devnet-rpc.solayer.org`) is specifically for **devnet and testing purposes only**. Use the mainnet RPC endpoint (`https://mainnet-rpc.solayer.org`) for production applications.
+</Note>
 
 <br />
 

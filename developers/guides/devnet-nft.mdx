@@ -1,9 +1,13 @@
 ---
-title: "Deploying an NFT on Solayer Devnet"
-sidebarTitle: "Deploy NFT On Devnet"
+title: "Deploying an NFT on Solayer"
+sidebarTitle: "Deploy NFT On Mainnet"
 ---
 
 This guide covers deploying your first NFT on Solayer Devnet using decentralized storage via IPFS. Full code examples are available on [GitHub](https://github.com/solayer-labs/solayer-devs/tree/main/solayer-nft-template).
+
+<Note>
+This guide uses the **devnet RPC endpoint** (`https://devnet-rpc.solayer.org`) which is specifically for **devnet and testing purposes only**. For production NFT deployments, use the mainnet RPC endpoint: `https://mainnet-rpc.solayer.org`
+</Note>
 
 ## Prerequisites
 
@@ -108,7 +112,8 @@ import config from '../config/index.js';
     execSync(`solana-keygen new --outfile ${config.solana.keypairPath} --no-bip39-passphrase`);
   }
 
-  // 3. Configure CLI to Devnet
+  // 3. Configure CLI to Devnet (for testing)
+  // Note: Use https://mainnet-rpc.solayer.org for production
   execSync(`solana config set --url ${config.solana.rpcUrl} --commitment confirmed`);
 
   // 4. Airdrop if balance is zero

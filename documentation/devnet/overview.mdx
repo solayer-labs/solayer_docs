@@ -1,9 +1,9 @@
 ---
-title: InfiniSVM Devnet
-description: Development kit to build on Solayer's Devnet
+title: InfiniSVM Network
+description: Connect to Solayer's Mainnet and Devnet networks
 ---
 
-# Solayer Devnet Overview
+# Solayer Network Overview
 
 The Solayer InfiniSVM is a next-generation hardware accelerated blockchain designed for extreme performance, offering unprecedented throughput of **over 1M+ TPS and near-zero latency** for decentralized applications.
 Solayer is currently capable of **340k+ transactions per second (TPS)** in devnet, that we will increase as we clear performance bottlenecks identified during the devnet phase.
@@ -33,16 +33,29 @@ This compatibility ensures a smooth transition for developers already building o
 
 Our developer network (Devnet) provides a sandboxed environment to build and test applications before deploying to testnet and mainnet.
 
-### RPC Endpoint
+### RPC Endpoints
 
-Connect to the InfiniSVM Devnet using our public RPC endpoint:
+#### Mainnet RPC Endpoint
+
+For production applications, connect to Solayer Mainnet:
+
+```
+https://mainnet-rpc.solayer.org
+```
+
+#### Devnet RPC Endpoint (For Testing and Development)
+
+For testing and development purposes, connect to the InfiniSVM Devnet using our public RPC endpoint:
 
 ```
 https://devnet-rpc.solayer.org
 ```
 
+<Note>
+The devnet RPC endpoint is specifically for **devnet and testing purposes only**. Use the mainnet RPC endpoint for production applications.
+</Note>
 
-You can use this endpoint with standard Solana tooling, including:
+You can use these endpoints with standard Solana tooling, including:
 
 - Solana CLI
 - Web3.js
@@ -51,7 +64,13 @@ You can use this endpoint with standard Solana tooling, including:
 
 ### Configuration & setting up your local environment
 
-To configure your Solana CLI for InfiniSVM DevNet:
+To configure your Solana CLI for InfiniSVM Mainnet:
+
+```
+solana config set --url https://mainnet-rpc.solayer.org
+```
+
+To configure your Solana CLI for InfiniSVM DevNet (for testing):
 
 ```
 solana config set --url https://devnet-rpc.solayer.org

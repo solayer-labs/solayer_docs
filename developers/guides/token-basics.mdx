@@ -1,6 +1,6 @@
 ---
 title: 'Solayer Token Deployment'
-sidebarTitle: "Deploy Token On Devnet"
+sidebarTitle: "Deploy Token On Mainnet"
 ---
 
 This guide provides step-by-step instructions for deploying SPL tokens on the Solayer network using the devnet RPC endpoint and mainly covering 4 actions. 
@@ -32,15 +32,31 @@ solana --version
 spl-token --version
 ```
 
-### 2. Configure Solana CLI for Solayer Devnet
+### 2. Configure Solana CLI for Solayer Network
+
+#### For Production (Mainnet)
 
 ```bash
-# Set cluster to Solayer devnet
+# Set cluster to Solayer mainnet
+solana config set --url https://mainnet-rpc.solayer.org
+
+# Verify configuration
+solana config get
+```
+
+#### For Testing and Development (Devnet)
+
+```bash
+# Set cluster to Solayer devnet (for testing)
 solana config set --url https://devnet-rpc.solayer.org
 
 # Verify configuration
 solana config get
 ```
+
+<Note>
+The devnet RPC endpoint (`https://devnet-rpc.solayer.org`) is specifically for **devnet and testing purposes only**. Use the mainnet RPC endpoint (`https://mainnet-rpc.solayer.org`) for production applications.
+</Note>
 
 ## Wallet Setup
 
@@ -56,18 +72,22 @@ solana config set --keypair ~/.config/solana/id.json
 
 ### 2. Fund Your Wallet
 
+<Note>
+The following airdrop commands are for **devnet testing only**. On mainnet, you'll need to fund your wallet with real SOL through exchanges or other methods.
+</Note>
+
 ```bash
 # Check current balance
 solana balance
 
-# Request airdrop (you will have to repeat this process till your wallet has enough balance)
+# Request airdrop (devnet only - you will have to repeat this process till your wallet has enough balance)
 solana airdrop 1
 
 # Verify balance
 solana balance
 ```
 
-**Note**: Ensure you have at least 1-2 SOL for token creation and operations.
+**Note**: Ensure you have at least 1-2 SOL for token creation and operations. The airdrop feature is only available on devnet for testing purposes.
 
 ## Token Deployment Process
 

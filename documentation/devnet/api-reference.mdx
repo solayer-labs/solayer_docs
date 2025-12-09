@@ -7,11 +7,27 @@ description: Complete reference for Solayer's RPC API endpoints
 
 Solayer's RPC API provides compatibility with Solana's JSON RPC API while introducing optimizations for the InfiniSVM architecture. This reference documents all supported methods, upcoming features, and deprecated endpoints.
 
-## HTTP Endpoint
+## HTTP Endpoints
+
+### Mainnet RPC Endpoint
+
+For production applications:
+
+```
+https://mainnet-rpc.solayer.org
+```
+
+### Devnet RPC Endpoint (For Testing and Development)
+
+For testing and development purposes:
 
 ```
 https://devnet-rpc.solayer.org
 ```
+
+<Note>
+The devnet RPC endpoint is specifically for **devnet and testing purposes only**. Use the mainnet RPC endpoint for production applications.
+</Note>
 
 ## Currently Supported Methods
 
@@ -111,4 +127,4 @@ All RPC methods follow standard JSON-RPC 2.0 error handling conventions. Errors 
 
 ## Rate Limits
 
-The devnet RPC endpoint has rate limiting in place to ensure fair usage. For production applications requiring higher limits, please contact the Solayer team.
+The devnet RPC endpoint has rate limiting in place to ensure fair usage. For production applications requiring higher limits, please use the mainnet RPC endpoint (`https://mainnet-rpc.solayer.org`) or contact the Solayer team.

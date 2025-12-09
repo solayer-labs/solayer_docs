@@ -1,8 +1,8 @@
 ---
-title: "Deploy Smart Contract on Solayer Devnet"
+title: "Deploy Smart Contract on Solayer"
 sidebarTitle: "Deploy Hello Solayer Contract"
 ---
-A complete step-by-step guide to deploy your first "Hello, Solayer!" contract on Solayer Devnet using the **latest stable** toolchain.
+A complete step-by-step guide to deploy your first "Hello, Solayer!" contract on Solayer Mainnet (with devnet testing options) using the **latest stable** toolchain.
 
 ## Prerequisites
 
@@ -145,13 +145,27 @@ solana address -k program-keypair.json
 
 ---
 
-## Step 6: Configure Solayer Devnet
+## Step 6: Configure Solayer Network
 
-Set Solana CLI to use Solayer devnet:
+### For Production (Mainnet)
+
+Set Solana CLI to use Solayer mainnet:
+
+```bash
+solana config set --url https://mainnet-rpc.solayer.org
+```
+
+### For Testing and Development (Devnet)
+
+Set Solana CLI to use Solayer devnet (for testing):
 
 ```bash
 solana config set --url https://devnet-rpc.solayer.org
 ```
+
+<Note>
+The devnet RPC endpoint (`https://devnet-rpc.solayer.org`) is specifically for **devnet and testing purposes only**. Use the mainnet RPC endpoint (`https://mainnet-rpc.solayer.org`) for production applications.
+</Note>
 
 Set your wallet as the default keypair:
 
@@ -165,13 +179,21 @@ Verify your configuration:
 solana config get
 ```
 
-You should see:
+For devnet, you should see:
 - RPC URL: `https://devnet-rpc.solayer.org`
+- Keypair Path: `./wallet-keypair.json`
+
+For mainnet, you should see:
+- RPC URL: `https://mainnet-rpc.solayer.org`
 - Keypair Path: `./wallet-keypair.json`
 
 ---
 
 ## Step 7: Fund Your Wallet
+
+<Note>
+The following steps are for **devnet testing only**. On mainnet, you'll need to fund your wallet with real SOL through exchanges or other methods.
+</Note>
 
 Check your current balance:
 
@@ -179,7 +201,7 @@ Check your current balance:
 solana balance
 ```
 
-Request test SOL from the Solayer devnet faucet:
+Request test SOL from the Solayer devnet faucet (devnet only):
 
 ```bash
 solana airdrop 1
@@ -197,7 +219,7 @@ If you have less than 0.2 SOL, request more:
 solana airdrop 1
 ```
 
-**Note:** Solayer devnet has a limit of 1 SOL per airdrop request.
+**Note:** Solayer devnet has a limit of 1 SOL per airdrop request. This airdrop feature is only available on devnet for testing purposes.
 
 ---
 
@@ -260,8 +282,14 @@ Program Id: <YOUR_PROGRAM_ID>
 
 Check your program is deployed:
 
+For devnet:
 ```bash
 solana program show <YOUR_PROGRAM_ID> --url https://devnet-rpc.solayer.org
+```
+
+For mainnet:
+```bash
+solana program show <YOUR_PROGRAM_ID> --url https://mainnet-rpc.solayer.org
 ```
 
 Check your remaining balance:

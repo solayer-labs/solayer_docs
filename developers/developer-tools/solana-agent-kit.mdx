@@ -1,0 +1,73 @@
+---
+title: "Solana Agent Kit"
+---
+
+## **Overview**
+
+The **Solana Agent Kit** allows developers to build **AI-driven agents** that interact with **Solana** and **Solayer** seamlessly. It enables **AI agents** to perform **on-chain transactions**, including **staking SOL on Solayer (sSOL staking)** using **Solana Blinks**.
+
+With the **Solana Agent Kit**, AI-powered automation can integrate directly with **Solayer’s DeFi ecosystem**, supporting actions like **staking, yield strategies, and more**.
+
+<br />
+
+## **Installation**
+
+To install the **Solana Agent Kit**, use **npm**:
+
+```ts
+npm install solana-agent-kit
+```
+<br />
+
+## Quick Start Guide
+
+Import & Initialize the Agent
+
+First, import the required modules and initialize the Solana Agent Kit with your wallet private key, Solana RPC URL, and OpenAI API key.
+
+```ts
+import { SolanaAgentKit, createSolanaTools } from "solana-agent-kit";
+
+// Initialize with private key and RPC URL
+// For production, use Solayer mainnet:
+const agent = new SolanaAgentKit(
+  "your-wallet-private-key-as-base58",
+  "https://mainnet-rpc.solayer.org",
+  "your-openai-api-key"
+);
+
+// For testing and development, use Solayer devnet:
+// const agent = new SolanaAgentKit(
+//   "your-wallet-private-key-as-base58",
+//   "https://devnet-rpc.solayer.org", // Devnet endpoint for testing only
+//   "your-openai-api-key"
+// );
+
+// Create LangChain tools
+const tools = createSolanaTools(agent);
+```
+
+<Note>
+The devnet RPC endpoint (`https://devnet-rpc.solayer.org`) is specifically for **devnet and testing purposes only**. Use the mainnet RPC endpoint (`https://mainnet-rpc.solayer.org`) for production applications.
+</Note>
+
+<br />
+
+Stake SOL on Solayer (sSOL Staking)
+
+To stake SOL on Solayer using the AI agent, call the restake function:
+
+```ts
+const signature = await agent.restake(
+  1 // amount in SOL to stake
+);
+```
+<br />
+
+## **Additional Features & Documentation**
+
+The **Solana Agent Kit** is continuously evolving to support **more DeFi integrations** and **automated smart contract interactions**.
+
+For **detailed documentation**, **examples**, and **latest updates**, visit the **GitHub repository**:  
+[**Solana Agent Kit on GitHub**](https://github.com/sendaifun/solana-agent-kit)
+

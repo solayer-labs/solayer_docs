@@ -1,0 +1,36 @@
+---
+title: Delegate Tokens
+---
+
+Solayer provides decentralized applications (dApps) with a simple method to create their own AVS LST. These tokens come with Solana’s native SOL yield as their base rewards, along with additional MEV yields. Solayer optimizes the yield by delegating it to the highest yield-bearing validators. \
+\
+Additionally, Solayer runs its own validator implementation that supports app-level stake-weighted quality of service provisioning. The Solayer AVS Token is a delegated representation of sSOL, the Solayer-managed LST on Solana.\
+\
+In the future, we envision dApps having direct control over the validators to which the underlying SOL is delegated. They should also be able to configure the required stake-weighted quality of service with a dynamic pricing mechanism depending on the current network workload.
+
+### Getting an AVS Token
+
+First, users convert SOL into sSOL and deposited SOL will be delegated to Solayer validators.
+
+They then delegate it to an endogenous dApp AVS on Solayer, which converts sSOL to a delegated form.
+
+Finally, Solayer AVS mints AVS tokens which can later be used as a stake proof to retrieve staked SOL back and claim rewards.
+
+<Frame><img src="https://2113331469-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FzYM0pEemeu6F3UKGPAZE%2Fuploads%2F596pbXYWzYG2vXbNXu3T%2Fimage.png?alt=media&token=5211d592-802a-4f1c-a389-2ca9751387f8" alt=""/></Frame>
+
+### General Flow of sSOL
+
+<Steps>
+<Step title="Deposit and Receive sSOL">
+Users deposit their SOL into the native SOL pool and receive sSOL tokens in return.
+</Step>
+<Step title="Delegate sSOL">
+Depositors delegate their sSOL into the e-AVS (endogenous Actively Validated Services) pool and receive AVS wrapper SPL tokens.
+</Step>
+<Step title="Provision and Inclusion">
+endoAVS directly receives the delegated sSOL into a vault, increasing the probability of block space provisioning and transaction inclusion for the dApp.
+</Step>
+<Step title="Incentives">
+endoAVS can reward and incentivize more delegates to enhance participation.
+</Step>
+</Steps>

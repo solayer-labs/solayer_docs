@@ -1,0 +1,35 @@
+---
+title: "Wallet-Agnostic & dApp-First Integration"
+---
+Traditional blockchain integrations require **explicit support** at both the **wallet** and **DApp layers**. However, **InfiniSVM** introduces a **wallet-agnostic approach** that shifts transaction broadcasting responsibility from wallets to **DApps**, enabling **seamless user onboarding** without requiring explicit wallet integration.
+
+<br />
+
+## **Key Differences Between EVM and SVM Models**
+
+### **EVM L2s: Wallet-Dependent Model**
+- **EIP-155 enforces chain ID inclusion** in the signature payload, making it **wallet-restricted**.
+- **Wallets are responsible for transaction broadcasting**, meaning each wallet must **explicitly support each chain**.
+
+### **InfiniSVM: DApp-First Model**
+- **SVM signatures do not include chain IDs** in the transaction structure.
+- Instead, each transaction references a **recent block hash**, ensuring that **cross-chain replays are automatically rejected**.
+- **DApps, not wallets, handle transaction broadcasting**, meaning **any Solana-compatible wallet** can be used **without modification**.
+
+<br />
+
+## **Seamless Wallet Compatibility with InfiniSVM SDK**
+
+Using the **InfiniSVM SDK**, **DApps can generate and sign transactions** that are **compatible with any Solana-based wallet**, without requiring:
+- **Native wallet support for InfiniSVM**.
+- **Explicit chain ID handling in wallets**.
+- **Wallet-driven broadcasting logic**.
+
+### **Advantages of This Approach**
+- **Broader wallet compatibility**: Users can interact with **InfiniSVM DApps using any Solana-compatible wallet**.  
+- **Simplified onboarding**: No need for wallets to add **explicit chain support**—DApps handle everything.  
+- **Flexible asset management**: While **native wallet support** enhances **asset visibility**, it is **not required for transaction execution**.  
+
+<br />
+
+**InfiniSVM’s DApp-first integration model** removes the **wallet bottleneck** by shifting **transaction execution responsibilities to DApps**.

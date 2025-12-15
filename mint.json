@@ -1,66 +1,313 @@
 {
-  "$schema": "https://mintlify.com/schema.json",
-  "name": "Solayer Docs",
-  "logo": {
-    "dark": "/images/logo-dark.svg",
-    "light":  "/images/logo-light.svg"
-  },
-  "favicon": "/images/favicon.jpg",
-  "colors": {
-    "primary": "#084D3E",
-    "light": "#A4E58F",
-    "dark": "#084D3E"
-  },
-  "theme": "prism",
-  "feedback": {
-    "suggestEdit": true,
-    "raiseIssue": true,
-    "thumbsRating": true
-  },
-"tabs": [
-  {
-    "name": "Deposits",
-    "url": "deposits"
-  },
-  {
-    "name": "endoAVS",
-    "url": "endogenous-avs"
-  },
-  {
-    "name": "sUSD",
-    "url": "susd"
-  }
-],
-  "topbarLinks": [
-    {
-      "name": "FAQs",
-      "url": "getting-started/faqs"
-    }
-  ],
-  "topbarCtaButton": {
-    "name": "Launch App",
-    "url": "https://app.solayer.org"
-  },
-  "anchors": [
-    {
-      "name": "Website",
-      "icon": "globe",
-      "url": "https://solayer.org"
+    "$schema": "https://mintlify.com/schema.json",
+    "name": "Solayer Docs V2",
+    "logo": {
+        "dark": "/images/logo-dark.svg",
+        "light": "/images/logo-light.svg"
     },
-    {
-      "name": "Community",
-      "icon": "discord",
-      "url": "https://discord.com/invite/solayerlabs"
+    "favicon": "/images/favicon.jpg",
+    "colors": {
+        "primary": "#084D3E",
+        "light": "#A4E58F",
+        "dark": "#084D3E"
     },
-    {
-      "name": "Twitter",
-      "icon": "twitter",
-      "url": "https://twitter.com/solayer_labs"
-    }, 
-    {
-      "name": "Whitepaper",
-      "icon": "file",
-      "url": "https://github.com/solayer-labs/solayer-improvement-proposal/blob/main/solayer-litepaper-v0.pdf"
+    "theme": "prism",
+    "feedback": {
+        "suggestEdit": true,
+        "raiseIssue": true,
+        "thumbsRating": true
+    },
+    "tabs": [
+        {
+            "name": "InfiniSVM",
+            "url": "infinisvm"
+        },
+
+        {
+            "name": "Tutorials",
+            "url": "tutorials"
+        },
+        
+        {
+            "name": "Developers",
+            "url": "developers"
+        },
+
+        {
+            "name": "Resources",
+            "url": "resources"
+        }
+
+    ],
+
+
+    "topbarCtaButton": {
+        "name": "Launch App",
+        "url": "https://app.solayer.org"
+    },
+    "anchors": [
+        {
+            "name": "Website",
+            "icon": "globe",
+            "url": "https://solayer.org"
+        },
+        {
+            "name": "Community",
+            "icon": "discord",
+            "url": "https://discord.com/invite/solayerlabs"
+        },
+        {
+            "name": "Twitter",
+            "icon": "twitter",
+            "url": "https://twitter.com/solayer_labs"
+        },
+        {
+            "name": "Whitepaper",
+            "icon": "file",
+            "url": "https://github.com/solayer-labs/solayer-improvement-proposal/blob/main/solayer_infinisvm_litepaper.pdf"
+        }
+    ],
+    "navigation": [
+        {
+            "group": "Solayer",
+            "pages": [
+                "documentation/get-started/introduction",
+                "documentation/resources/litepapers"
+            ]
+        },
+
+        {
+            "group": "InfiniSVM",
+            "pages": [
+                "documentation/infinisvm",
+                "documentation/devnet/overview",
+                "documentation/devnet/api-reference",
+                "documentation/devnet/explorer",
+                "documentation/devnet/faucet"
+            ]
+        },
+
+
+        {
+            "group": "SOL Staking",
+            "pages": [
+                "assets/ssol/overview",
+                {
+                    "group": "Mega Validator",
+                    "pages": [
+                        "assets/mega-validator/transaction-acceleration/endoavs",
+                        "assets/mega-validator/yield-optimization",
+                        "assets/mega-validator/transaction-acceleration/swqos"
+                    ]
+                },
+                {
+                    "group": "sSOL",
+                    "pages": [
+                        "assets/ssol/universal-liquidity-layer",
+                        "assets/mega-validator/delegate-tokens"
+                    ]
+                },
+                "assets/native-staking"
+            ]
+        },
+
+        {
+            "group": "sUSD",
+            "pages": [
+                 "assets/susd/yield-bearing-stablecoin/what-is-susd",
+                {
+                    "group": "Decentralized RFQ Protocol",
+                    "pages": [
+                        "assets/susd/decentralized-rfq-protocol/overview",
+                        "assets/susd/decentralized-rfq-protocol/stakeholders"
+                    ]
+                }
+            ]
+        },
+
+
+        {
+            "group": "Emerald Card",
+            "pages": [
+                "documentation/Emerald-Card/overview",
+                "documentation/Emerald-Card/point",
+                "documentation/Emerald-Card/eligibility",
+                "documentation/Emerald-Card/security",
+                "documentation/Emerald-Card/occupation-codes",
+                "documentation/Emerald-Card/faq"
+                
+                
+            ]
+        },
+
+
+        {
+            "group": "InfiniSVM",
+            "pages": [
+                "infinisvm/infinisvm/overview",
+                "infinisvm/infinisvm/whyhardwareacceleration"
+            ]
+        },
+        {
+            "group": "System Architecture",
+            "pages": [
+                       "infinisvm/system_architecture/solana&svm",
+                        "infinisvm/system_architecture/rdma&infiniband",
+                        "infinisvm/system_architecture/software_defined_network",
+
+                {
+                    "group": "Multi executor",
+                    "pages": [
+                        "infinisvm/system_architecture/multi-executor/scaling_transaction_processing",
+                        "infinisvm/system_architecture/multi-executor/microservice&pipeline",
+                        "infinisvm/system_architecture/multi-executor/transaction_semantic_aware_scheduling",
+                        "infinisvm/system_architecture/multi-executor/sharding_database_with_rdma"
+                    ]
+                },
+                "infinisvm/system_architecture/consensus_scaling"
+            ]
+        },
+        {
+            "group": "Advanced UX",
+            "pages": [
+                "infinisvm/advanced_ux/wallet-agnostic&dapp-first-integration",
+                "infinisvm/advanced_ux/hooks",
+                "infinisvm/advanced_ux/cross-chain_contract_call",
+                "infinisvm/advanced_ux/jumbo_transaction",
+                "infinisvm/advanced_ux/zk-login"
+            ]
+        },
+
+
+        {
+            "group": "sSOL",
+            "pages": [
+                "tutorials/ssol/stake",
+                "tutorials/native/staking",
+                "tutorials/ssol/unstake"
+            ]
+        },
+
+        {
+            "group": "sUSD",
+            "pages": [
+                "tutorials/susd/deposit",
+                "tutorials/susd/withdraw",
+                "tutorials/cross/cross"
+            ]
+        },
+        
+
+        {
+            "group": "Emerald Card",
+            "pages": [
+                    {
+                    "group": "Issuance Procedure",
+                    "pages": [
+                        "tutorials/register",
+                        "tutorials/kyc"
+                    ]
+                },
+                "tutorials/digital_wallets",
+                "tutorials/alipay",
+                "tutorials/venmo",
+                {
+                    "group": "Usage",
+                    "pages": [
+                        "tutorials/details",
+                        "tutorials/topup",
+                        "tutorials/history",
+                        "tutorials/freeze"
+                    ]
+                }
+            ]
+        },
+        
+        {
+            "group": "Developer Tools",
+            "pages": [
+                "developers/developer-tools/transaction-acceleration",
+                "developers/developer-tools/solana-actions&blinks",
+                "developers/developer-tools/solayer-cli",
+                "developers/developer-tools/solana-agent-kit",
+                "developers/developer-tools/solayer-price-feeds"
+            ]
+        },
+
+        {
+            "group": "Learn SVM",
+            "pages": [
+                "developers/learn-svm/guideline"
+            ]
+        },
+
+        {
+            "group": "Guides",
+            "pages": [
+                "developers/guides/hello_world",
+                "developers/guides/token-basics",
+                "developers/guides/devnet-nft"
+      
+            ]
+        },
+      
+
+        {
+            "group": "Solayer",
+            "pages": [
+                "resources/litepapers",
+                "resources/solayer-programs"
+            ]
+        },
+
+        {
+            "group": "$Layer",
+            "pages": [
+                "resources/tokenomics",
+                "resources/governance"
+            ]
+        },
+
+        {
+            "group": "Security",
+            "pages": [
+                "resources/security/audits",
+                "resources/security/multisignature-committees"
+            ]
+        },
+
+        {
+            "group": "Legal",
+            "pages": [
+
+                {
+                    "group": "Emerald Card",
+                    "pages": [
+              "resources/legal/opening-account",
+                "resources/legal/e-sign",
+                "resources/legal/us-card-terms",
+                "resources/legal/intl-card-terms",
+                "resources/legal/prohibition",
+                "resources/legal/card-eligibility"
+                    ]
+                }
+  
+            ]
+        },
+
+        {
+            "group": "Brand",
+            "pages": [
+                "resources/brand-kit"
+            ]
+        }
+
+
+        
+    ],
+    "footerSocials": {
+        "x": "https://x.com/solayer_labs",
+        "github": "https://github.com/solayer-labs"
     }
   ],
 "navigation": [

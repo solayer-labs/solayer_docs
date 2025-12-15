@@ -1,0 +1,45 @@
+---
+title: "RDMA & InfiniBand"
+---
+
+**Remote Direct Memory Access (RDMA)** is a high-performance networking technology that enables **zero-copy data transfers** directly between application memory spaces across networked systems. By **bypassing the operating system (OS) networking stack**, RDMA eliminates **CPU overhead and context switches**, significantly reducing latency and improving throughput.
+
+<br />
+
+## **RDMA Architecture & Mechanism**
+
+RDMA operates through **specialized network interface cards (RNICs)** that handle transport protocol processing and **direct memory operations in hardware**. Key features include:
+
+- **Zero-Copy Data Transfers**: Applications can read/write remote memory **without CPU intervention**.
+- **Bypassing Kernel Overhead**: Eliminates traditional network stack processing, reducing **latency to sub-microsecond levels**.
+- **Explicit Memory Registration**: Memory regions must be **registered with the RNIC**, which maintains **virtual-to-physical address translation** for secure access.
+
+RDMA supports **two transport modes**:
+- **Reliable Connected (RC)**: Guarantees **in-order, reliable delivery** for critical workloads.
+- **Unreliable Datagram (UD)**: Optimized for **low-latency applications** where minor packet loss is acceptable.
+
+<Frame><img src="https://github.com/SolayerDev/solayer_docs/blob/V2/images/infinisvm/rnics.png?raw=true" alt="" /></Frame>
+
+
+<br />
+
+## **InfiniBand: High-Performance RDMA Networking**
+
+**InfiniBand** is a widely adopted **RDMA-based networking architecture** designed for **high-performance computing (HPC)** and **data-intensive applications**. It provides:
+
+- **Ultra-Low Latency**: Achieves **as low as 600 nanoseconds** end-to-end.
+- **High Bandwidth**: Supports data rates from **10 Gb/s (SDR) to 100 Gb/s per port** over copper or optical fiber.
+- **Host Channel Adapters (HCAs)**: Offload **protocol processing and memory translation** to hardware, reducing CPU load.
+
+<Frame><img src="https://github.com/de-duke/solayer_docs_v2/blob/v2-updated/images/infinisvm/rdma&infiniband.png?raw=true" alt="" /></Frame>
+
+<br />
+
+## **RDMA & InfiniBand in Modern Computing**
+
+These technologies are critical for:
+- **Distributed Machine Learning**: Efficient communication for **large-scale AI training workloads**.
+- **HPC & Scientific Computing**: Accelerated **data sharing across compute clusters**.
+- **Cloud Data Centers**: Optimized **storage access (NVMe-over-Fabrics)** and **disaggregated computing**.
+
+With **hardware acceleration and direct memory access**, RDMA and InfiniBand deliver **unparalleled speed, efficiency, and scalability** in next-generation computing environments.

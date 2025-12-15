@@ -1,0 +1,48 @@
+---
+title: "Jumbo Transactions"
+---
+
+To enable **high-complexity transaction logic**, especially for **hook-based transactions**, **InfiniSVM** introduces **jumbo transactions**. This new transaction type **extends the transaction size limit**, allowing for **greater cross-program execution capacity** within a single atomic transaction.
+
+<br />
+
+## **What Are Jumbo Transactions?**
+
+A **jumbo transaction** is an **enhanced transaction type** in **InfiniSVM** that enables:
+- **Execution across thousands of accounts** in a **single transaction**.
+- **Thousands of instructions within a single execution pipeline**.
+- **Deployment of multiple programs atomically**, reducing state inconsistencies.
+
+This design supports **complex multi-step operations** that would otherwise require **multiple transactions**, increasing efficiency for **high-performance smart contracts**.
+
+<br />
+
+## **Fee Model for Jumbo Transactions**
+
+Jumbo transactions follow an **exponential fee scaling model**:
+- As **transaction size increases**, **fees grow exponentially**.
+- This ensures **network resource efficiency** and **prevents excessive transaction bloat**.
+
+<br />
+
+## **Use Cases for Jumbo Transactions**
+
+Jumbo transactions provide **significant advantages** in scenarios requiring **large-scale execution**:
+
+1. **Advanced Hook Transactions**  
+   - Hooks can perform **high-volume state updates** across **multiple smart contracts**.  
+   - Eliminates the need for **splitting logic across multiple transactions**.
+
+2. **High-Throughput Batch Operations**  
+   - Enables **multi-asset swaps**, **cross-chain function calls**, and **on-chain auctions**.  
+   - Reduces **latency and gas costs** by **batching execution into a single atomic operation**.
+
+3. **Program Deployment & Upgrades**  
+   - Developers can **deploy multiple programs in one transaction**, ensuring **synchronized updates**.  
+   - Improves **contract composability** by **allowing direct inter-program calls** during deployment.
+
+<br />
+
+**InfiniSVM’s jumbo transactions** provide a **scalable, high-throughput solution** for **complex smart contract execution**. By increasing **transaction capacity**, **optimizing multi-step logic**, and **allowing large-scale account interactions**, they **unlock new possibilities** for **DApp development, DeFi automation, and enterprise blockchain solutions**.
+
+With **exponential fee scaling**, **jumbo transactions maintain network efficiency**, ensuring **fair resource allocation** while **supporting next-generation smart contract capabilities**.

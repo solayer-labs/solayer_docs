@@ -1,0 +1,43 @@
+---
+title: "Scaling Transaction Processing"
+---
+
+The **InfiniSVM** transaction processing architecture is designed for **high throughput and low-latency execution**. It employs a **multi-stage pipeline** that optimizes transaction verification, execution, and state updates using **parallel processing, RDMA, and FPGA acceleration**.
+
+<br />
+
+## **Transaction Processing Pipeline**
+
+Each transaction follows a structured pipeline to ensure **efficient execution and consistency**:
+
+1. **Ingress & Verification**
+   - Transactions enter the network via an **initial ingress point**.
+   - **Signature verification (sigverify)** and **local deduplication** are performed to filter redundant transactions.
+
+2. **Pre-Execution**
+   - Transactions undergo **pre-execution** to determine their **state dependencies**.
+   - **Intermediate transaction effects and snapshots** are sent to the **sequencer** via **InfiniBand** for efficient state tracking.
+
+3. **Sequencer & Execution Path Selection**
+   - The **sequencer**, utilizing an **SDN switch and FPGA acceleration**, determines execution paths:
+     - **Simple Path**: If all accounts involved are at their **latest state**, the transaction **bypasses additional validation**.
+     - **Complex Path**: If at least one account has a **newer version**, the transaction enters a **local mempool** for **ordering and re-execution**.
+
+4. **Parallel Execution & State Updates**
+   - **RDMA** applies **state changes directly** for **simple path transactions**, leveraging a **local cache on the SDN switch**.
+   - **Complex path transactions** are **scheduled** in the **local mempool**, ensuring **fairness and optimal parallel execution**.
+
+5. **Finalization & Propagation**
+   - Once execution is complete and **state changes are committed**, the transaction is **broadcast globally** through a **Proof of Propagation (PoPs) network**.
+
+<br />
+
+## **Optimized Scheduling & State Storage**
+
+To achieve **sub-millisecond processing speeds**, the sequencer:
+- Implements an **optimized scheduling algorithm** to parallelize **dependent transactions**.
+- Stores account data in a **distributed database**, ensuring **scalability and data integrity**.
+
+<br />
+
+The **InfiniSVM** architecture integrates **SDN, RDMA, and FPGA-accelerated sequencing** to enable **high-performance transaction processing**. By **intelligently routing transactions through simple or complex paths**, it minimizes **latency** while maximizing **parallel execution efficiency**.

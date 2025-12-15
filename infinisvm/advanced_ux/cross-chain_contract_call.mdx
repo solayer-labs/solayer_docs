@@ -1,0 +1,52 @@
+---
+title: "Cross-Chain Contract Calls"
+---
+
+**Solayer** introduces a **bi-directional native bridge** and an advanced **cross-chain contract execution model** powered by **InfiniSVM**. This enables **seamless asset transfers, function calls, and atomic interactions between Solana and InfiniSVM**.
+
+<br />
+
+## **Bi-Directional Native Bridge**
+
+The **native bridge** inside the **sequencer** facilitates **message and asset transfers** between **Solana and InfiniSVM**, offering:
+
+- **Re-org Resilience via an Insurance Fund**  
+  - If the **total value of relayed assets** (measured via an **oracle**) is **below the insurance fund size**, assets become **immediately available** on InfiniSVM.  
+  - If the value exceeds the fund, assets are **released post-finalization** for added security.  
+
+- **Instant vs. Finalized Relays**  
+  - Users can choose to relay messages **instantly** (ignoring re-org) or **post-finalization** via a transaction flag.  
+  - Upon availability, the **receiver hook** is automatically invoked, enabling **further program execution**.
+
+<br />
+
+## **Cross-Chain Contract Execution via Account Mirroring**
+
+InfiniSVM introduces **cross-chain program calls** through **account mirroring**, where each **program and account** has a corresponding **Program Derived Address (PDA) on Solana**. This architecture enables:
+
+- **MainnetCall Instruction for Atomic Operations**  
+  - Programs can **transfer funds, dispatch cross-chain function calls, and execute complex logic spanning both networks** in a **single atomic operation**.  
+  - The **MainnetCall instruction routes execution** to its associated **PDA on Solana**, ensuring consistency.
+
+- **Re-org Resilience & Deterministic Execution**  
+  - **MainnetCall never reverts**, even if **the Solana transaction fails**.  
+  - **Calls are placed at the end of a transaction**, preventing **re-org inconsistencies**.  
+  - If a re-org occurs, the **Solana transaction is rebroadcast until finalization**.
+
+<br />
+
+## **Use Cases & Applications**
+
+By **combining the bridge and cross-chain execution model**, developers can build solutions such as:
+- **Single Transaction Cross-Chain Swaps**  
+  - Execute a **Solana-InfiniSVM asset swap in one atomic transaction**.
+  
+- **Cross-Chain Yield Vault Rebalancing**  
+  - Automatically **rebalance assets between Solana and InfiniSVM for optimal yield strategies**.
+
+- **Seamless Cross-Chain DeFi Interactions**  
+  - Enable **liquidity pooling, lending, and staking** across **both networks** without fragmented liquidity.
+
+<br />
+
+The **InfiniSVM-powered cross-chain execution model** enables **secure, atomic, and re-org-resilient interactions between Solana and InfiniSVM**. By leveraging **account mirroring, deterministic execution, and a trust-minimized bridge**, it **enhances interoperability** while **maintaining performance and security**.

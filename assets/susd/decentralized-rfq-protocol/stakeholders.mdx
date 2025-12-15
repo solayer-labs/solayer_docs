@@ -1,0 +1,41 @@
+---
+title: 'RFQ Stakeholders'
+---
+
+## Users (Stablecoin Depositors)
+Stablecoin depositors are the primary participants of the protocol.  
+They lock USDC to mint **sUSD**, delegate sUSD to **Exogenous AVSs (exoAVSs)** to secure external systems, and redeem their assets when necessary.
+
+- **Minting sUSD:** Users deposit USDC and receive sUSD, optionally setting a commission rate (e.g., 1 basis point) when creating an order.  
+- **Commission Allocation:** The specified commission is pooled in the decentralized RFQ system to reward Qualified Liquidity Providers (QLPs) that fulfill orders.  
+
+---
+
+## Qualified Liquidity Providers (QLPs, Market Makers)
+QLPs provide liquidity within the RFQ system by subscribing to **cUSDO**, a tokenized representation of short-dated U.S. Treasury Bills issued on Solana.  
+By depositing USDC into the **cUSDO Vault**, QLPs receive cUSDO tokens which they self-custody and later redeem for USDC when processing withdrawals.
+
+- **Order Fulfillment Process:**  
+  1. QLPs receive USDC from users through the RFQ protocol.  
+  2. The received USDC is deposited into the cUSDO vault to mint **cUSDO**.  
+  3. QLPs hold cUSDO in self-custody and redeem it for USDC when fulfilling user withdrawals.  
+
+---
+
+## Underlying Issuance Structure
+The cUSDO token is part of a regulated tokenized Treasury framework operated by OpenEden.  
+It replaces the previous TBILL token, maintaining equivalent backing and operational logic.
+
+| Stakeholder | Description |
+| ------------ | ------------ |
+| **Token Issuer** | **OpenEden Digital Ltd**, a Bermuda-licensed digital asset business regulated by the **Bermuda Monetary Authority (BMA)**, issues the cUSDO token fully backed by U.S. Treasury Bills. |
+| **Investment Manager** | **Adam Eve Capital**, regulated by the **Monetary Authority of Singapore (MAS)**, manages the underlying U.S. Treasury Bill investments in segregated custodial accounts. |
+| **Fintech Service Provider** | **OpenEden Labs Pte. Ltd.**, responsible for operating the technical vault infrastructure used in the cUSDO issuance process. |
+
+---
+
+## Transition Note
+As of **2 November 2025**, all TBILL tokens previously held in Solana vaults have been **upgraded to cUSDO**.  
+All subsequent RFQ transactions and QLP operations are executed exclusively in **cUSDO**, ensuring uninterrupted functionality and consistent 1:1 USD collateralization.
+
+---

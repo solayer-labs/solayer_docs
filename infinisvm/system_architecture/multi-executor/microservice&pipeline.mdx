@@ -1,0 +1,55 @@
+---
+title: "Microservice & Pipeline"
+---
+
+The **InfiniSVM** transaction processing pipeline adopts a **microservices architecture**, decoupling **signature verification, deduplication, scheduling, banking, and storage** into independent services. This design enables **dynamic scaling, speculative execution, and reduced processing overhead**, ensuring **high throughput and consistency**.
+
+<br />
+
+## **Decoupling Transaction Processing with Microservices**
+
+Unlike traditional **monolithic blockchain architectures**, InfiniSVM decomposes key stages into **independent microservices** running across an **elastic compute fabric**:
+
+1. **Signature Verification & Deduplication**  
+   - Offloaded to **distributed microservices**, reducing bottlenecks at the execution layer.  
+   - **Parallelized verification** ensures **low-latency transaction ingestion**.
+
+2. **Dynamic Resource Provisioning**  
+   - A **feedback-driven control plane** monitors transaction rates and **automatically scales processing capacity**.  
+   - Enables **adaptive load balancing** based on network congestion and transaction spikes.
+
+3. **Speculative Execution & Simulation**  
+   - Transactions **pre-execute against the latest committed state**, reducing contention in the banking stage.  
+   - **Non-conflicting transactions** execute in parallel, bypassing unnecessary dependencies.
+
+<br />
+
+## **Speculative Execution & Conflict Resolution**
+
+A key insight in **InfiniSVM** is that **most transactions do not require full re-execution** if they do not introduce **read-write conflicts**.  
+
+1. **Pre-Execution & Snapshotting**
+   - Transactions are **speculatively executed**, capturing **intermediate execution snapshots** at **account access boundaries**.
+   - **Only 2% of transactions** require full re-execution, as most do not conflict.
+
+2. **Read-Only Transactions at the Edge**
+   - Transactions performing **only read operations** are **validated and finalized at the edge**, bypassing the **central banking stage**.
+
+3. **Handling Hot Accounts with Predictive Modeling**
+   - Accounts with **high access frequency** use a **Winter-Holt Double Exponential Smoothing (DESP) model** for **predictive execution**.  
+   - **Pre-executed transactions account for all possible future values** of hot accounts, reducing conflicts.
+
+4. **Rapid Conflict Resolution**
+   - For remaining conflicts, execution state is reconstructed **from the nearest valid snapshot**, eliminating **full re-execution overhead**.
+
+<br />
+
+## **Impact on Performance & Scalability**
+
+This **pipeline architecture** and **microservices approach** significantly enhance **scalability and efficiency**:
+
+- **Lower computational overhead** by shifting execution bottlenecks **away from centralized banking**.  
+- **Higher transaction throughput** through **parallel speculative execution** and **adaptive scaling**.  
+- **Reduced latency** for **read-only transactions**, finalized at the network edge.
+
+By **decoupling execution into microservices**, leveraging **speculative pre-execution**, and **intelligently resolving conflicts**, InfiniSVM achieves **high-performance transaction processing** with **minimal contention and maximal efficiency**.

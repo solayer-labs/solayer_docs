@@ -1,0 +1,142 @@
+---
+title: "Solana Actions & Blinks"
+---
+
+## **Introduction**
+
+Solana Foundation has introduced **Solana Actions** and **Solana Blinks**, two innovative features designed to make **blockchain transactions more seamless and intuitive**. 
+
+Solayer also supports this service, allowing users to connect and execute transactions directly within a webpage without needing to switch to an external wallet interface or decentralized application (dApp), while also enabling seamless asset deposits and utilization within Solayer for staking, trading, and other DeFi activities.
+
+### **Key Benefits**
+- **Native Web & Social Media Transactions**  
+  - Transactions can be executed **directly from websites and social media platforms**.
+- **Seamless User Experience**  
+  - No need to navigate away from the website—**everything happens within the current page**.
+- **Supports QR Code Integration**  
+  - Developers can generate **physical QR codes** for **offline-to-online transactions**.
+
+<br />
+
+## **Understanding Solana Actions & Blinks**
+
+### **What is Solana Actions?**
+**Solana Actions** function similarly to dApp **wallet connections**, but **extend transaction capabilities to any website**. With **Solana Actions**, users can interact with **blockchain-based operations directly on a webpage**.
+
+### **What is Solana Blinks?**
+**Solana Blinks** allows **any URL to act as an entry point** for **initiating and signing blockchain transactions**. This means users can **click a link on social media or embedded in a webpage** to interact with **Solana smart contracts** seamlessly.
+
+John Wong, Head of Engineering at Solana Foundation, explains:  
+> *"Blockchains often feel isolated from the broader internet. Every online activity should recognize crypto transactions natively—Solana Actions and Blinks make this a reality."*
+
+<br />
+
+## **Developer Guide: Implementing Solana Actions & Blinks for Solayer**
+
+### **Setting Up a Solana Action**
+To enable **Solana Actions**, developers can **send transaction requests to a Solana endpoint**. Below is an example function to **fetch a signed transaction** from a Solana API endpoint.
+
+```ts
+import { web3 } from "@coral-xyz/anchor";
+
+/**
+ * Fetches a server-signed transaction for restaking SOL.
+ * 
+ * @param account - Public key of the user providing the stake.
+ * @param amount - Amount of SOL to stake.
+ * @returns JSON response with the signed transaction.
+ */
+async function getServerSignedTx(
+    account: web3.PublicKey, 
+    amount: string
+)
+{
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await fetch(`https://app.solayer.org/api/action/restake/ssol?amount=${amount}`, {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    account: account.toString()
+                })
+            }) 
+            const res = await response.json();
+            if (!response.ok) {
+                throw new Error(res?.message || 'error');
+            }
+            resolve(res);
+        } catch(e) {
+            console.error('Error fetching signed transaction:', e);
+            reject(e);
+        }
+    });
+}
+```
+<br />
+
+### Executing a Blink Transaction
+
+A Solana Blink can be triggered using a pre-signed transaction fetched from an API and broadcasted to the blockchain.
+
+```ts
+import * as anchor from "@coral-xyz/anchor";
+import { readFileSync } from "fs";
+import { VersionedTransaction, Keypair, Connection } from "@solana/web3.js";
+import { convertFromDecimalBN, loadKeypairFromFile } from "../utils/helpers";
+
+/**
+ * Executes a restake transaction using Solana Blinks.
+ *
+ * @param providerUrl - Solana RPC provider (e.g., Helius, Alchemy).
+ * @param keyPairPath - Path to the keypair JSON file.
+ * @param amount - Amount of SOL to restake.
+ */
+export async function blink_restake(
+    providerUrl: string,
+    keyPairPath: string,
+    amount: string
+) 
+{
+    const connection = new Connection(providerUrl, "confirmed");
+    const keypair = new anchor.Wallet(
+        Keypair.fromSecretKey(
+            new Uint8Array(JSON.parse(readFileSync(keyPairPath).toString()))
+        )
+    );
+    const provider = new anchor.AnchorProvider(connection, keypair, {});
+    anchor.setProvider(provider);
+
+    const balance = await connection.getBalance(provider.publicKey);
+    if (new anchor.BN(balance).lt(convertFromDecimalBN(amount, 9))) {
+        throw new Error(`Insufficient balance`);
+    }
+
+    try {
+        const data = await getServerSignedTx(provider.publicKey, amount);
+        const wallet = loadKeypairFromFile(keyPairPath);
+        const txDataBuffer  = Buffer.from(data['transaction'], 'base64');
+
+        let transaction = VersionedTransaction.deserialize(Uint8Array.from(txDataBuffer));
+        transaction.sign([wallet]);
+
+        const tx = await connection.sendRawTransaction(transaction.serialize(), {
+            preflightCommitment: connection.commitment
+        });
+
+        console.log('New transaction signature:', tx);
+    } catch(e) {
+        console.error('Transaction execution error:', e);
+        throw new Error(e);
+    }
+}
+```
+<br />
+
+### Use Cases for Solana Actions & Blinks
+
+- E-commerce Payments : Customers can pay directly via Solana Actions without leaving the store’s website.
+- Social Media Transactions : Users can click on a tweet link to instantly execute a transaction.
+- QR Code-Based Transactions : Developers can generate QR codes that allow users to scan and transact seamlessly.
+

@@ -1,0 +1,72 @@
+---
+title: "Sharding Database with RDMA"
+---
+
+Blockchain systems face significant scalability challenges due to **ever-growing state sizes**. To address this, **InfiniSVM** implements a **sharded key-value store** architecture, integrating **Remote Direct Memory Access (RDMA)** to enable **ultra-low latency cross-node data access**.
+
+<br />
+
+## **Sharded State Management Architecture**
+
+The **InfiniSVM** database consists of **sharded state storage** across distributed nodes. Unlike **Solana’s 10MB account size limit**, this system **supports arbitrary account sizes**, dynamically optimizing data distribution.
+
+### **Database Node Components**
+Each **database node** consists of three core components:
+
+1. **Jump Table (Memory Indexing)**
+   - Maps **32-byte account addresses** to their **memory locations**, data length, and version numbers.
+   - Ensures **fast lookups** for state access with **minimal CPU overhead**.
+
+2. **Contiguous Memory Storage**
+   - Stores **account state data** along with **synchronization primitives**.
+   - **Efficient for most transactions**, as **state size rarely changes**.
+   - If state resizing occurs, **data is redistributed during rebalancing** to maintain **contiguous storage**.
+
+3. **Local Cache for Frequently Accessed Data**
+   - Implements an **LRU (Least Recently Used) eviction policy**.
+   - Reduces **cross-node fetches** by keeping **hot accounts in memory**.
+
+<br />
+
+## **RDMA-Optimized Cross-Node Data Access**
+
+To enable **efficient cross-node execution**, **SOLAYER CHAIN** utilizes **InfiniBand RDMA**, providing:
+
+- **Ultra-low latency (nanosecond-level) memory access** across nodes.
+- **Zero-copy data movement**, bypassing the **operating system overhead**.
+- **Reduced CPU load**, offloading memory transfers to **specialized network hardware**.
+- **Consistent transaction processing speeds**, even when data is fetched remotely.
+
+By eliminating **traditional network bottlenecks**, RDMA ensures **high-throughput, low-latency execution** across **sharded storage nodes**.
+
+<br />
+
+## **Dynamic Load Balancing & Rebalancing Mechanism**
+
+To maintain **optimal performance**, **InfiniSVM** employs a **background rebalancing mechanism** that:
+
+**Monitors Account Access Patterns**  
+   - Analyzes **historical memory access footprints** to identify **high-traffic accounts**.
+
+**Optimizes Data Locality**  
+   - Frequently **co-accessed accounts** are migrated to the **same node**.
+   - Minimizes **remote memory fetches** and improves **execution efficiency**.
+
+**Adaptive Data Redistribution**  
+   - Rebalances data based on:
+     - **Access frequency**
+     - **Account size**
+     - **Network topology**
+     - **Node capacity and current load**
+
+This **adaptive approach** ensures **even workload distribution**, reducing **cross-node dependencies** while maximizing **throughput and parallel execution efficiency**.
+
+<br />
+
+By combining **sharded key-value storage** with **RDMA-powered cross-node memory access**, **InfiniSVM** achieves:
+
+- **Scalable, high-performance blockchain state management**.
+- **Reduced transaction latency via direct memory access**.
+- **Dynamic workload balancing for optimized execution efficiency**.
+
+This architecture **ensures sustainable scalability**, making it well-suited for **high-throughput, decentralized applications**.

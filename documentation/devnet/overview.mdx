@@ -1,0 +1,99 @@
+---
+title: InfiniSVM Network
+description: Connect to Solayer's Mainnet and Devnet networks
+---
+
+# Solayer Network Overview
+
+The Solayer InfiniSVM is a next-generation hardware accelerated blockchain designed for extreme performance, offering unprecedented throughput of **over 1M+ TPS and near-zero latency** for decentralized applications.
+Solayer is currently capable of **340k+ transactions per second (TPS)** in devnet, that we will increase as we clear performance bottlenecks identified during the devnet phase.
+
+<Note>As we're in the internal devnet phase, the network and block explorer data may be intermittently unstable. The blockchain state might be reset from time to time due to performance upgrades.</Note>
+
+## InfiniSVM: The Hardware Accelerated High-Performance Layer 1
+
+The InfiniSVM blockchain represents a significant advancement in blockchain technology, delivering:
+
+- **Unparalleled Performance**: Process up to 1 million transactions per second (1M TPS)
+- **Ultra-Low Latency**: Transaction finality in milliseconds
+- **Solana VM Compatibility**: Seamless migration path for existing Solana applications
+- **Developer-Friendly Environment**: Familiar tooling and infrastructure for rapid development
+
+## Solana Compatibility
+
+InfiniSVM provides full compatibility with the Solana Virtual Machine (SVM), allowing developers to:
+
+- Deploy existing Solana programs with minimal to no code changes
+- Use familiar Solana development tools and libraries
+- Leverage existing knowledge of Solana programming patterns
+
+This compatibility ensures a smooth transition for developers already building on Solana while providing access to Solayer's enhanced performance capabilities.
+
+## Getting Started with the InfiniSVM Devnet
+
+Our developer network (Devnet) provides a sandboxed environment to build and test applications before deploying to testnet and mainnet.
+
+### RPC Endpoints
+
+#### Mainnet RPC Endpoint
+
+For production applications, connect to Solayer Mainnet:
+
+```
+https://mainnet-rpc.solayer.org
+```
+
+#### Devnet RPC Endpoint (For Testing and Development)
+
+For testing and development purposes, connect to the InfiniSVM Devnet using our public RPC endpoint:
+
+```
+https://devnet-rpc.solayer.org
+```
+
+<Note>
+The devnet RPC endpoint is specifically for **devnet and testing purposes only**. Use the mainnet RPC endpoint for production applications.
+</Note>
+
+You can use these endpoints with standard Solana tooling, including:
+
+- Solana CLI
+- Web3.js
+- Anchor
+- And other Solana SDK libraries
+
+### Configuration & setting up your local environment
+
+To configure your Solana CLI for InfiniSVM Mainnet:
+
+```
+solana config set --url https://mainnet-rpc.solayer.org
+```
+
+To configure your Solana CLI for InfiniSVM DevNet (for testing):
+
+```
+solana config set --url https://devnet-rpc.solayer.org
+```
+
+
+## Next Steps
+
+- [Explore the DevNet](https://explorer.solayer.org) with our block explorer
+- Set up your local development environment
+- Deploy your first program to InfiniSVM
+- Learn about Solayer's unique features and optimizations
+
+## Resource Limits
+
+Devnet is designed for testing and development purposes. While it mirrors the capabilities of our mainnet, it may have certain resource and performance limitations especially as we hyperscale the SVM to 1M+ TPS. 
+
+## Support
+
+If you encounter any issues or have questions while developing on InfiniSVM DevNet, please reach out to our team:
+
+- [Discord Community](https://discord.gg/solayerlabs)
+- [Telegram](https://t.me/joshua_sum)
+- [GitHub](https://github.com/solayer-labs)
+
+We're excited to see what you'll build on Solayer!

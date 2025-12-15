@@ -1,0 +1,164 @@
+---
+title: Solayer CLI
+---
+
+The Solayer command-line interface allows you to interact directly with Solayer's core functionalities, including depositing and managing endogenous Actively Validated Services (AVS). Whether you're a developer integrating Solayer into your project or an advanced user managing your stake, this CLI provides the tools you need.
+
+## Installation
+
+<Steps>
+  <Step title="Clone the repository">
+      ```ts
+      git clone git@github.com:solayer-labs/solayer-cli.git
+      ```
+  </Step>
+  <Step title="Navigate to the project directory">
+      ```ts
+      cd solayer-cli
+      ```
+  </Step>
+  <Step title="Install the dependencies">
+      ```ts
+      yarn install
+      ```
+  </Step>
+</Steps>
+
+## Deposit
+
+The deposit feature is at the heart of Solayer, allowing you to manage your stake efficiently. Here's how to use it:
+
+### Basic Usage
+
+To start the CLI tool, use:
+
+```ts
+yarn restaking
+```
+
+This command will guide you through the process interactively.
+
+### Partner Deposit
+
+To deposit native SOL through the partner API endpoint:
+
+```ts
+yarn restaking --action=partnerRestake --amount=<amount> --referrer=<referrer>
+```
+
+- `<amount>`: The amount of native SOL to deposit
+- `<referrer>`: Your partner wallet address for tracking referral stakes
+
+Example:
+
+```ts
+yarn restaking --action=partnerRestake --amount=10 --referrer=ABcDefG123456789
+```
+
+### Withdraw SOL
+
+To withdraw native SOL:
+
+```ts
+yarn restaking --action=unrestake --amount=<amount>
+```
+
+- `<amount>`: Amount of SOL to unrestake
+
+Example:
+
+```ts
+yarn restaking --action=unrestake --amount=5
+```
+
+## Endogenous AVS 
+
+The endoAVS program allows you to create and manage endogenous Actively Validated Service instances.
+
+### Basic Usage
+
+To start the endoAVS CLI tool, use:
+
+```ts
+yarn endoavs
+```
+
+This command will guide you through the available actions interactively.
+
+### Create EndoAVS
+
+To create a new endogenous AVS:
+
+```ts
+yarn endoavs --action=create --avsName=<avsName> --avsTokenMintKeyPairPath=<avsTokenMintKeyPairPath>
+```
+
+- `<avsName>`: Name of the new AVS
+- `<avsTokenMintKeyPairPath>`: Path to the keypair file for the AVS token mint
+
+Example:
+
+```ts
+yarn endoavs --action=create --avsName=MyAVS --avsTokenMintKeyPairPath=./my-avs-token-mint-keypair.json
+```
+
+### Delegate SOL
+
+To delegate SOL to an endogenous AVS:
+
+```ts
+yarn endoavs --action=delegate --numberOfSOL=<numberOfSOL> --endoAvsAddress=<endoAvsAddress>
+```
+
+### Undelegate SOL
+
+To undelegate SOL from an endogenous AVS:
+
+```ts
+yarn endoavs --action=undelegate --numberOfSOL=<numberOfSOL> --endoAvsAddress=<endoAvsAddress>
+```
+
+### Additional EndoAVS Operations
+
+The CLI supports several other operations for managing your endoAVS:
+
+- Transfer Authority
+- Update AVS
+- Update/Set Metadata
+
+### Transfer Authority
+
+Change the authority of your endoAVS:
+
+```ts
+yarn endoavs --action=transferAuthority --newAuthorityAddr=<newAuthorityAddr> --endoAvsAddress=<endoAvsAddress>
+```
+
+### Update AVS
+
+Update the name and URL of your endoAVS:
+
+```ts
+yarn endoavs --action=updateAvs --newName=<newName> --newUrl=<newUrl> --endoAvsAddress=<endoAvsAddress>
+```
+
+### Update/Set Metadata
+
+Update or set token metadata for your endoAVS:
+
+```ts
+yarn endoavs --action=updateMetadata --name=<name> --symbol=<symbol> --uri=<uri> --endoAvsAddress=<endoAvsAddress>
+```
+
+## Technical Details
+
+For those interested in the underlying mechanics, here are some key technical details:
+
+- The pool program (sSo1iU21jBrU9VaJ8PJib1MtorefUV4fzC9GURa2KNn) manages the deposit process, including the deposit and withdrawal operations.
+- The EndoAVS program facilitates the creation and management of endogenous AVS instances.
+- Both programs involve interaction with multiple accounts, including token mints, user token accounts, vaults, and pools.
+
+For more detailed information, refer to our Pool Program IDL and EndoAVS Program IDL.
+
+
+

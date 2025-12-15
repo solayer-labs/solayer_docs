@@ -1,0 +1,41 @@
+---
+title: "Stake-weighted Quality of Service"
+---
+
+Stake-weighted Quality of Service (swQoS) is a core mechanism in Solayer's architecture that governs the allocation of network resources. This system dynamically distributes block space and transaction processing capacity based on the SOL delegated to validators.
+
+## Key Concepts
+
+1. **Proportional Resource Allocation**: Validators receive network resources proportional to their delegated SOL.
+2. **Sybil Attack Resistance**: Higher delegations provides increased resistance against Sybil attacks.
+3. **Commercial Benefits**: RPC infrastructure operators and validator nodes gain advantages in transaction inclusion and capacity.
+
+## Technical Implementation
+
+The swQoS system operates on the following principles:
+
+1. **Packet Transmission Rights**: A validator's right to transmit packets to the epoch leader is directly proportional to their delegations.
+2. **Priority Queueing**: Transactions from larger validators receive priority in block inclusion.
+
+### Example Scenario
+
+Consider two validators:
+- Validator A: 2% of staked SOL
+- Validator B: 0.2% of staked SOL
+
+In this scenario:
+- Validator A can submit up to 2% of packets to the block producer
+- Validator B is limited to 0.2% of packet submissions
+
+<Frame>
+<img src="https://2113331469-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FzYM0pEemeu6F3UKGPAZE%2Fuploads%2FxRADjBj4yovu5Avwkmyt%2Fimage.png?alt=media&token=423ad627-3172-4142-93a6-f415ae2a2bd6" alt="swQoS Diagram" />
+</Frame>
+
+## Transaction Weighting
+
+In the swQoS system:
+1. Each transaction carries a "weight" based on delegations.
+2. Higher-weight transactions have a greater probability of inclusion in the next block.
+3. Increased delegations correlates with higher quality of service and improved resilience against potential malicious activities from lower-delegation validators.
+
+This mechanism ensures a fair, proportional distribution of network resources, incentivizing higher commitments while maintaining network security and efficiency.

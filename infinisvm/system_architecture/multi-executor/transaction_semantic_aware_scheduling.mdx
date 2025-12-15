@@ -1,0 +1,39 @@
+---
+title: "Transaction Semantic Aware Scheduling"
+---
+
+Traditional blockchain transaction processing models, such as Solana’s, employ **account-level access pattern analysis** to batch transactions and prevent **dirty reads** through **strict isolation**. This ensures **parallel execution**, but it **conservatively treats all account accesses within a transaction as concurrent**, leading to **underutilized parallelism**.
+
+**InfiniSVM** enhances this model by introducing **fine-grained sequence prediction** of **read-write operations**. By analyzing the **temporal ordering of account accesses**, InfiniSVM **constructs an optimized locking schedule**, allowing **concurrent execution** of transactions accessing the **same accounts**, provided their **read-write sequences do not conflict**. This **dynamic scheduling model** reduces **lock contention** while maintaining **serializability guarantees**.
+
+<br />
+
+## **Fine-Grained Execution Trace & Conflict Resolution**
+
+InfiniSVM **leverages a simulation stage** to obtain **estimated read-write sequences** before transactions enter the scheduling phase.
+
+<br />
+
+## **Optimized Scheduling via Shortest Makespan First (SMF)**
+
+The **optimal scheduling problem** is **NP-hard**, resembling a **bin-packing problem**. To achieve **sub-millisecond scheduling times**, **InfiniSVM** employs:
+
+- **Shortest Makespan First (SMF) Algorithm**  
+  - A **greedy scheduling approach** widely used in **database systems**.  
+  - Produces a **near-optimal transaction schedule** in real-time.
+
+- **Parallel Scheduler Ensemble**  
+  - Includes **Solana’s account-based partitioning** algorithms as baselines.  
+  - Multiple scheduling strategies are **evaluated concurrently**.  
+  - The scheduler **selects the candidate with the least estimated execution cost**.
+
+<br />
+
+## **Impact on Performance & Scalability**
+
+By implementing **execution-aware scheduling** and **parallel scheduler ensembles**, **InfiniSVM** achieves:
+- **Lower lock contention** while maintaining **serializability guarantees**.
+- **Higher transaction throughput** through **adaptive, conflict-free execution**.
+- **Near-optimal scheduling** in **sub-millisecond latency**.
+
+This **fine-grained, predictive approach** represents a **major advancement** in **high-performance blockchain transaction processing**.

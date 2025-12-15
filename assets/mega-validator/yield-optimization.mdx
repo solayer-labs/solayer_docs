@@ -1,0 +1,56 @@
+---
+title: "Yield Optimization"
+---
+
+
+**Megavalidator** allows users to maximize their **staking returns** by leveraging **hardware-accelerated infrastructure** and **MEV-optimized strategies**. Our approach ensures that **sSOL holders** receive the **highest possible yield** by incorporating cutting-edge validator enhancements.
+
+<br/>
+
+## **How Megavalidator Maximizes Returns**
+We optimize yield by implementing **several key mechanisms**, including:
+
+- **0% Commission** – Ensuring all staking rewards are fully distributed to sSOL holders.
+- **100% MEV Kickback** – Returning all MEV profits to the stake pool.
+- **Dedicated High-Performance Hardware** – Running validators on **custom-optimized machines** to maximize efficiency.
+- **Codebase Optimizations** – Enhancing **transaction processing and execution speed**.
+
+<br/>
+
+## **Partnership with Paladin**
+To further optimize transaction processing and maximize priority fee revenue, we have partnered with **Paladin**, a **Jito fork**. This partnership allows us to:
+
+- **Capture More Transactions with Priority Fees**  
+  - Paladin helps our validator receive **higher-value transactions**, ensuring **better yield for sSOL holders**.
+- **Prevent Harmful MEV Practices**  
+  - Paladin detects and **filters out sandwich bundles**, protecting users from **predatory MEV behaviors**.
+
+While **bad MEV prevention is not directly related to yield**, it **improves network fairness and security**, contributing to a more **stable staking environment**.
+
+<br/>
+
+## **Modified Solana Validator Client for Higher Yields**
+Our validator runs on a **custom-modified client**, which introduces several **yield-enhancing optimizations**:
+
+### **1. Advanced Transaction Scheduler**
+- The scheduler is responsible for **selecting and ordering transactions** during a validator’s assigned block-building slot.
+- Our modified scheduler **prioritizes transactions with higher fees**, leading to **greater validator earnings**.
+
+**Background:**  
+Validators take turns in **building blocks**. During their **assigned slot**, they must **fill the block** under size constraints while determining **the most profitable transaction order**. Our **optimized scheduler** ensures **maximum priority fee collection**.
+
+### **2. Enhanced Broadcast System**
+- Our validator **broadcasts to a wider network of nodes**, ensuring:
+  - **More votes** → Increased **validator rewards**.
+  - **Faster transaction confirmation** → Improves **Solana network efficiency**.
+
+This **improved broadcast mechanism** allows us to **capture more staking rewards**, ultimately benefiting **sSOL holders**.
+
+<br/>
+
+## **sSOL APY Calculation Methodology**
+sSOL APY is determined using **a least squares linear regression** on the **sSOL redemption rate over the last 4 epochs**. At each epoch:
+- The **sSOL-to-SOL ratio** in the **Solayer Stake Pool** is recorded.
+- The **gradient of the redemption rate change** is calculated to estimate **annualized returns**.
+
+This method provides **a transparent and accurate measurement** of **sSOL staking yields**.

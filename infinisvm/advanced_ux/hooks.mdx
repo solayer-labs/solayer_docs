@@ -1,0 +1,65 @@
+---
+title: "Hooks"
+---
+
+Traditional **on-chain automation** often relies on **off-chain transaction replays**, which can be computationally expensive for use cases like **arbitrage, liquidations, and real-time account indexing**. **InfiniSVM** introduces **Hooks**, a **built-in execution layer** that enables **automatic post-transaction logic**, eliminating the need for off-chain re-execution.
+
+<br />
+
+## **What Are Hooks?**
+
+A **Hook** is a **user-defined transaction** that automatically executes **immediately after** a targeted on-chain program updates its state. Hooks function as **an embedded backrunning mechanism**, enabling **real-time on-chain automation**.
+
+### **Key Use Cases**
+- **Automated Arbitrage**: Execute arbitrage **immediately** when price disparities occur.  
+- **Liquidation Triggers**: Liquidate **under-collateralized positions** without relying on **off-chain monitoring**.  
+- **Real-Time Accounting & Indexing**: Update **account balances and on-chain records** efficiently.  
+
+<br />
+
+## **Technical Design of Hooks**
+
+Hooks in **InfiniSVM** operate similarly to **transactions**:
+- Users provide **accounts and data** when registering a Hook.  
+- **Gas fees** are deducted from the **fee payer’s account** when the Hook executes.  
+- If the **fee payer lacks funds** for **three consecutive executions**, the Hook is **disabled**.
+
+<br />
+
+## **Hook Registration & Bidding Mechanism**
+
+InfiniSVM provides a **precompile** that manages **Hook registration** via a **Dutch auction-based bidding system**:
+
+1. **Users submit bids** to attach Hooks to **specific on-chain programs**.  
+2. **The top 16 bids per program** are **selected for execution** in the following epoch.  
+3. **If multiple programs with Hooks are touched in a transaction**, only **16 Hooks total** will execute, prioritized by **bid amount**.  
+4. After a transaction completes, **Hooks execute in sequence**.
+
+<br />
+
+## **Economic Incentives & Fee Distribution**
+
+To **encourage Hook adoption**, InfiniSVM follows a **40-40-20 incentive model** for executed Hooks:
+- **40% of the Hook bid** is rewarded to the **transaction initiator**.  
+- **40% goes to the program owner** where the Hook was registered.  
+- **20% is allocated to the network** to cover execution overhead.
+
+This model:
+-  **Reduces the cost of exhaustive transaction replays**.  
+-  **Rewards both users and program owners** for enabling automated execution.  
+-  **Offsets network resource consumption**, preventing excessive Hook execution spam.  
+
+<br />
+
+## **Mitigating MEV & Ensuring Fair Execution**
+
+By embedding **Hooks directly into InfiniSVM’s execution pipeline**, the system:
+- **Prevents off-chain MEV exploitation**, as **Hooks provide a transparent bidding mechanism**.  
+- **Eliminates front-running risks**, ensuring **open competition for transaction-based automation**.  
+- **Balances network overhead**, restricting **Hook execution to top-bid transactions**.
+
+<br />
+
+**InfiniSVM’s Hook mechanism** provides a **fair, scalable, and performance-optimized approach** to **automating post-transaction actions**. By integrating **real-time execution incentives**, it enables **trust-minimized, on-chain automation** while **ensuring efficiency and cost-effectiveness**.
+
+Hooks revolutionize **on-chain programmability**, unlocking **real-time execution capabilities** for **DeFi, automated trading, and data indexing** without requiring costly off-chain infrastructure.

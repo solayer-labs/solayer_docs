@@ -1,0 +1,41 @@
+---
+title: 'Oracle & Price Feeds'
+description: 'Data sources for sUSD'
+---
+
+## API Overview
+The sUSD Price API provides real-time redemption price data for sUSD, fetched via [Switchboard](https://switchboard.xyz). 
+
+This oracle-based data feed calculates the sUSD redemption price relative to the TBill exchange rate, ensuring that external platforms can access accurate, up-to-date pricing information.
+
+## Base URL
+All requests to the sUSD Price API should be made via the [Switchboard Redemption Price Feed](https://ondemand.switchboard.xyz/solana/mainnet/feed/DtoFRRd3ZQX6dDgt1fJaesgtNCr4XAPSqMkMMMXsNnzC):
+
+The API is accessed via a **GET** request to the Switchboard feed URL:
+```
+https://ondemand.switchboard.xyz/solana/mainnet/feed/DtoFRRd3ZQX6dDgt1fJaesgtNCr4XAPSqMkMMMXsNnzC
+```
+
+This feed is maintained on Solana’s mainnet.
+
+## Response
+
+Upon successful request, the feed will return a JSON response of the latest available sUSD redemption price along with associated metadata:
+
+ - **price:** The current redemption price of sUSD based on the TBill exchange rate.
+ - **timestamp:** The date and time (in UTC) when the price was last updated.
+ - **source:** The data source, which is “Switchboard.”
+ - **exchange_rate:** The sUSD/TBill exchange rate used for the redemption price.
+ - **authority:** The authority responsible for the feed on Solana.
+ - **feed_address:** Address of the feed on Solana’s mainnet.
+
+## Additional Information
+ - **Feed Name:** sUSD Redemption Price
+ - **Feed Address:** DtoFRRd3ZQX6dDgt1fJaesgtNCr4XAPSqMkMMMXsNnzC
+ - **Authority:** 7xAdgHMXqxErMQi5uGPWdCZcDR9E34bLputsbUbA29Rr
+ - **Feed Hash:** 0xb4ebdfe76964ac2c20c3cb6e708c4132d648a4c719054016b30a992a4b546591
+ - **IPFS CID:** bafkreifu5pp6o2levqwcbq6lnzyiyqjs2zekjryzavabnmyktevewvdfse
+ - **Maximum Variance:** 5%
+ - **Minimum Job Responses:** 1 job(s)
+ - **Minimum Sample Size:** 3 samples
+ - **Maximum Staleness:** 150 slots

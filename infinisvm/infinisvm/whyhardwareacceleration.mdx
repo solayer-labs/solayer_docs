@@ -1,0 +1,30 @@
+---
+  title : Why Hardware Acceleration?
+---
+
+## **The Limits of Software Scaling**
+Blockchain scalability has evolved through **sharding, Layer 2 rollups, and parallel execution models**. While these innovations have improved performance, they also introduce **state fragmentation, liquidity inefficiencies, and increased complexity**.  
+
+Software optimizations like transaction batching and concurrency improvements have reached their limits due to:  
+
+- **State Fragmentation**: Rollups and sidechains create isolated liquidity pools, increasing transaction costs and reducing efficiency.  
+- **Throughput Bottlenecks**: EVM’s single-threaded execution and Solana’s Sealevel parallelism face network bandwidth constraints.  
+- **Latency & Cost**: Congestion leads to high fees and delays, even with rollup improvements like Proto-Danksharding.  
+- **System Complexity**: New execution models (e.g., DAGs, Block-STM) improve efficiency but increase synchronization overhead.  
+
+<br/>
+
+## **Why Hardware Scaling Is the Future**
+To overcome these constraints, **hardware acceleration** provides a new approach, offloading key blockchain processes to **dedicated hardware accelerators**.
+
+- **Signature Verification**: FPGA-based signature verification (e.g., Firedancer) processes transactions at 100Gb/s.  
+- **Parallel Processing**: FPGA clusters enable horizontal scaling, executing transactions across multiple machines.  
+- **Low-Latency Storage**: NVMe-oF allows distributed state storage without compromising speed.  
+- **Network Efficiency**: InfiniBand RDMA enables ultra-fast inter-node communication, supporting 1M+ TPS.  
+
+<br/>
+
+## **Solayer InfiniSVM: Pushing Blockchain to the Hardware Limit**
+Solayer InfiniSVM integrates **hardware acceleration, RDMA, and FPGA-based execution** to eliminate software constraints. By optimizing transaction processing, state storage, and consensus execution at the hardware level, Solayer **achieves unprecedented scalability, ultra-low latency, and reduced costs**.
+
+**The future of blockchain is not just in better code—it’s in better hardware.**

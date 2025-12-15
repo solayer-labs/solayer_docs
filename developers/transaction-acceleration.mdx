@@ -1,0 +1,33 @@
+---
+title: "Transaction Acceleration"
+---
+
+Stake-weighted Quality of Service (SWQoS) is a key part of improving the network performance of Solana dApps, and Solayer has opened a free public Stake-weighted Quality of Service (SWQoS) endpoint for Solana projects and builders.
+
+Simply publish your transaction to the endpoint by calling the sendTransaction RPC method and we will forward it as a regular Solana transaction to our SWQoS infrastructure.
+
+Acceleration Endpoint:
+```https://acc.solayer.org```
+
+The parameters for the RPC call is the signed transaction as a base-58 encoded string.
+
+```
+const body = {
+    jsonrpc: "2.0",
+    method: "sendTransaction",
+    id: 1,
+    params: [
+        tx
+    ],
+};
+
+try {
+    const response = await axios.post(`https://acc.solayer.org`, body);
+    console.log(response.data);
+} catch (error) {
+    console.log(error.response.data);
+}
+```
+
+Sample code for how builders can broadcast transactions to our endpoint can also be found in our CLI tool [here](https://github.com/solayer-labs/solayer-cli/tree/main/swqos).
+

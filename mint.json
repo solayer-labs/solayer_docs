@@ -309,4 +309,177 @@
         "x": "https://x.com/solayer_labs",
         "github": "https://github.com/solayer-labs"
     }
+  ],
+"navigation": [
+  {
+    "group": "Get Started",
+    "pages": [
+      "getting-started/introduction",
+      "getting-started/why-on-solana",
+      "getting-started/first-principles", 
+      {
+        "group": "Usage",
+        "pages": [
+          "getting-started/using/ledger",
+          "getting-started/using/phantom"
+        ]
+      }
+    ]
+  },
+  {
+    "group": "Protocol Architecture",
+    "pages": [
+      "developers/architecture",
+      "developers/transaction-acceleration",
+      "developers/building-on-solayer",
+      "developers/solayer-programs",
+      {
+        "group": "sSOL",
+        "pages": [
+          "ssol/what-is-ssol",
+          "ssol/liquidity",
+          "ssol/ssol-in-defi",
+          "ssol/redemption-price",
+          "ssol/trading-rewards"
+        ]
+      }
+    ]
+  },
+  {
+    "group": "Resources",
+    "pages": [
+      "resources/brand-kit",
+      "resources/partnerships"
+    ]
+  },
+  {
+    "group": "Security",
+    "pages": [
+      "security/overview",
+      "security/audits",
+      "security/multisig-committee",
+      "security/bounties"
+    ]
+  },
+  {
+    "group": "Ecosystem",
+    "pages": [
+      {
+        "group": "Epochs",
+        "pages": [
+          "community/epochs/overview",
+          "community/epochs/epoch-0",
+          "community/epochs/epoch-1", 
+          "community/epochs/epoch-2"
+        ]
+      },
+      {
+        "group": "Solayer Valley Episodes",
+        "pages": [
+          "community/milestones/overview",
+          {
+            "group": "Episode 1",
+            "pages": [
+              "community/milestones/episode-1/episode-1",
+              "community/milestones/episode-1/eligibility-guide",
+              "community/milestones/episode-1/rewards-claiming-guide"
+            ]
+          },
+          {
+            "group": "Episode 2",
+            "pages": [
+              "community/milestones/episode-2/episode-2",
+              "community/milestones/episode-2/eligibility-guide",
+              "community/milestones/episode-2/rewards-claiming-guide"
+            ]
+          },
+          {
+            "group": "Savings Account",
+            "pages": [
+              "community/milestones/savings-account/savings-account",
+              "community/milestones/savings-account/unlocking-guide"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "group": "Deposits",
+    "pages": [
+      "deposits/overview",
+      {
+        "group": "Native SOL deposits",
+        "pages": [
+          "deposits/native-sol/overview",
+          "deposits/native-sol/tutorial"
+        ]
+      },
+      {
+        "group": "LSTs",
+        "pages": [
+          "deposits/lst/overview",
+          "deposits/lst/tutorial"
+        ]
+      },
+      {
+        "group": "Withdraw sSOL",
+        "pages": [
+          "deposits/withdraw-ssol/overview",
+          "deposits/withdraw-ssol/tutorial"
+        ]
+      },
+      "deposits/delegation",
+      "deposits/apy"
+    ]
+  },
+  {
+    "group": "Stablecoin",
+    "pages": [
+      "susd/what-is-susd",
+      "susd/features",
+      "susd/sUSD-litepaper"
+    ]
+  },
+  {
+    "group": "Decentralized RFQ Protocol",
+    "pages": [
+      "susd/decentralized-rfq/overview",
+      "susd/decentralized-rfq/stakeholders",
+      {
+        "group": "RFQ Process",
+        "pages": [
+          "susd/decentralized-rfq/rfq-overview",
+          "susd/decentralized-rfq/subscription",
+          "susd/decentralized-rfq/redemption"
+        ]
+      }
+    ]
+  },
+  {
+    "group": "Protocol Info",
+    "pages": [
+      "susd/protocol-info/transparency",
+      "susd/protocol-info/redemption-price",
+      "susd/protocol-info/restrictions",
+      "susd/protocol-info/risks",
+      "susd/protocol-info/audits",
+      "susd/protocol-info/faqs"
+    ]
+  },
+  {
+    "group": "Endogenous AVS (Delegates)",
+    "pages": [
+      "endogenous-avs/overview",
+      "endogenous-avs/what-is-an-avs",
+      "endogenous-avs/quality-of-service",
+      "endogenous-avs/delegate-tokens", 
+      "endogenous-avs/cli"
+    ]
+  }
+],
+  "footerSocials": {
+    "x": "https://x.com/solayer_labs",
+    "github": "https://github.com/solayer-labs"
+  }
 }

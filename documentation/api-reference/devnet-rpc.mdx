@@ -1,0 +1,113 @@
+---
+title: API Reference
+description: Complete reference for Solayer's RPC API endpoints
+---
+
+
+Solayer's RPC API provides compatibility with Solana's JSON RPC API while introducing optimizations for the InfiniSVM architecture. This reference documents all supported methods, upcoming features, and deprecated endpoints.
+
+## HTTP Endpoint
+
+```
+https://devnet-rpc.solayer.org
+```
+
+## Currently Supported Methods
+
+The following methods are fully implemented and available for use:
+
+| Method | Description |
+|--------|-------------|
+| `getAccountInfo` | Returns all information associated with an account |
+| `getBalance` | Returns the balance of an account |
+| `getBlock` | Returns identity and transaction information about a confirmed block |
+| `getBlocks` | Returns a list of confirmed blocks |
+| `getLatestBlockhash` | Returns the latest blockhash |
+| `getSignatureStatuses` | Returns the statuses of a list of signatures |
+| `getTokenAccountBalance` | Returns the token balance of an account |
+| `getTokenSupply` | Returns information about the total supply of an SPL Token type |
+| `getTransaction` | Returns transaction details |
+| `sendTransaction` | Submits a signed transaction to the cluster |
+
+### Modified Methods
+
+| Method | Modification Details |
+|--------|---------------------|
+| `requestAirdrop` | Modified to airdrop exactly 0.1 SOL (Solayer devnet). The amount parameter has been removed for simplicity. |
+
+## Coming Soon
+
+These methods are under development and will be available in future updates:
+
+- `getFeeForMessage`
+- `getLargestAccounts`
+- `getProgramAccounts`
+- `getRecentPrioritizationFees`
+- `getSignaturesForAddress`
+- `getTokenAccountsByDelegate`
+- `getTokenAccountsByOwner`
+- `getTokenLargestAccounts`
+
+## Unsupported Methods
+
+The following methods are not supported:
+
+- `getClusterNodes`
+- `getHighestSnapshotSlot`
+- `getInflationGovernor`
+- `getInflationRate`
+- `getInflationReward`
+- `getLeaderSchedule`
+- `getMaxRetransmitSlot`
+- `getMaxShredInsertSlot`
+- `getSlotLeader`
+- `getSlotLeaders`
+- `getStakeMinimumDelegation`
+- `getSupply`
+- `getVoteAccounts`
+- `minimumLedgerSlot`
+
+## Deprecated Methods
+
+These methods are supported but deprecated due to InfiniSVM's architecture changes:
+
+- `getBlockCommitment`
+- `getBlockHeight`
+- `getBlockProduction`
+- `getEpochInfo`
+- `getEpochSchedule`
+- `getBlockTime`
+- `getFirstAvailableBlock`
+- `getGenesisHash`
+- `getHealth`
+- `getIdentity`
+- `getMinimumBalanceForRentExemption`
+- `getRecentPerformanceSamples`
+- `getSlot`
+- `getTransactionCount`
+- `getVersion`
+- `isBlockhashValid`
+
+## Notes on Deprecated Methods
+
+Methods marked as deprecated are still functional but may not provide meaningful information due to Solayer's architectural differences from Solana. For example, concepts like epochs and slots are handled differently in InfiniSVM's high-throughput architecture.
+
+## Error Handling
+
+All RPC methods follow standard JSON-RPC 2.0 error handling conventions. Errors will be returned in the following format:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "error": {
+    "code": number,
+    "message": string,
+    "data": object
+  },
+  "id": number
+}
+```
+
+## Rate Limits
+
+The devnet RPC endpoint has rate limiting in place to ensure fair usage. For production applications requiring higher limits, please contact the Solayer team.

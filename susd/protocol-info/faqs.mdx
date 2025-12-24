@@ -1,0 +1,32 @@
+---
+title: 'FAQs'
+---
+<AccordionGroup>
+<Accordion title="1. What is sUSD?">
+  sUSD is the first yield-bearing stablecoin on Solana. It is designed to offer a steady 4-5% yield through T-bill investments ([see associated risks](https://docs.openeden.com/treasury-bills-vault/risks)) while also being used to secure exogenous Actively Validated Services (exoAVSs) on Solayer.
+</Accordion>
+<Accordion title="2. How does sUSD generate yield?">
+  sUSD is inherently yield-bearing, generating a 4-5% yield from T-bills. 
+</Accordion>
+<Accordion title="3. What are exogenous AVSs?">
+  Exogenous AVSs (Actively Validated Services) are modular systems that run in parallel to Solana, such as oracles, bridges, and rollups. Users can delegate sUSD to help secure these systems and provide them with crypto-economic security. 
+</Accordion>
+<Accordion title="4. How is sUSD minted?">
+  To mint sUSD, a user locks USDC into the system, which creates a quote. This quote specifies the USDC amount, expiry time, and commission rate. A qualified liquidity provider then fulfills the buy order by transferring out the USDC and sending back a wrapped T-Bill as proof. Based on the wrapped T-Bill, the Solayer sUSD Program mints sUSD, which remains pegged 1:1 with USD.
+</Accordion>
+<Accordion title="5. How does the withdrawal process work?">
+  To withdraw, the user sends sUSD to initiate the process. The protocol calculates and sends the corresponding wrapped T-Bill to the qualified liquidity provider, who then fulfills the withdrawal by transferring the USDC back to the user.
+</Accordion>
+<Accordion title="6. How is sUSD different from other stablecoins?">
+  sUSD is a yield-bearing stablecoin, offering users a T-bill-backed yield, unlike traditional stablecoins. Additionally, it can be used to secure AVS systems on Solayer, providing a dual utility of earning yield and supporting decentralized infrastructure.
+</Accordion>
+<Accordion title="7. How does sUSD maintain its 1:1 peg with USD?">
+  sUSD maintains its 1:1 USD peg by using the **Token 2022 interest-bearing extension** design. This ensures that even while it generates yield, it remains pegged to the USD.
+</Accordion>
+<Accordion title="8. Who can participate in the sUSD ecosystem?">
+  Anyone holding USDC can participate in the sUSD ecosystem by minting sUSD and earning yield, and using sUSD to secure AVS systems. Additionally, institutional participants can contribute by becoming **qualified liquidity providers**.
+</Accordion>
+<Accordion title="9. What happens after sUSD?">
+  After the launch of sUSD, we aim to extend its utility across every use case, from supporting the bankless economy to securing the future of all decentralized systems. This includes expanding the reach and functionality of exogenous AVSs and potentially supporting other innovative decentralized services.
+</Accordion>
+</AccordionGroup>

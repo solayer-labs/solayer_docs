@@ -1,0 +1,61 @@
+---
+title: 'RFQ Overview'
+---
+
+The sUSD pool is designed to simplify how users earn yields from T-Bills by providing an on-chain, non-custodial request-for-quote (RFQ) system. 
+
+Instead of juggling multiple platforms and providers, users can access a variety of real-world asset providers through a single, streamlined interface. 
+
+This approach not only distributes risk but also maximizes yield opportunities by leveraging the strengths of different providers. We will also continue to add new RWA partners with time. 
+
+![Solayer sUSD open RFQ protocol](/images/diagrams/RFQ_Overview_B.png)
+
+<br/>
+
+## **Subscription Process:**
+
+![sUSD Subscription Process](/images/diagrams/subscription_susd_B.png)
+
+<Steps>
+<Step title="User Locks USDC:">
+    The user locks USDC to initiate a transaction. This action creates a quote that specifies the amount of USDC, the expiry time, and the commission rate for the trade.
+</Step>
+<Step title="Fulfillment by Qualified Liquidity Provider (Buy Order):">
+    The qualified liquidity provider fulfills the buy order by transferring the USDC out and sending back a wrapped T-Bill (tokenized representation of a T-Bill) as proof.
+</Step>
+<Step title="Forwarding Wrapped T-Bill:">
+    The decentralized T-Bill RFQ (Request for Quote) protocol forwards it to the sUSD minting program, locking it there in the process.
+</Step>
+<Step title="Minting sUSD:">
+    The Solayer sUSD Program mints sUSD based on the value of the wrapped T-Bill, maintaining a 1:1 price peg with USDC.
+</Step>
+<Step title="Delegate sUSD to Secure Exogenous AVS (Coming Soon):">
+    The user can delegate sUSD to secure our exogenous AVSs (exoAVSs) when it goes live.
+</Step>
+
+<br/>
+
+</Steps>
+
+## **Redemption Process:**
+
+![sUSD Redemption Process](/images/diagrams/redemption_susd_b.png)
+
+
+<Steps>
+<Step title="User Sends Back sUSD to Kickoff Withdrawal:">
+    The user sends back sUSD to the Solayer sUSD Program to initiate the withdrawal process. This action signals the start of the withdrawal procedure.
+</Step>
+<Step title="Protocol Calculates and Sends Wrapped T-Bill:">
+    The Solayer sUSD Program calculates the corresponding amount of wrapped T-Bill that needs to be redeemed based on the user's withdrawal request. The wrapped T-Bill is then forwarded to the Decentralized T-Bill RFQ Protocol.
+</Step>
+<Step title="Qualified Liquidity Provider Fulfills the Withdrawal Order:">
+    The Qualified Liquidity Provider receives the wrapped T-Bill and fulfills the withdrawal order. This involves transferring out the wrapped T-Bill and sending the equivalent amount of USDC back to the protocol.
+</Step>
+<Step title="USDC Returned to the User:">
+    After the liquidity provider fulfills the withdrawal order, the decentralized protocol returns the corresponding amount of USDC to the user, completing the withdrawal process.
+</Step>
+</Steps>
+
+ 
+

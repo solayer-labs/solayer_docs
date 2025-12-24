@@ -1,0 +1,24 @@
+---
+title: sBridge On-chain Program
+description: Solayer Bridge on-chain program for asset bridging and cross-chain calls
+---
+
+The sBridge on-chain program is deployed on both chains and is responsible for securely executing asset bridging and arbitrary cross-chain call based on validated multi-sig proofs produced by a decentralized guardian quorum. Through bridge proof PDA, the program ensures double-handling prevention, replay protection, and verifiability on-chain. The program also implements an auto-incremental nonce mechanism to increase uniqueness for each user transaction. The nonce can also be used as a bridge handling cutoff point, for example, a bridge transaction with a nonce lower than N could be safely and permanently discarded by the system when the last processed transaction is over 5N, such that the rent paid to related on-chain PDAs could be recycled.
+
+### Asset Bridge
+
+The asset bridge module is responsible for handling canonical and wrapped token transfers between Solana and Solayer. It exposes two core entry points:
+
+- **bridgeAssetSourceChain:** This instruction is invoked on the origin chain (e.g., Solana). It deducts the bridged token amount from the user, splitting it into a fee (transferred to the handler fee vault) and a locked portion (stored in the bridge vault). A nonce is auto-incremented and a PDA is derived from the tuple **(sender, recipient, mint, amount, nonce, txId)** and stored as a cryptographic proof of the request.
+
+- **bridgeAssetTargetChain:** This instruction is executed on the destination chain (e.g., Solayer) after guardians validate the original transaction and submit their aggregated signatures. The program verifies the multi-sig using Solana’s precompiled ed25519_program, checks the bridge proof PDA for existence on destination chain (to prevent double-processing), and then transfers the bridged asset to the recipient. If the asset is not natively available on the destination chain, a wrapped token is minted under the authority of brdige handler.
+
+The bridge program enforces threshold signature validation, configurable guardian sets, and precise accounting to guarantee safety and liveness across the bridge.
+
+### Cross-Chain Call
+
+The cross-chain call module enables authenticated, cross-chain execution of pre-authorized instructions on the destination chain. This mechanism is particularly useful for multi-chain transactions with specific order requirements.
+
+- **source chain:** On the source chain, the user serializes a transaction for the destination chain and encodes it into base58 format. This payload is then submitted as payload during invocation of the crossChainCall method on thethod on the source chain.
+
+- **target chain:** The Off-chain leader guardian then decodes the base58 transaction, simulates it, and then directly dispatches it to the destination chain. After successful execution, the leader guardian invokes the bridge program to create a bridge proof PDA derived from the tuple **(sender, calldata, nonce, sourceTxId)** to mark completion.

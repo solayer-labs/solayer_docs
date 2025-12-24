@@ -1,0 +1,73 @@
+---
+title: Mainnet Alpha Node
+description: Run a Mainnet Alpha Node
+---
+
+
+Works on Ubuntu 22.04, Ubuntu 24.04, and macOS.
+
+## Run ScyllaDB
+
+#### Option 1: Bare metal installation (Recommended)
+
+https://docs.scylladb.com/manual/stable/getting-started/install-scylla/
+
+#### Option 2: Docker 
+
+```bash
+docker run -d --name scylla -p 9042:9042 scylladb/scylla
+```
+
+## Install Rust
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source ~/.cargo/env
+```
+
+## Install relevant dependencies (Ubuntu)
+
+```bash
+sudo apt install -y clang build-essential libssl-dev protobuf-compiler pkg-config aria2
+```
+
+## Install relevant dependencies (macOS)
+
+```bash
+brew install clang protobuf pkg-config aria2
+```
+
+## Clone and build the Solayer RPC repository
+
+```bash
+git clone https://github.com/solayer-labs/solayer-rpc
+cd solayer-rpc
+cargo build --release --features mainnet
+``` 
+
+## Initialize ScyllaDB tables
+
+```bash
+cqlsh -f cassandra_tables.sql
+```
+
+## Run the Solayer RPC
+
+```bash
+./target/release/rpc-v2 -s mainnet-seed-1.solayer.org --cassandra-hosts 127.0.0.1:9042
+```
+
+## Verify the Solayer RPC is running
+
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","id":1,"method":"getSlot","params":[]}' http://localhost:18899
+```
+
+You should see the current slot number.
+
+
+## Catching up with the network
+
+```bash
+solana catchup --our-localhost 18899 -u https://mainnet-alpha.solayer.org
+```

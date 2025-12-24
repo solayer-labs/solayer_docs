@@ -1,0 +1,77 @@
+# Protocol Specification
+
+Solayer Chain uses gRPC to communicate for synchronization purposes, including streaming the latest slot information. gRPC is chosen over QUIC because it is better supported by SDN switches, which the sequencer uses for packet preprocessing, forwarding, and load balancing. 
+
+In addition to gRPC streaming, Solayer Chain also uses HTTP to serve snapshots that allows for verifier and RPC nodes to sync. The HTTP service is expected to be exposed to public users, with CDN and PCDN enabled. 
+
+## Protobuf Definition
+The protobuf definition below specifies the gRPC service interface and message formats used for Solayer Chain synchronization. The protocol uses bincode+zstd for transaction data to optimize network bandwidth and includes comprehensive metadata to support both streaming and repair operations. 
+
+Key methods and streaming endpoints:
+- **GetLatestSlot**: Retrieves current slot information for synchronization (equivalent to Solana RPC `getSlot` with `confirmed` finality).
+- **StartReceivingSlots**: Streams slot data from the leader node, including blockhash, parent blockhash, timestamp, and shred IDs (equivalent to Solana RPC `getSlot` with `confirmed` finality).
+- **SubscribeTransactionBatches**: Streams real-time transaction batch notifications containing slot number, timestamp, and all transactions with state changes (equivalent to Solana RPC `getSlot` with all transactions at `processed` finality).
+
+```proto
+syntax = "proto3";
+
+package infinisvm.sync;
+
+message StartReceivingSlotsRequest {
+}
+
+message SlotDataResponse {
+  uint64 slot = 1;
+  bytes blockhash = 2;
+  bytes parent_blockhash = 3;
+  uint64 timestamp = 4;
+  repeated uint64 job_ids = 5;
+}
+
+message GetLatestSlotRequest {
+}
+
+message GetLatestSlotResponse {
+  uint64 slot = 1;
+  bytes hash = 2;
+  bytes parent_blockhash = 3;
+  uint64 timestamp = 4;
+  repeated uint64 shred_ids = 5;
+}
+
+// Transaction batch notification messages
+message TransactionBatchRequest {
+}
+
+message TransactionInfo {
+  bytes signature = 1;
+  uint64 slot = 2;
+  uint64 timestamp = 3;
+  bool success = 4;
+  optional string error_message = 5;
+  bytes accounts_involved = 6; // Compressed account keys
+  uint64 fee = 7;
+  uint32 compute_units_consumed = 8;
+}
+
+message CommitBatchNotification {
+  uint64 slot = 1;
+  uint64 timestamp = 2;
+  uint32 batch_size = 3;
+  bytes compressed_transactions = 4; // zstd compressed serialized transactions
+  uint64 compression_ratio = 5; // original_size / compressed_size * 100
+}
+
+service InfiniSVMService {
+  rpc StartReceivingSlots(StartReceivingSlotsRequest) returns (stream SlotDataResponse);
+  rpc GetLatestSlot(GetLatestSlotRequest) returns (GetLatestSlotResponse);
+  rpc SubscribeTransactionBatches(TransactionBatchRequest) returns (stream CommitBatchNotification);
+}
+```
+
+## HTTP endpoints
+
+| Endpoint | Cachable | Purpose | Response |
+|----------|----------|---------|----------|
+| GET /solayer/snapshots | No | List available snapshots | JSON array of snapshot file names |
+| GET /solayer/files/\<filename\> | Yes | Download snapshot | zstd compressed snapshot  | 

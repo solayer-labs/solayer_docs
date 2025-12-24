@@ -1,0 +1,88 @@
+---
+title: Consensus Specification
+description: Detailed specification of Solayer's consensus mechanism
+---
+
+Sequencer:
+```python
+function buildBlock(txQueue, lastBlockHash):
+    diff = execAll(txQueue, globalState)
+    sdh  = HASH(encode(diff))
+    sh   = HASH(SALT || lastBlockHash || sdh || batchNumber)
+    header = {batchNumber, lastBlockHash, sdh, sh, sig=""}
+    return Block{header, txQueue, diff}
+```
+
+Verifier:
+```python
+on BlockReceived(block):
+    localDiff = execAll(block.txs, globalState)
+    if HASH(encode(localDiff)) == block.header.stateDiffHash:
+        sig = BLS.sign(privᵥ, block.header.blockHash)
+        transmit <sig, verifierId, stake>
+```
+
+Solana Contract
+```rust
+struct verifier {
+   operator_address; // for bls
+   admin_address; // for staking, unstaking etc., can be a multisig
+}
+
+block_consensus {
+  // --- Epoch Management -------------
+  fn stake(amount: u64)                    // Verifier, add to verifier_queue, promote to verifier set next epoch
+  fn unstake()                             // after exit delay
+  read  fn verifier_set()                  // get current verifier set
+
+fn submit_epoch_change()       // only current sequencer can call
+
+fn sequencer_set()      
+fn join_sequencer_set()
+fn leave_sequencer_set()
+
+  // --- Sequencer Selection ----------
+  fn elect_next_sequencer()                // round‑robin
+  fn ping_timeout(old_seq_id)              // called by verifiers
+
+  // --- Disputes & Slashing ----------
+  fn submit_dispute(invalid_block, sig_v)  // by sequencer
+  fn resolve_dispute(dispute_id)           // off‑chain worker posts verdict
+}
+```
+
+
+Protobuf:
+```proto
+syntax = "proto3";
+
+package solayer;
+
+message QuorumCert {
+  bytes          block_hash          = 1;
+  bytes          aggregate_signature = 2; // Σ sig_i (BLS aggregate)
+  repeated StakeInfo participants    = 3; // who signed & with what weight
+  uint64         total_stake         = 4; // convenience field (sum)
+}
+
+message Vote {
+  bytes   block_hash     = 1;  // must match header.block_hash
+  bytes   bls_signature  = 2;  // sig_i = sign(sk_i, block_hash)
+}
+
+message Envelope {
+  oneof msg {
+    Vote       vote       = 2;
+    QuorumCert qc         = 3;
+  }
+}
+
+
+service Consensus {
+  // A single long‑lived bidi stream.  Either side may push:
+  //   • Block            (Sequencer → Verifiers)
+  //   • Vote             (Verifiers → Sequencer)
+  //   • QuorumCert       (Sequencer → Verifiers once 51 % reached)
+  rpc Stream(stream Envelope) returns (stream Envelope);
+}
+```

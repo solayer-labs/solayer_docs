@@ -1,0 +1,21 @@
+---
+title: Introduction
+description: Solayer Chain Synchronization
+---
+
+## Solayer Chain Synchronization
+
+This article covers the synchronization between Solayer Chain leader node, verifier nodes, and RPC nodes. It covers contents to sync, and also data frame specification between clients.
+
+## Stakeholders
+**Leader Node**: The leader node / sequencer node is the node that is responsible for consuming, scheduling, executing, and committing transactions to produce new blocks. The leader node streams shreds (incomplete blocks) to the subscribers. 
+
+**Verifier Node**: The verifier node is the node that is responsible for verifying the transactions and the state of the leader node with streams directly from the leader node. The verifier node can forward streams to RPC nodes. The verifier node must stake $LAYER token to operate.
+
+**RPC Node**: The RPC node is the node that is responsible for serving the requests from the clients. The RPC node can connect to the leader node or verifier node to receive state and transaction data. The RPC node can choose to index information like transaction history, account history, etc. The RPC does not need to stake $LAYER token to operate but is recommended.
+
+## Data Streams
+
+**Shreds**: Shreds are the basic unit of data in Solayer Chain. They are the smallest unit of data that can be sent and received. A shred contains a set of transactions and a set of account updates. Shreds are sent to the subscribers before the leader node commits a slot.
+
+**Slots**: Slots are the unit of block in Solayer Chain. A slot contains a set of shreds and the slot hash that hashes all state changes in the slot. 

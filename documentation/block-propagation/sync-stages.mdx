@@ -1,0 +1,106 @@
+# Sync Stages
+
+The Solayer Chain synchronization process consists of two main phases: **initial sync** and **incremental sync**. During initial sync, a node retrieves snapshots from upstream peers (e.g., current leader node or verifier nodes) and downloads the most recent one to initialize its local Bank. After this bootstrap, the node transitions to incremental sync mode.
+
+In normal **real-time mode**, the node continuously receives slot-change notifications and their accompanying shreds via a stream, stores the shreds in an overlay database, and commits the data at each slot boundary while verifying correctness by recalculating the Bank's root hash. 
+
+When the stream fails to deliver consecutive slots, the node automatically enters **repairing mode**, fetching missing slots from upstream peers (or restarting from an initial snapshot if unavailable), replaying the recovered slots, re-validating the root hash, and then returning to real-time streaming.
+
+Failure handling follows a consistent pattern: dropped streams trigger repair and fresh stream creation; non-consecutive data from upstream initiates targeted repair before resuming real-time sync; and upstream data expiry that leaves queries empty is treated as fatal, prompting operators to clear local state and restart.
+
+Integrity is guaranteed by Solana-style state validation—each block hash is the SHA-256 of its parent hash concatenated with the Merkle-rooted account-state delta, signature count, and parent blockhash, while every account hash is derived from its serialized fields.
+
+## Initial Sync
+
+The initial synchronization phase bootstraps a new node:
+
+- Query for available snapshots from upstream peers. 
+- Download the latest snapshot to provision the Bank. 
+
+## Incremental Sync
+
+After initial sync, nodes enter incremental sync with two operational modes:
+
+### Real-Time Mode
+
+Normal operation mode for continuous synchronization:
+
+- Receive latest slot changes and shreds through real-time streaming from upstream peers.
+- Save shreds to a database overlay. 
+- Store slot changes. 
+- Calculate root hash and validate. 
+- Merge the database overlay into the Bank. 
+
+### Repairing Mode
+
+Activated when the real-time stream doesn't deliver consecutive slot changes or the root hash is inconsistent:
+
+- Fetch missing slots from upstream nodes. 
+- If missing slots are not found upstream, restart from initial sync. 
+- Replay slot changes. 
+- Calculate root hash and validate. 
+- Switch back to real-time mode. 
+
+## Failure Scenarios
+
+**Real-Time Stream Disconnection**: When the streaming connection is lost, the node initiates a repair process to the latest slot, re-creates the stream connection, and then resumes real-time mode synchronization.
+
+**Non-Consecutive Slot Delivery**: When upstream nodes don't deliver consecutive slots, the node performs a repair operation to the received slot data and then resumes real-time mode synchronization.
+
+**Empty Slot Query Response**: This typically occurs when slot data in upstream nodes expires. In this scenario, the node reports a fatal error, logs the message "need to cleanup current chain data and start over", and exits the process.
+
+## Validation
+
+After each slot is committed, RPC nodes and verifier nodes perform state validation by calculating the root hash of the Bank and comparing it with the root hash provided in the slot data. If the calculated root hash differs from the expected value, the node will transition to repairing mode to resolve the inconsistency. 
+
+Solayer Chain adopts Solana's state hash calculation methodology, excluding proof-of-history (PoH) components, to compute the root hash:
+
+```
+hash = sha256(parent_hash || account_db_delta || signature_count || parent_blockhash)
+account_db_delta = merkle_root(account_hashes_order_by_pubkey)
+account_hashes_order_by_pubkey = sha256(lamports | data_len | data | owner | executable_flag | rent_epoch)
+```
+
+
+## Pseudocode
+
+```
+func sync():
+    snapshot = http download_snapshot()
+    bank = Bank.new(snapshot)
+    need_repair = false
+    last_slot = bank.current_slot()
+
+    while True:
+        if need_repair:
+            repair(bank)
+            need_repair = false
+
+        try:
+            stream_slot = create_slot_stream()
+            stream_shred = create_shred_stream()
+
+            while shred <- stream_shred:
+                bank.db.add_shred(shred)
+            while slot <- stream_slot:
+                # deliver non-consecutive slots
+                if last_slot < slot_data.slot:
+                    repair(bank)
+                    last_slot = bank.current_slot()
+                else
+                    bank.commit(slot_data)
+                    last_slot = slot_data.slot
+
+        except StreamDisconnected:
+            need_repair = true
+            continue
+
+func repair(bank):
+    loop: 
+        current_slot = bank.current_slot()
+        if current_slot >= grpc_get_latest_slot():
+            break
+
+        slot_data = http_download_slot(current_slot)
+        bank.process_slot_data(slot_data)
+```

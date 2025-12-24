@@ -1,0 +1,520 @@
+---
+title: Bridge SDK
+description: TypeScript SDK for interacting with the Solayer Bridge Program
+---
+
+The Bridge SDK provides a comprehensive TypeScript interface for interacting with the Solayer Bridge Program. It enables cross-chain asset transfers between Solana and Solayer networks with built-in security features and proof verification.
+
+## Installation
+
+```bash
+npm install @solayer-labs/bridge-sdk
+```
+
+### Bridge Flow
+
+Cross-chain transfers follow a secure five-step process:
+
+- **Source Chain**: User initiates bridge transaction on source chain (Solana/Solayer)
+- **Proof Generation**: Bridge proof is created with transaction details
+- **Guardian Verification**: Guardians verify and sign the bridge proof
+- **Target Chain**: Operator executes bridge on target chain using verified proof
+- **Asset Transfer**: Assets are transferred to recipient on target chain
+
+### Key Components
+
+- **BridgeHandler**: Manages bridge state and configuration
+- **BridgeProof**: Contains bridge transaction details and verification data
+- **GuardianInfo**: Stores guardian public keys and threshold information
+- **TokenInfo**: Maps tokens between chains
+
+### BridgeClient
+
+The main client class for bridge operations.
+
+```typescript
+import { BridgeClient, Chain } from "@solayer-labs/bridge-sdk";
+import { Connection, PublicKey } from "@solana/web3.js";
+
+const bridgeClient = new BridgeClient({
+  connection: new Connection("https://api.devnet.solana.com"),
+  userPublicKey: new PublicKey("your_public_key_here"),
+  chain: Chain.Solana,
+  commitment: "confirmed",
+});
+```
+
+**Important Note:** The BridgeClient class only provides transaction creation methods. You need to sign and send transactions yourself using `sendAndConfirmTransaction` or similar methods.
+
+### Query Methods
+
+#### Bridge Handler Information
+
+```typescript
+const bridgeHandler = await bridgeClient.getBridgeHandler(Chain.Solana);
+```
+
+#### Bridge Proof Queries
+
+```typescript
+import * as anchor from "@coral-xyz/anchor";
+import { getBridgeHandlerPDA } from "@solayer-labs/bridge-sdk";
+
+// Get source chain bridge proof
+const [bridgeHandler] = getBridgeHandlerPDA(Chain.Solana);
+const bridgeProof = await bridgeClient.getSourceChainBridgeProof(
+  bridgeHandler,
+  userPublicKey,
+  new anchor.BN(12345)
+);
+
+// Get destination chain bridge proof
+const destProof = await bridgeClient.getDestinationChainBridgeProof(
+  bridgeHandler,
+  "source_transaction_signature"
+);
+
+// Get bridge proof by account address
+const proofByAccount = await bridgeClient.getSourceChainBridgeProofByAccount(
+  new PublicKey("bridge_proof_account_address")
+);
+```
+
+#### Bridge Handler Vault PDA
+
+```typescript
+const [bridgeHandler] = getBridgeHandlerPDA(Chain.Solana);
+const vaultPDA = bridgeClient.getBridgeHandlerVaultPDA(
+  bridgeHandler,
+  new PublicKey("token_mint_address")
+);
+```
+
+### Transaction Builders
+
+#### createBridgeAssetSourceChainTransaction
+
+Creates bridge transaction without sending it. The method automatically determines the target chain mint address using the `get_target_mint` utility function.
+
+```typescript
+const tx = await bridgeClient.createBridgeAssetSourceChainTransaction(
+  params,
+  accounts
+);
+// Customize transaction if needed
+const signature = await sendAndConfirmTransaction(connection, tx, [
+  userKeypair,
+]);
+```
+
+#### createBridgeAssetSourceChainSolTransaction
+
+Creates SOL bridge transaction without sending it.
+
+```typescript
+const tx = await bridgeClient.createBridgeAssetSourceChainSolTransaction(
+  params
+);
+// Customize transaction if needed
+const signature = await sendAndConfirmTransaction(connection, tx, [
+  userKeypair,
+]);
+```
+
+### Utility Functions
+
+#### PDA Helpers
+
+```typescript
+import * as anchor from "@coral-xyz/anchor";
+import {
+  getBridgeHandlerPDA,
+  getSourceChainBridgeProofPDA,
+  getDestinationChainBridgeProofPDA,
+} from "@solayer-labs/bridge-sdk";
+
+// Get bridge handler PDA
+const [bridgeHandler, bump] = getBridgeHandlerPDA(Chain.Solana);
+
+// Get source chain bridge proof PDA
+const [bridgeProof, bump] = getSourceChainBridgeProofPDA(
+  bridgeHandler,
+  userKeypair.publicKey,
+  new anchor.BN(12345)
+);
+
+// Get destination chain bridge proof PDA
+const [destProof, bump] = getDestinationChainBridgeProofPDA(
+  bridgeHandler,
+  "source_transaction_signature"
+);
+```
+
+#### Token Utilities
+
+```typescript
+import {
+  calculateTargetChainBridgedMintAddress,
+  calculateTokenInfoAddress,
+  is_mint_bridged_token,
+  get_target_mint,
+  Chain,
+} from "@solayer-labs/bridge-sdk";
+import { PublicKey } from "@solana/web3.js";
+
+// Calculate target chain bridged mint address
+const targetMint = calculateTargetChainBridgedMintAddress(
+  new PublicKey("source_mint_address"),
+  bridgeHandler
+);
+
+// Calculate token info PDA address
+const tokenInfoAddress = calculateTokenInfoAddress(
+  new PublicKey("token_mint_address"),
+  bridgeHandler
+);
+
+// Check if mint is a bridged token
+const isBridged = await is_mint_bridged_token(
+  connection,
+  bridgeHandler,
+  new PublicKey("token_mint_address")
+);
+
+// Get target chain mint address
+const targetMint = await get_target_mint(
+  Chain.Solana,
+  connection,
+  bridgeHandler,
+  new PublicKey("source_mint_address")
+);
+```
+
+#### Bridge Status Tracking
+
+```typescript
+import {
+  getTargetChainBridgeTxIdFromSourceTxId,
+  getSourceChainBridgeTxIdFromTargetChainBridgeProof,
+  getUserBridgeTx,
+  Chain,
+} from "@solayer-labs/bridge-sdk";
+import { PublicKey } from "@solana/web3.js";
+
+// Check if bridge is completed on target chain
+const targetTxId = await getTargetChainBridgeTxIdFromSourceTxId(
+  "source_tx_signature",
+  Chain.Solana,
+  solayerConnection
+);
+
+// Get source transaction from target chain bridge proof
+const sourceTxId = await getSourceChainBridgeTxIdFromTargetChainBridgeProof(
+  new PublicKey("bridge_proof_key"),
+  solayerConnection
+);
+
+// Get user's bridge transaction history
+const userTxs = await getUserBridgeTx(
+  connection,
+  user.publicKey,
+  bridgeHandler
+);
+```
+
+### Types and Interfaces
+
+#### Core Configuration Types
+
+```typescript
+interface BridgeClientConfig {
+  connection: Connection;
+  userPublicKey: PublicKey;
+  chain: Chain;
+  programId?: PublicKey;
+  commitment?: anchor.web3.Commitment;
+}
+
+enum Chain {
+  Solana = 1,
+  Solayer = 2,
+}
+```
+
+#### Bridge Parameter Types
+
+```typescript
+interface BridgeAssetSourceChainParams {
+  bridgeProofNonce: anchor.BN;
+  amount: anchor.BN;
+  recipient: PublicKey;
+  additionalSolGas: anchor.BN;
+}
+
+interface BridgeAssetSourceChainSolParams {
+  bridgeProofNonce: anchor.BN;
+  amount: anchor.BN;
+  recipient: PublicKey;
+}
+
+interface UserBridgeTx {
+  sourceChainBridgeTx: string[];
+  targetChainBridgeTx: string[];
+}
+```
+
+#### Program Account Types
+
+```typescript
+export type BridgeHandler = BridgeProgram["accounts"][0];
+export type BridgeProof = BridgeProgram["accounts"][1];
+export type BridgeProofSourceChain = BridgeProgram["accounts"][2];
+export type TokenInfo = BridgeProgram["types"][0];
+```
+
+### Usage Examples
+
+#### Complete Bridge Workflow
+
+```typescript
+import {
+  BridgeClient,
+  Chain,
+  getBridgeHandlerPDA,
+  getTargetChainBridgeTxIdFromSourceTxId,
+} from "@solayer-labs/bridge-sdk";
+import {
+  Connection,
+  Keypair,
+  PublicKey,
+  sendAndConfirmTransaction,
+} from "@solana/web3.js";
+import * as anchor from "@coral-xyz/anchor";
+
+async function completeBridgeWorkflow() {
+  const connection = new Connection("https://api.devnet.solana.com");
+  const userKeypair = Keypair.generate();
+
+  const bridgeClient = new BridgeClient({
+    connection,
+    userPublicKey: userKeypair.publicKey,
+    chain: Chain.Solana,
+    commitment: "confirmed",
+  });
+
+  // Bridge parameters
+  const params = {
+    bridgeProofNonce: new anchor.BN(Date.now()),
+    amount: new anchor.BN(1000000000), // 1 token
+    recipient: new PublicKey("recipient_address"),
+    additionalSolGas: new anchor.BN(0),
+  };
+
+  const accounts = {
+    mint: new PublicKey("token_mint"),
+    signerVault: new PublicKey("your_token_account"),
+  };
+
+  try {
+    // Create bridge transaction
+    const transaction =
+      await bridgeClient.createBridgeAssetSourceChainTransaction(
+        params,
+        accounts
+      );
+
+    // Sign and send transaction
+    const signature = await sendAndConfirmTransaction(connection, transaction, [
+      userKeypair,
+    ]);
+    console.log("Bridge initiated:", signature);
+
+    // Track bridge completion
+    const targetTxId = await getTargetChainBridgeTxIdFromSourceTxId(
+      signature,
+      Chain.Solana,
+      new Connection("https://rpc.devnet.solayer.com")
+    );
+
+    if (targetTxId) {
+      console.log("Bridge completed on target chain:", targetTxId);
+    }
+  } catch (error) {
+    console.error("Bridge failed:", error);
+  }
+}
+```
+
+#### SOL Bridge Workflow
+
+```typescript
+async function bridgeSOL() {
+  const userKeypair = Keypair.generate();
+  const bridgeClient = new BridgeClient({
+    connection: new Connection("https://api.devnet.solana.com"),
+    userPublicKey: userKeypair.publicKey,
+    chain: Chain.Solana,
+  });
+
+  const params = {
+    bridgeProofNonce: new anchor.BN(Date.now()),
+    amount: new anchor.BN(5000000), // 0.005 SOL
+    recipient: new PublicKey("recipient_address"),
+  };
+
+  try {
+    const transaction =
+      await bridgeClient.createBridgeAssetSourceChainSolTransaction(params);
+    const signature = await sendAndConfirmTransaction(connection, transaction, [
+      userKeypair,
+    ]);
+    console.log("SOL bridge initiated:", signature);
+  } catch (error) {
+    console.error("SOL bridge failed:", error);
+  }
+}
+```
+
+#### Working with Bridged Tokens
+
+```typescript
+import {
+  getBridgeHandlerPDA,
+  is_mint_bridged_token,
+  get_target_mint,
+  calculateTokenInfoAddress,
+  Chain,
+} from "@solayer-labs/bridge-sdk";
+import { Connection, PublicKey } from "@solana/web3.js";
+
+async function workWithBridgedTokens() {
+  const connection = new Connection("https://api.devnet.solana.com");
+  const [bridgeHandler] = getBridgeHandlerPDA(Chain.Solana);
+  const sourceMint = new PublicKey("token_mint_address");
+
+  // Check if a mint is a bridged token
+  const isBridged = await is_mint_bridged_token(
+    connection,
+    bridgeHandler,
+    sourceMint
+  );
+  console.log("Is bridged token:", isBridged);
+
+  // Get the target chain mint address
+  const targetMint = await get_target_mint(
+    Chain.Solana,
+    connection,
+    bridgeHandler,
+    sourceMint
+  );
+  console.log("Target mint:", targetMint.toString());
+
+  // Get token info PDA address
+  const tokenInfoAddress = calculateTokenInfoAddress(sourceMint, bridgeHandler);
+  console.log("Token info PDA:", tokenInfoAddress.toString());
+}
+```
+
+### Error Handling
+
+Common bridge errors and their meanings:
+
+- **InsufficientAmount**: User doesn't have enough tokens
+- **BridgePaused**: Bridge is currently paused by admin
+- **TokenPaused**: Specific token is paused for bridging
+- **TooMuchAdditionalSolGas**: Additional SOL gas exceeds limit
+- **TooLittleAdditionalSolGas**: Additional SOL gas below minimum
+- **InvalidChain**: Invalid chain specified
+- **InvalidOperator**: Invalid operator for the operation
+
+```typescript
+try {
+  const tx = await bridgeClient.createBridgeAssetSourceChainTransaction(
+    params,
+    accounts
+  );
+  const signature = await sendAndConfirmTransaction(connection, tx, [
+    userKeypair,
+  ]);
+} catch (error) {
+  if (error.message.includes("BridgePaused")) {
+    console.error("Bridge is currently paused");
+  } else if (error.message.includes("InsufficientAmount")) {
+    console.error("Insufficient token balance");
+  } else if (error.message.includes("TokenPaused")) {
+    console.error("This token is paused for bridging");
+  }
+}
+```
+
+### Best Practices
+
+#### Pre-flight Checks
+
+```typescript
+// Check bridge status before initiating
+const bridgeHandler = await bridgeClient.getBridgeHandler(Chain.Solana);
+if (bridgeHandler.pause) {
+  throw new Error("Bridge is currently paused");
+}
+```
+
+#### Transaction Management
+
+```typescript
+// Use unique nonces
+const bridgeProofNonce = new anchor.BN(Date.now() + Math.random());
+
+// Create and confirm transactions
+const tx = await bridgeClient.createBridgeAssetSourceChainTransaction(
+  params,
+  accounts
+);
+const signature = await sendAndConfirmTransaction(connection, tx, [
+  userKeypair,
+]);
+```
+
+#### Progress Monitoring
+
+```typescript
+import {
+  getTargetChainBridgeTxIdFromSourceTxId,
+  Chain,
+} from "@solayer-labs/bridge-sdk";
+
+// Poll for bridge completion with timeout
+async function waitForBridgeCompletion(sourceTxId: string, maxAttempts = 30) {
+  for (let i = 0; i < maxAttempts; i++) {
+    const targetTxId = await getTargetChainBridgeTxIdFromSourceTxId(
+      sourceTxId,
+      Chain.Solana,
+      solayerConnection
+    );
+
+    if (targetTxId) return targetTxId;
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  }
+
+  throw new Error("Bridge timeout");
+}
+```
+
+#### Parameter Validation
+
+```typescript
+import { BridgeAssetSourceChainParams } from "@solayer-labs/bridge-sdk";
+import * as anchor from "@coral-xyz/anchor";
+
+// Validate bridge parameters
+function validateBridgeParams(params: BridgeAssetSourceChainParams) {
+  if (params.amount.lte(new anchor.BN(0))) {
+    throw new Error("Amount must be greater than 0");
+  }
+
+  if (params.additionalSolGas.gt(new anchor.BN(10000000))) {
+    // 0.01 SOL
+    throw new Error("Additional SOL gas too high");
+  }
+}
+```

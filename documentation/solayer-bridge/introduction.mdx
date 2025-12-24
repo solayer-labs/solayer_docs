@@ -3,9 +3,12 @@ title: "Solayer Bridge (sBridge)"
 description: "Canonical Cross-Chain Bridge for Solana and Solayer"
 ---
 
-# Solayer Bridge (sBridge)
 
 **Solayer Bridge (sBridge)** is a canonical, SVM-native cross-chain bridge purpose-built to connect Solana and Solayer with high throughput, deterministic security, and composable execution. It offers an execution-native bridge architecture, replacing generalized, exploit-prone multichain bridges with a protocol aligned tightly to the Solana Virtual Machine (SVM).
+
+## What is sBridge?
+
+sBridge is tailored specifically to SVM environments, differing significantly from generic multichain solutions such as Wormhole, LayerZero, and Hyperlane by offering tighter semantic integration, higher capital efficiency, and protocol-level control.
 
 ## Overview
 
@@ -16,8 +19,26 @@ sBridge enables:
 - **Sub-3s optimistic finality for low-value txs**, and deterministic finality for high-value txs
 - **Hardware-backed ED25519 multi-signatures** using guardian quorum
 - **Double-handling prevention** using Program Derived Addresses (PDAs)
+- **Permissionless token bridging** - Bridge ANY token without whitelisting
+- **Bidirectional bridge** between Solayer and Solana with secure and preauthorized cross-chain communication
 
 Unlike other bridges, sBridge is designed from the ground up to support **SVM-to-SVM communication**. It embraces SVM-specific architecture such as return-data handling, PDA proofs, and polling-based transaction indexing for reliability and performance.
+
+## Why We Built sBridge
+
+We chose to develop sBridge in-house because existing bridging solutions lacked critical features needed for our specific domain, such as enhanced flexibility, strict latency guarantees, and deeper protocol-level control. By integrating on-chain duplicate prevention, poll-based transaction subscription, guardian auto-failover mechanism, and a dynamic-finality model (fast optimistic + slow finalized), we ensure low-latency and highly available bridging without compromising security.
+
+Unlike other bridges, we also have a fully database-less implementation for sBridge. By maximizing the PDA of SVM, we manage to not store anything locally, even for indexing bridge transactions purpose. This helps reduce security back possibilities and opens for more development opportunities on top of it.
+
+The unique cross-chain call functionality also unlocks new capabilities in interchain operability, enabling atomic transactions across multiple chains in a single bundled operation. The architecture is also designed with future extensibility in mind, supporting dynamic validator sets, additional message types, and programmable token minting.
+
+
+## Key Features
+
+- **Secure Asset Transfers:** Ensure asset safety across different SVM chains
+- **Cross-chain Execution:** Support for atomic transactions and seamless multi-chain interactions
+- **Guardian Network:** Decentralized validation through threshold signature aggregation
+- **No-database Design:** By maximizing SVM PDA, the system does not have any centralized database involved at any point
 
 ## Architecture: 3-Layer Bridge
 
@@ -25,7 +46,7 @@ sBridge consists of three layers:
 
 1. **Origin Chain** – User invokes `bridgeAsset` or `crossChainCall`, creating a unique PDA as a proof-of-intent.
 2. **Guardian Network (Off-Chain)** – Guardians poll transactions via RPC, validate signatures, and submit a threshold-signed proof.
-3. **Destination Chain** – Bridge program verifies multi-sig via Solana’s precompile and executes the asset transfer or cross-chain instruction.
+3. **Destination Chain** – Bridge program verifies multi-sig via Solana's precompile and executes the asset transfer or cross-chain instruction.
 
 ```plaintext
 User → [Origin Chain (PDA + Bridge Program)] → [Guardian Network] → [Destination Chain (PDA Check + Execution)]
@@ -56,7 +77,7 @@ This enables **multi-leg transactions** like:
 
 - **Leader–Follower Model**: Guardians gossip signed payloads. A rotating leader aggregates multi-sigs and submits to destination chain.
 - **Poll-based indexing**: No reliance on fragile WebSocket subscriptions. Guardians poll RPC endpoints for new bridge transactions.
-- **ED25519 multi-sig**: All signatures are generated using hardware-backed HSMs and verified via Solana’s precompile.
+- **ED25519 multi-sig**: All signatures are generated using hardware-backed HSMs and verified via Solana's precompile.
 
 ## Reliability & Failure Recovery
 
@@ -66,7 +87,7 @@ This enables **multi-leg transactions** like:
 
 ## Dynamic Finality Model
 
-- **Fast-path finality**: \< \$1K txs execute after "confirmed" block state, finalizing in ~3s
+- **Fast-path finality**: < $1K txs execute after "confirmed" block state, finalizing in ~3s
 - **Slow-path finality**: High-value txs wait for irreversible finality on source chain
 - Misbehavior by guardians (e.g., signing before safe finality) can result in slashing or removal
 
@@ -74,6 +95,10 @@ This enables **multi-leg transactions** like:
 
 | Metric                       | sBridge    | Avg. Multichain Bridge |
 | ---------------------------- | ---------- | ---------------------- |
-| Median Finality (\< \$1K tx) | ~3 sec     | ~8 sec                 |
+| Median Finality (< $1K tx) | ~3 sec     | ~8 sec                 |
 | Avg. Fee                     | 0.0006 SOL | 0.0014 SOL             |
 | Throughput                   | ~1000 tx/s | ~400 tx/s              |
+
+---
+
+This documentation provides a comprehensive guide to understanding and implementing the Solayer Bridge effectively.

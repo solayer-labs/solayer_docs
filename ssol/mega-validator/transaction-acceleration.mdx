@@ -1,0 +1,66 @@
+---
+title: Mega Validator & endoAVS
+---
+
+
+Solayer's Mega Validator architecture is uniquely designed to support on-chain decentralized applications (dApps), which we refer to as **endogenous Actively Validated Services (endoAVSs)**.
+
+Unlike traditional platforms that primarily focus on **exogenous AVSs** (such as oracles and bridges), Solayer enhances the capabilities of **native Solana dApps** by providing:
+
+- **Increased probability of securing block space**
+- **Prioritized transaction inclusion**
+
+This approach enables developers to build more **responsive** and **efficient** applications within the Solana ecosystem, leveraging Solayer's **stake-weighted quality of service (swQoS) mechanisms**.
+
+<br />
+
+## Mega Validator: Enhancing Solana's Validator Performance
+
+### What is the Mega Validator?
+
+Solayer's **Mega Validator** is a specialized validation mechanism designed to **offload hardware signatures**, boosting **transaction throughput** and **reducing latency**.
+
+### How It Works
+
+- **Hardware Signature Offloading**  
+   - By shifting cryptographic verification tasks away from standard validators, the Mega Validator **frees up processing power** for transaction execution.
+   
+- **Enhanced Throughput & Lower Latency**  
+   - By reducing signature verification overhead, Solayer’s Mega Validator increases **network efficiency**, allowing more transactions to be processed per second.
+
+- **Seamless Integration with swQoS**  
+   - When combined with **Stake-weighted Quality of Service (swQoS)**, Mega Validator **prioritizes transactions dynamically**, ensuring **optimal resource allocation** based on stake.
+
+<br />
+
+## What is an AVS?
+
+Solayer introduces a novel approach in blockchain infrastructure: a system where **decentralized applications (dApps) dynamically allocate processing power** based on staked tokens. This **stake-weighted** model allows dApps to **influence network operations proportionally to their stake**, resulting in **faster and more reliable transactions**.
+
+<br />
+
+## Endogenous AVSs (Actively Validated Services)
+
+Solayer introduces **endogenous AVSs**, which are **native Solana dApps** that can:
+
+- Secure necessary **block space**
+- Prioritize transactions based on **delegated tokens**
+
+By leveraging Solayer’s **swQoS**, dApps gain **better control over their network performance**, leading to **superior user experiences**.
+
+<Frame>
+<img src="https://2113331469-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FzYM0pEemeu6F3UKGPAZE%2Fuploads%2FczazvZoJtQyAu7DjLsLl%2Fimage.png?alt=media&token=9061ac33-debd-47b9-901e-8fde433313bc" alt="Solayer AVS Diagram" />
+</Frame>
+
+<br />
+
+## Technical Implementation: Stake-weighted Quality of Service (swQoS)
+
+The foundation of Solayer’s performance improvements lies in **Stake-weighted Quality of Service (swQoS)**, a mechanism that allows dApps to:
+
+- **Reserve blockchain space and processing power**
+- **Enhance network efficiency and reliability**
+
+For more details, refer to our [Stake Weighted Quality of Service](assets/mega-validator/transaction-acceleration/swQoS) documentation.
+
+By leveraging **Solayer's Mega Validator and swQoS**, developers can **build next-generation Solana dApps** with superior **efficiency, responsiveness, and prioritization**, setting a new standard for blockchain scaling.

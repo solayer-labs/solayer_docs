@@ -1,0 +1,24 @@
+---
+title: Solayer Chain Consensus
+description: Overview of Solayer's hybrid consensus mechanism
+---
+
+## Overview
+
+The verifier set and their corresponding stake weights are derived at the start of each epoch from the Solana contract, and a verifier's voting power is directly proportional to its staked amount. Each stake can be delegated to multiple verifiers, while for each vote, the stake can only be used by the first verifier that submits.
+
+## Consensus Flow
+
+For each block produced by the sequencer, the payload—including the hash, transaction batch, and associated state diff—is broadcast to the active verifier set. Each verifier probabilistically ignores blocks (to allow for higher TPS) and, for selected blocks, independently re-executes the transactions against its current state to derive a local state diff. If the locally computed state diff hash matches the block's declared state diff hash, the verifier signs the block hash using its BLS private key and returns the signature to the sequencer. Upon collecting signatures representing at least 51% of the total stake, the sequencer performs a BLS aggregation and finalizes the shard by sealing it with the aggregate signature.
+
+## Failure Handling
+
+In the event that a quorum of verifier signatures is not reached within the predefined timeout, the sequencer initiates a retry of the round, re-broadcasting the block for revalidation. If the retry attempt also fails to secure the required 51% threshold, the consensus protocol enters a reorganization phase. At this point, the current sequencer forfeits its role, and the chain reverts to the last block that achieved successful verification. Leadership is then rotated to the next sequencer, as determined by an on-chain contract deployed on Solana.
+
+If the sequencer becomes unresponsive or fails to propagate blocks to the verifier set, verifiers independently detect the stall and invoke a timeout procedure on the Solana contract, which performs round-robin sequencer rotation. Additionally, to preserve protocol integrity, the sequencer may challenge the verifiers by submitting deliberately malformed blocks. If any verifier incorrectly signs such an invalid block, the sequencer can initiate a formal dispute on-chain by submitting both the invalid block and the verifier's signature. If validated, the verifier is penalized by slashing and removal.
+
+## Architecture Diagrams
+
+![Consensus Flow](/documentation/consensus/consensus.png)
+
+![Sequencer Rotation](/documentation/consensus/seq.png)

@@ -1,0 +1,9 @@
+# Rate Limit
+
+To combat the DoS attack, Solayer Chain uses rate limit to limit the number of requests from a node to the current leader node. We plan to provide two phases of rate limit as the network matures. Note that the rate limit only applies to the leader node. RPC nodes can connect to upstream nodes like other RPC nodes or verifier nodes and the rate limit is under discretion of the upstream nodes.
+
+In phase one, every IP address is allowed to connect to the network and send requests to the sequencer with bandwidth not exceeding 200Mbps, which is the minimum bandwidth required to sync at real time under 300K TPS of transfer transactions.
+
+In phase two, each node is represented by a public key with a unique IP address. when connecting to the sequencer (i.e., the leader node), the node shall provide a signature of the IP address using the private key of the node. Each node can receive bandwidth a minimum of 100Mbps after minimum stake of K $LAYER token on that public key. With more stake, the node can receive more bandwidth. 
+
+Phase two will be activated after the network is fully deployed and the participants of the network exceeds a certain threshold. 

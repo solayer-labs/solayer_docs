@@ -1,0 +1,61 @@
+---
+title: "Proof of Authority & Stake"
+---
+
+Traditional rollup-based designs rely on **commodity validators** to verify transactions, but **high-throughput verification (1Gb/s) exceeds the capabilities of most nodes**. Posting such data on Layer 1 (L1) is **bandwidth-intensive and costly**. **InfiniSVM** addresses these challenges with a **Proof-of-Authority-and-Stake (PoAS)** model that combines **sequencer-led verification, distributed proof generation, and fallback security on Solana**.
+
+## PoA&S Consensus Model
+
+InfiniSVM introduces a **sequencer-driven model** where transactions are **batched into shreds**, each containing:
+- **Slot number & transaction vector**  
+- **Version metadata for accessed accounts**  
+- **Linkage hashes for state continuity**  
+
+Only a **minimal (Effect Hash, Shred Hash) pair** is posted on **Solana**, ensuring **data availability** while avoiding **L1 congestion**.
+
+![PoAS](/images/infinisvm/poas.png)
+
+## Transaction Verification & Voting Mechanism
+
+Upon receiving a **shred**, a **prover** follows a **two-step validation process**:
+
+1. **State Reconstruction & Effect Hash Verification**
+   - The prover checks **account versions**.
+   - If missing state, the prover **requests shreds** from the sequencer.
+   - The prover **re-executes transactions** to derive an **effect hash**.
+   - If the computed hash **matches the shred's embedded effect hash**, the prover **votes for acceptance**.
+
+2. **Majority Vote Finalization**
+   - A **51% vote** is required to mark a **shred as finalized**.
+   - If all previous shreds are **finalized**, the sequencer **assembles proof** for the block.
+
+## Handling Malicious Sequencers & Fault Tolerance
+
+- **Malicious Proposer Detection**  
+  - Honest provers detect invalid transactions via **effect hash mismatches** and **vote against them**.
+  - If the sequencer **repeatedly submits invalid shreds**, it is **marked as offline**.
+  - Failover to a **backup sequencer** occurs via **PoA voting on Solana**.
+
+- **Censorship Resistance**  
+  - If the sequencer **ignores transactions**, users can **force inclusion** by submitting transactions **directly to Solana**.
+
+## Efficient Prover Selection & Incentives
+
+To prevent **hardware-intensive requirements** for provers:
+- The sequencer uses a **round-robin method** to select **2/3 of online provers**.
+- **Subdivided verification tasks** allow provers to distribute workload across **multiple nodes**.
+- **Elastic cloud scaling** allows provers to handle surges in verification demand.
+
+Prover **reward structure**:
+- Earn **fees from processed shreds** and **inflationary $LAYER rewards**.
+- **Malicious or inactive provers face slashing**:
+  - **1st violation**: Loss of epoch fees.
+  - **2nd violation**: **1%** slash on staked tokens.
+  - **Subsequent violations**: **5%** stake slash per offense.
+
+The **PoAS model** in **InfiniSVM** achieves:
+- **Scalable, high-throughput consensus** without **overloading L1**.
+- **Efficient, decentralized validation** via **sequencer-led voting**.
+- **Robust security** with **fallback mechanisms on Solana**.
+
+By **optimizing prover participation**, **reducing L1 bandwidth costs**, and **ensuring censorship resistance**, **InfiniSVM** scales consensus while maintaining **decentralization and integrity**.

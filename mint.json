@@ -19,28 +19,26 @@
     },
     "tabs": [
         {
-            "name": "InfiniSVM",
-            "url": "infinisvm"
+            "name": "Documentation",
+            "url": "documentation"
         },
-
         {
-            "name": "Tutorials",
-            "url": "tutorials"
+            "name": "sSOL",
+            "url": "ssol"
         },
-        
         {
-            "name": "Developers",
-            "url": "developers"
+            "name": "sUSD",
+            "url": "susd"
         },
-
+        {
+            "name": "Emerald Card",
+            "url": "emerald-card"
+        },
         {
             "name": "Resources",
             "url": "resources"
         }
-
     ],
-
-
     "topbarCtaButton": {
         "name": "Launch App",
         "url": "https://app.solayer.org"
@@ -69,244 +67,198 @@
     ],
     "navigation": [
         {
-            "group": "Solayer",
-            "pages": [
-                "documentation/get-started/introduction",
-                "documentation/resources/litepapers"
-            ]
-        },
-
-        {
-            "group": "InfiniSVM",
+            "group": "Introduction",
             "pages": [
                 "documentation/infinisvm",
-                "documentation/devnet/overview",
-                "documentation/devnet/api-reference",
+                "documentation/introduction/why-hardware-acceleration",
                 "documentation/devnet/explorer",
                 "documentation/devnet/faucet"
             ]
         },
-
-
         {
-            "group": "SOL Staking",
+            "group": "API Reference",
             "pages": [
-                "assets/ssol/overview",
-                {
-                    "group": "Mega Validator",
-                    "pages": [
-                        "assets/mega-validator/transaction-acceleration/endoavs",
-                        "assets/mega-validator/yield-optimization",
-                        "assets/mega-validator/transaction-acceleration/swqos"
-                    ]
-                },
-                {
-                    "group": "sSOL",
-                    "pages": [
-                        "assets/ssol/universal-liquidity-layer",
-                        "assets/mega-validator/delegate-tokens"
-                    ]
-                },
-                "assets/native-staking"
-            ]
-        },
-
-        {
-            "group": "sUSD",
-            "pages": [
-                 "assets/susd/yield-bearing-stablecoin/what-is-susd",
-                {
-                    "group": "Decentralized RFQ Protocol",
-                    "pages": [
-                        "assets/susd/decentralized-rfq-protocol/overview",
-                        "assets/susd/decentralized-rfq-protocol/stakeholders"
-                    ]
-                }
-            ]
-        },
-
-
-        {
-            "group": "Emerald Card",
-            "pages": [
-                "documentation/Emerald-Card/overview",
-                "documentation/Emerald-Card/point",
-                "documentation/Emerald-Card/eligibility",
-                "documentation/Emerald-Card/security",
-                "documentation/Emerald-Card/occupation-codes",
-                "documentation/Emerald-Card/faq"
-                
-                
-            ]
-        },
-
-
-        {
-            "group": "InfiniSVM",
-            "pages": [
-                "infinisvm/infinisvm/overview",
-                "infinisvm/infinisvm/whyhardwareacceleration"
+                "documentation/api-reference/devnet-rpc"
             ]
         },
         {
             "group": "System Architecture",
             "pages": [
-                       "infinisvm/system_architecture/solana&svm",
-                        "infinisvm/system_architecture/rdma&infiniband",
-                        "infinisvm/system_architecture/software_defined_network",
-
-                {
-                    "group": "Multi executor",
-                    "pages": [
-                        "infinisvm/system_architecture/multi-executor/scaling_transaction_processing",
-                        "infinisvm/system_architecture/multi-executor/microservice&pipeline",
-                        "infinisvm/system_architecture/multi-executor/transaction_semantic_aware_scheduling",
-                        "infinisvm/system_architecture/multi-executor/sharding_database_with_rdma"
-                    ]
-                },
-                "infinisvm/system_architecture/consensus_scaling"
+                "documentation/introduction/system-architecture/solana-svm",
+                "documentation/introduction/system-architecture/rdma-infiniband",
+                "documentation/introduction/system-architecture/software-defined-network",
+                "documentation/introduction/system-architecture/multi-executor",
+                "documentation/introduction/system-architecture/consensus-scaling"
             ]
         },
         {
-            "group": "Advanced UX",
+            "group": "Advanced Features",
             "pages": [
-                "infinisvm/advanced_ux/wallet-agnostic&dapp-first-integration",
-                "infinisvm/advanced_ux/hooks",
-                "infinisvm/advanced_ux/cross-chain_contract_call",
-                "infinisvm/advanced_ux/jumbo_transaction",
-                "infinisvm/advanced_ux/zk-login"
+                "documentation/introduction/advanced-features/hooks",
+                "documentation/introduction/advanced-features/jumbo-transactions",
+                "documentation/introduction/advanced-features/cross-chain-calls",
+                "documentation/introduction/advanced-features/wallet-integration",
+                "documentation/introduction/advanced-features/zk-login"
             ]
         },
-
-
         {
-            "group": "sSOL",
+            "group": "Block Propagation",
             "pages": [
-                "tutorials/ssol/stake",
-                "tutorials/native/staking",
-                "tutorials/ssol/unstake"
+                "documentation/block-propagation/introduction",
+                "documentation/block-propagation/sync-stages",
+                "documentation/block-propagation/protocol-specification",
+                "documentation/block-propagation/rate-limit"
             ]
         },
-
         {
-            "group": "sUSD",
+            "group": "Consensus",
             "pages": [
-                "tutorials/susd/deposit",
-                "tutorials/susd/withdraw",
-                "tutorials/cross/cross"
+                "documentation/consensus/overview",
+                "documentation/consensus/specification"
             ]
         },
-        
-
         {
-            "group": "Emerald Card",
+            "group": "Run a Node",
             "pages": [
-                    {
-                    "group": "Issuance Procedure",
-                    "pages": [
-                        "tutorials/register",
-                        "tutorials/kyc"
-                    ]
-                },
-                "tutorials/digital_wallets",
-                "tutorials/alipay",
-                "tutorials/venmo",
-                {
-                    "group": "Usage",
-                    "pages": [
-                        "tutorials/details",
-                        "tutorials/topup",
-                        "tutorials/history",
-                        "tutorials/freeze"
-                    ]
-                }
+                "documentation/run-a-node/mainnet-alpha"
             ]
         },
-        
         {
-            "group": "Developer Tools",
+            "group": "Solayer Bridge",
             "pages": [
-                "developers/developer-tools/transaction-acceleration",
-                "developers/developer-tools/solana-actions&blinks",
-                "developers/developer-tools/solayer-cli",
-                "developers/developer-tools/solana-agent-kit",
-                "developers/developer-tools/solayer-price-feeds"
+                "documentation/solayer-bridge/introduction",
+                "documentation/solayer-bridge/architecture/index",
+                "documentation/solayer-bridge/onchain-programs",
+                "documentation/solayer-bridge/offchain-guardian/index",
+                "documentation/solayer-bridge/security-measures",
+                "documentation/solayer-bridge/bridge-sdk"
             ]
         },
-
         {
-            "group": "Learn SVM",
+            "group": "sSOL Overview",
             "pages": [
-                "developers/learn-svm/guideline"
+                "ssol/overview",
+                "ssol/universal-liquidity-layer"
             ]
         },
-
         {
-            "group": "Guides",
+            "group": "Mega Validator",
             "pages": [
-                "developers/guides/hello_world",
-                "developers/guides/token-basics",
-                "developers/guides/devnet-nft"
-      
+                "ssol/mega-validator/delegate-tokens",
+                "ssol/mega-validator/transaction-acceleration",
+                "ssol/mega-validator/yield-optimization"
             ]
         },
-      
-
         {
-            "group": "Solayer",
+            "group": "Native Staking",
+            "pages": [
+                "ssol/native-staking"
+            ]
+        },
+        {
+            "group": "Tutorials",
+            "pages": [
+                "ssol/tutorials/stake",
+                "ssol/tutorials/unstake"
+            ]
+        },
+        {
+        {
+            "group": "Yield-Bearing Stablecoin",
+            "pages": [
+                "susd/yield-bearing-stablecoin/what-is-susd",
+                "susd/yield-bearing-stablecoin/susd-features"
+            ]
+        },
+        {
+            "group": "Decentralized RFQ Protocol",
+            "pages": [
+                "susd/decentralized-rfq-protocol/overview",
+                "susd/decentralized-rfq-protocol/process",
+                "susd/decentralized-rfq-protocol/stakeholders"
+            ]
+        },
+        {
+            "group": "Protocol Information",
+            "pages": [
+                "susd/protocol-info/litepaper",
+                "susd/protocol-info/eligibility&risks",
+                "susd/protocol-info/oracle&price_feeds",
+                "susd/protocol-info/transparency&security",
+                "susd/protocol-info/faqs"
+            ]
+        },
+        {
+            "group": "Tutorials",
+            "pages": [
+                "susd/tutorials/deposit",
+                "susd/tutorials/withdraw",
+                "susd/tutorials/cross-chain"
+            ]
+        },
+        {
+            "group": "Emerald Card Overview",
+            "pages": [
+                "emerald-card/overview",
+                "emerald-card/card"
+            ]
+        },
+        {
+            "group": "Portfolio & Features",
+            "pages": [
+                "emerald-card/portfolio",
+                "emerald-card/point"
+            ]
+        },
+        {
+            "group": "Security & Eligibility",
+            "pages": [
+                "emerald-card/security",
+                "emerald-card/eligibility",
+                "emerald-card/fee"
+            ]
+        },
+        {
+            "group": "Tutorials",
+            "pages": [
+                "emerald-card/tutorials/register",
+                "emerald-card/tutorials/kyc",
+                "emerald-card/tutorials/topup",
+                "emerald-card/tutorials/usage"
+            ]
+        },
+        {
+            "group": "FAQ",
+            "pages": [
+                "emerald-card/faq"
+            ]
+        },
+        {
+            "group": "Resources",
             "pages": [
                 "resources/litepapers",
-                "resources/solayer-programs"
-            ]
-        },
-
-        {
-            "group": "$Layer",
-            "pages": [
+                "resources/solayer-programs",
                 "resources/tokenomics",
-                "resources/governance"
+                "resources/brand-kit",
+                "resources/protocol-api"
             ]
         },
-
         {
-            "group": "Security",
+            "group": "Security & Legal",
             "pages": [
                 "resources/security/audits",
                 "resources/security/multisignature-committees"
             ]
-        },
-
-        {
-            "group": "Legal",
-            "pages": [
-
-                {
-                    "group": "Emerald Card",
-                    "pages": [
-              "resources/legal/opening-account",
-                "resources/legal/e-sign",
-                "resources/legal/us-card-terms",
-                "resources/legal/intl-card-terms",
-                "resources/legal/prohibition",
-                "resources/legal/card-eligibility"
-                    ]
-                }
-  
-            ]
-        },
-
-        {
-            "group": "Brand",
-            "pages": [
-                "resources/brand-kit"
-            ]
         }
-
-        
-
     ],
     "footerSocials": {
         "x": "https://x.com/solayer_labs",
         "github": "https://github.com/solayer-labs"
-    }
+    },
+    "redirects": [
+        {
+            "source": "/",
+            "destination": "/documentation/infinisvm"
+        }
+    ]
 }

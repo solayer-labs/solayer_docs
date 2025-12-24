@@ -1,0 +1,42 @@
+---
+title: Security Measures
+description: Security measures and double-handling prevention in sBridge
+---
+
+To ensure safe and deterministic cross-chain execution, the sBridge protocol enforces strict double-handling prevention guarantees across both on-chain and off-chain components. These properties are critical for maintaining correctness in the presence of retries, partial failures, and network reordering—common in asynchronous, adversarial environments.
+
+### Double-Handling Prevention
+
+- **On-chain Prevention**: Each bridge operation is uniquely identified by a deterministic Program Derived Address (PDA) derived from a tuple of immutable parameters. Before executing any bridge instruction, the target chain's Bridge Program performs a **PDA existence check**. If the PDA already exists, the instruction is aborted, thereby preventing double-execution of the same logical transaction.
+- **Off-chain De-duplication**: Off-chain, each guardian maintains a persistent log of all observed and signed source transactions, indexed by their sourceTxId. Before processing a new transaction, a guardian checks this log to determine whether it has already produced a signature or witnessed the transaction being finalized. This prevents unnecessary signature generation and ensures consistency across leader rotation or recovery. In addition, each guardian tracks the **highest processed nonce** per bridge direction (Solana → Solayer and Solayer → Solana). Any incoming transaction with a nonce lower than the stored watermark is rejected as stale or previously handled. This mechanism also serves as a compact garbage collection strategy when purging old transaction logs or reclaiming PDA rent.
+- **Recovery Safety**: During recovery (e.g., after crash or restart), guardians restore their high-water mark from durable storage and resume transaction polling from the last acknowledged signature. Since all critical execution paths are gated by PDA existence (on-chain) and signature logs (off-chain), the system tolerates retries and message duplication without compromising safety or introducing non-deterministic behavior. These mechanisms align with formal principles of **exactly-once semantics** in distributed systems and are inspired by transaction replay resistance models used in production systems like Cosmos IBC and LayerZero Ultra Light Nodes.
+
+### Database-less Design
+
+sBridge is intentionally architected to be stateless and database-free for its off-chain components. All critical state—such as bridge transactions, proof-of-execution PDAs, and guardian signature attestations—is verifiably recorded on-chain. This enables guardians to operate without relying on traditional databases or persistent off-chain storage for consensus-critical data.
+
+Instead of maintaining local copies of transaction history or signature logs, each guardian deterministically recomputes the required state by polling the source chain and observing PDAs on the destination chain. Bridge proof PDAs act as cryptographic checkpoints that encode uniqueness, replay protection, and confirmation status.
+
+This design has multiple advantages:
+
+- **No Single Point of Failure**: Without a dependency on local databases, guardians avoid the risk of data corruption, rollback inconsistencies, or split-brain scenarios.
+- **Simplified Recovery**: A guardian node can crash, be wiped, or be redeployed without special backup protocols. As long as it retains access to the source and destination chain RPC endpoints, it can catch up by scanning on-chain state.
+- **Deterministic Auditability**: All decisions—bridging eligibility, signature validity, replay protection—can be reconstructed and verified by any observer with access to public chain state.
+- **Operational Simplicity**: No need for database migrations, schema management, or replication logic simplifies deployment and improves maintainability.
+
+This database-less paradigm is core to sBridge’s philosophy of minimizing off-chain trust assumptions, maximizing determinism, and aligning security guarantees with on-chain consensus. It enables a guardian network that is modular, fault-tolerant, and horizontally scalable.
+
+### Bridge Cap Protection
+
+To mitigate systemic risk and protect downstream liquidity, sBridge enforces a dynamic bridge cap mechanism on outbound transfers from Solayer to Solana. This cap represents the maximum allowable dollar-denominated value that can be bridged within a given epoch.
+
+- **Cap Threshold Enforcement**:
+  During each epoch, bridge transactions from Solayer to Solana are accepted and processed immediately—as long as the total cumulative value bridged remains below the configured cap (denominated in USD). This provides fast-path execution for routine usage without introducing artificial delays.
+- **Overflow Queueing with Delay**:
+  Once the cap is exhausted within an epoch, all subsequent bridge transactions are deferred and added to a queue. These queued transactions are rate-limited and released in FIFO (first-in, first-out) order with a fixed 6-hour delay, ensuring predictability while deterring burst withdrawal behavior. This staggered release reduces liquidity shocks and gives guardians and protocols time to respond.
+- **Governance Control**:
+  The bridge cap value is configurable and governed by the Solayer on-chain multisig. This allows trusted actors to raise or lower the cap in response to changes in bridge volume, liquidity conditions, or detected anomalies (e.g., sudden surge in outbound volume indicative of an exploit).
+- **Directional Scope**:
+  Importantly, the bridge cap currently applies only in the Solayer → Solana direction. This is due to asymmetric risk exposure: Solayer, being the newer chain, carries more economic and security uncertainty. Applying a cap in this direction mitigates scenarios where a compromise on Solayer could lead to unbounded asset issuance on Solana.
+
+Bridge cap protection reflects a proactive risk-aware philosophy: it does not block usage but rather modulates it in accordance with security posture and real-time liquidity conditions.

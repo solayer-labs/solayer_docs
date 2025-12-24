@@ -1,0 +1,44 @@
+---
+title: "Software-Defined Networking (SDN)"
+---
+
+Software-Defined Networking (SDN) **decouples the control plane from the data plane**, enabling **centralized network control** through **software-based controllers**. This separation allows for **dynamic programmability**, **automated network policies**, and **greater flexibility** in managing network traffic.
+
+## SDN Architecture
+
+Modern SDN follows a **three-tier model**:
+
+**Data Plane (Forwarding Plane)**
+   - Consists of **programmable forwarding elements** (e.g., switches, routers) that process packets based on **match-action rules**.
+   - Implements a **pipeline architecture**, allowing **efficient packet processing at line rate**.
+
+**Control Plane**
+   - Manages network policies and computes paths dynamically.
+   - Uses **distributed consensus protocols** to maintain **network state consistency** across multiple controllers.
+
+**Management Plane**
+   - Provides **high-level orchestration**, **network automation**, and **northbound APIs** for applications.
+   - Abstracts network complexity, simplifying policy deployment.
+
+![SDN](/images/infinisvm/sdn.png)
+
+## Programmable Forwarding Plane
+
+Traditional **fixed-function networking** has evolved into **fully programmable packet processing pipelines** using languages like **P4**. This enables:
+
+- **Custom protocol implementation** tailored to specific use cases.
+- **Complex packet transformations** directly within the forwarding plane.
+- **Multi-stage match-action processing**, allowing **load balancing, traffic engineering, and network virtualization**.
+
+Each **pipeline stage** can modify packet headers, apply policy logic, and maintain local state, ensuring **high-performance, adaptive networking**.
+
+## SDN Controllers & APIs
+
+SDN controllers provide **centralized control** while maintaining **distributed consistency**. Key components include:
+
+- **Northbound APIs**: Expose network abstractions for orchestration and applications.
+- **Southbound APIs**: Interface with forwarding devices using **OpenFlow, P4Runtime, and gNMI**.
+
+By separating **network intelligence from hardware**, SDN enables **faster innovation, scalable deployments, and real-time network optimizations**.
+
+SDN transforms **networking into a programmable, scalable, and agile** architecture. Its ability to **dynamically adapt traffic flows** while maintaining **line-rate performance** makes it essential for **modern cloud, data center, and telecom networks**.

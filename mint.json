@@ -135,6 +135,12 @@
             ]
         },
         {
+            "group": "Historical Data Access",
+            "pages": [
+                "documentation/archival-data"
+            ]
+        },
+        {
             "group": "sSOL Overview",
             "pages": [
                 "ssol/overview",

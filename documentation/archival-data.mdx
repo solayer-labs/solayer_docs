@@ -1,0 +1,105 @@
+---
+title: "InfiniSVM Historical Data Access"
+description: "Access Solayer's archival data via Delta Sharing"
+---
+
+# Historical Data Access
+
+Solayer provides historical InfiniSVM data access through **Delta Sharing**, an open protocol for secure, cross-platform data sharing. This allows you to access historical blockchain data, transaction records, and protocol analytics directly from your preferred tools and environments.
+
+<Info>
+This historical data is for **InfiniSVM Mainnet** only.
+</Info>
+
+## Overview
+
+Delta Sharing enables secure data sharing without copying data. You can read and analyze the shared data using various tools including:
+
+- **Python** (with Pandas)
+- **Apache Spark**
+- **Power BI**
+- **Tableau**
+- **Snowflake** and other Iceberg clients
+
+Access persists as long as the credential is valid. Updates to the data are available in near real time. You can read and make copies of the shared data for your analysis.
+
+## Available Tables
+
+Two tables are available through Delta Sharing:
+
+| Table | Description | Partition Column |
+|-------|-------------|------------------|
+| `transactions` | All InfiniSVM transaction records with execution results | `block_date` |
+| `blocks` | Block-level metadata including hashes and timestamps | `block_month` |
+
+### Transactions Table
+
+The `transactions` table contains detailed records of all InfiniSVM transactions.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `signature` | STRING | Unique transaction signature (not null) |
+| `slot` | BIGINT | Slot number (not null) |
+| `shred_index` | BIGINT | Shred index within the slot (not null) |
+| `block_unix_timestamp` | BIGINT | Unix timestamp of the block (not null) |
+| `block_date` | DATE | Partition column, auto-generated from timestamp |
+| `versioned_tx` | VARIANT | Nested JSON containing signatures, message, etc. (not null) |
+| `execution_result` | VARIANT | Full Ok/Err structure: `{"Ok": null}` or `{"Err": {...}}` (not null) |
+| `job_effect_diff` | VARIANT | Contains pre_accounts, diffs, pre_balances, account_diff_ops |
+| `status` | STRING | "Success" or "Fail" |
+| `err` | STRING | Error details (only present when status = "Fail") |
+| `log_messages` | ARRAY\<STRING\> | Array of log message strings |
+| `inner_instructions` | VARIANT | Nested structure for inner instructions |
+| `return_data` | VARIANT | Transaction return data |
+| `executed_units` | BIGINT | Compute units consumed (not null) |
+| `accounts_data_len_delta` | BIGINT | Change in account data length (not null) |
+| `fee` | BIGINT | Transaction fee in lamports (not null) |
+
+<Tip>
+To filter successful transactions, use `execution_result:Ok IS NOT NULL` in your queries.
+</Tip>
+
+### Blocks Table
+
+The `blocks` table contains block-level metadata.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `slot` | BIGINT | Slot number, primary key (not null) |
+| `block_unix_timestamp` | BIGINT | Unix timestamp of the block (not null) |
+| `block_month` | DATE | Partition column, first day of the month |
+| `blockhash` | STRING | Block hash (not null) |
+| `parent_blockhash` | STRING | Parent block hash |
+
+## Credential File
+
+To access Solayer's historical data, save the credential file below as a `.share` file (e.g., `solayer.share`) on your local system:
+
+```json
+{
+  "shareCredentialsVersion": 1,
+  "bearerToken": "ZWatTOE294P9bB30V-SBjZYnhgz5CM3DySSrDBoedk1UgL0YCJJdC0lDktWPnc4y",
+  "endpoint": "https://oregon.cloud.databricks.com/api/2.0/delta-sharing/metastores/7a9fc20e-6a36-4fef-98fb-3c6c7c72f622",
+  "expirationTime": "2027-01-14T19:43:33.280Z",
+  "icebergEndpoint": "https://oregon.cloud.databricks.com/api/2.0/delta-sharing/metastores/7a9fc20e-6a36-4fef-98fb-3c6c7c72f622/iceberg"
+}
+```
+
+<Note>
+This credential expires on **January 14, 2027**. If you need access after this date, please contact the Solayer team.
+</Note>
+
+## How to Access the Data
+
+For detailed instructions on how to read and query the shared data using your preferred tool, please refer to the official Databricks documentation:
+
+<Card title="Delta Sharing Documentation" icon="book" href="https://docs.databricks.com/aws/en/delta-sharing/read-data-open?language=Python">
+  Complete guide for reading data shared via Delta Sharing with bearer tokens, including examples for Python, Spark, Power BI, Tableau, and more.
+</Card>
+
+## Support
+
+If you encounter any issues or have questions about accessing the historical data:
+
+- Join our [Discord community](https://discord.com/invite/solayerlabs)
+- Follow us on [Twitter/X](https://twitter.com/solayer_labs) for updates

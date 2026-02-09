@@ -54,8 +54,20 @@ cqlsh -f cassandra_tables.sql
 ## Run the Solayer RPC
 
 ```bash
-./target/release/rpc-v2 -s mainnet-seed-1.solayer.org --cassandra-hosts 127.0.0.1:9042
+./target/release/rpc-v2 \
+  -s mainnet-seed-1.solayer.org \
+  --cassandra-hosts 127.0.0.1:9042 \
+  --wait-for-grpc-peer \
+  --wait-for-grpc-peer-timeout-secs 30
 ```
+
+`rpc-v2` now uses **registry-first gRPC bootstrap by default**:
+
+- It waits for a usable upstream gRPC peer discovered from the RPC registry.
+- With `-s mainnet-seed-1.solayer.org`, the default registry source is `http://mainnet-seed-1.solayer.org:6005`.
+- `--wait-for-grpc-peer-timeout-secs 0` means wait forever.
+- If timeout is greater than `0`, the node falls back to direct sequencer gRPC bootstrap after timeout.
+- To disable waiting and keep immediate sequencer bootstrap behavior, pass `--wait-for-grpc-peer false`.
 
 ## Verify the Solayer RPC is running
 

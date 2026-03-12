@@ -1,0 +1,29 @@
+---
+title: "Jumbo Transactions"
+---
+
+Solayer Chain introduces **jumbo transactions** — an extended transaction type designed for high-complexity operations, particularly hook-based execution that exceeds standard transaction size limits.
+
+## What Are Jumbo Transactions?
+
+A jumbo transaction enables:
+- Execution across thousands of accounts in a single transaction
+- Thousands of instructions within a single execution pipeline
+- Atomic deployment of multiple programs, reducing state inconsistencies
+
+This supports complex multi-step operations that would otherwise require splitting across multiple transactions.
+
+## Fee Model
+
+Jumbo transactions use exponential fee scaling — as transaction size grows, fees grow exponentially. This ensures fair resource allocation and prevents excessive transaction bloat.
+
+## Use Cases
+
+**Hook-based execution**
+Hooks can perform high-volume state updates across multiple smart contracts in a single transaction, without splitting logic across multiple calls.
+
+**Batch operations**
+Multi-asset swaps, cross-chain function calls, and on-chain auctions can be batched into a single atomic operation, reducing latency and fees.
+
+**Program deployment & upgrades**
+Deploy multiple programs in one transaction to ensure synchronized updates and direct inter-program calls during deployment.

@@ -69,7 +69,7 @@
         {
             "group": "Introduction",
             "pages": [
-                "documentation/infinisvm",
+                "documentation/solayer-chain",
                 "documentation/introduction/why-hardware-acceleration",
                 "documentation/devnet/explorer",
                 "documentation/devnet/faucet"
@@ -259,7 +259,11 @@
     "redirects": [
         {
             "source": "/",
-            "destination": "/documentation/infinisvm"
+            "destination": "/documentation/solayer-chain"
+        },
+        {
+            "source": "/documentation/infinisvm",
+            "destination": "/documentation/solayer-chain"
         }
     ]
 }

@@ -32,7 +32,7 @@
         },
         {
             "name": "Solayer Pay",
-            "url": "emerald-card"
+            "url": "solayer-pay"
         },
         {
             "name": "Resources",
@@ -200,38 +200,38 @@
         {
             "group": "Solayer Pay Overview",
             "pages": [
-                "emerald-card/overview",
-                "emerald-card/card"
+                "solayer-pay/overview",
+                "solayer-pay/card"
             ]
         },
         {
             "group": "Portfolio & Features",
             "pages": [
-                "emerald-card/portfolio",
-                "emerald-card/point"
+                "solayer-pay/portfolio",
+                "solayer-pay/point"
             ]
         },
         {
             "group": "Security & Eligibility",
             "pages": [
-                "emerald-card/security",
-                "emerald-card/eligibility",
-                "emerald-card/fee"
+                "solayer-pay/security",
+                "solayer-pay/eligibility",
+                "solayer-pay/fee"
             ]
         },
         {
             "group": "Tutorials",
             "pages": [
-                "emerald-card/tutorials/register",
-                "emerald-card/tutorials/kyc",
-                "emerald-card/tutorials/topup",
-                "emerald-card/tutorials/usage"
+                "solayer-pay/tutorials/register",
+                "solayer-pay/tutorials/kyc",
+                "solayer-pay/tutorials/topup",
+                "solayer-pay/tutorials/usage"
             ]
         },
         {
             "group": "FAQ",
             "pages": [
-                "emerald-card/faq"
+                "solayer-pay/faq"
             ]
         },
         {
@@ -264,6 +264,14 @@
         {
             "source": "/documentation/infinisvm",
             "destination": "/documentation/solayer-chain"
+        },
+        {
+            "source": "/emerald-card",
+            "destination": "/solayer-pay"
+        },
+        {
+            "source": "/emerald-card/:slug*",
+            "destination": "/solayer-pay/:slug*"
         }
     ]
 }

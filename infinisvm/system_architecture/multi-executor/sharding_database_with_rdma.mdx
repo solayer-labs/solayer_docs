@@ -2,13 +2,13 @@
 title: "Sharding Database with RDMA"
 ---
 
-Blockchain systems face significant scalability challenges due to **ever-growing state sizes**. To address this, **InfiniSVM** implements a **sharded key-value store** architecture, integrating **Remote Direct Memory Access (RDMA)** to enable **ultra-low latency cross-node data access**.
+Blockchain systems face significant scalability challenges due to **ever-growing state sizes**. To address this, **Solayer Chain** implements a **sharded key-value store** architecture, integrating **Remote Direct Memory Access (RDMA)** to enable **ultra-low latency cross-node data access**.
 
 <br />
 
 ## **Sharded State Management Architecture**
 
-The **InfiniSVM** database consists of **sharded state storage** across distributed nodes. Unlike **Solana’s 10MB account size limit**, this system **supports arbitrary account sizes**, dynamically optimizing data distribution.
+The **Solayer Chain** database consists of **sharded state storage** across distributed nodes. Unlike **Solana’s 10MB account size limit**, this system **supports arbitrary account sizes**, dynamically optimizing data distribution.
 
 ### **Database Node Components**
 Each **database node** consists of three core components:
@@ -43,7 +43,7 @@ By eliminating **traditional network bottlenecks**, RDMA ensures **high-throughp
 
 ## **Dynamic Load Balancing & Rebalancing Mechanism**
 
-To maintain **optimal performance**, **InfiniSVM** employs a **background rebalancing mechanism** that:
+To maintain **optimal performance**, **Solayer Chain** employs a **background rebalancing mechanism** that:
 
 **Monitors Account Access Patterns**  
    - Analyzes **historical memory access footprints** to identify **high-traffic accounts**.
@@ -63,7 +63,7 @@ This **adaptive approach** ensures **even workload distribution**, reducing **cr
 
 <br />
 
-By combining **sharded key-value storage** with **RDMA-powered cross-node memory access**, **InfiniSVM** achieves:
+By combining **sharded key-value storage** with **RDMA-powered cross-node memory access**, **Solayer Chain** achieves:
 
 - **Scalable, high-performance blockchain state management**.
 - **Reduced transaction latency via direct memory access**.

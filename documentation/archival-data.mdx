@@ -1,14 +1,14 @@
 ---
-title: "InfiniSVM Historical Data Access"
+title: "Solayer Chain Historical Data Access"
 description: "Access Solayer's archival data via Delta Sharing"
 ---
 
 # Historical Data Access
 
-Solayer provides historical InfiniSVM data access through **Delta Sharing**, an open protocol for secure, cross-platform data sharing. This allows you to access historical blockchain data, transaction records, and protocol analytics directly from your preferred tools and environments.
+Solayer provides historical Solayer Chain data access through **Delta Sharing**, an open protocol for secure, cross-platform data sharing. This allows you to access historical blockchain data, transaction records, and protocol analytics directly from your preferred tools and environments.
 
 <Info>
-This historical data is for **InfiniSVM Mainnet** only.
+This historical data is for **Solayer Chain Mainnet** only.
 </Info>
 
 ## Overview
@@ -29,12 +29,12 @@ Two tables are available through Delta Sharing:
 
 | Table | Description | Partition Column |
 |-------|-------------|------------------|
-| `transactions` | All InfiniSVM transaction records with execution results | `block_date` |
+| `transactions` | All Solayer Chain transaction records with execution results | `block_date` |
 | `blocks` | Block-level metadata including hashes and timestamps | `block_month` |
 
 ### Transactions Table
 
-The `transactions` table contains detailed records of all InfiniSVM transactions.
+The `transactions` table contains detailed records of all Solayer Chain transactions.
 
 | Column | Type | Description |
 |--------|------|-------------|

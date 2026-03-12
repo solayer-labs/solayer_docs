@@ -2,13 +2,13 @@
 title: "Microservice & Pipeline"
 ---
 
-The **InfiniSVM** transaction processing pipeline adopts a **microservices architecture**, decoupling **signature verification, deduplication, scheduling, banking, and storage** into independent services. This design enables **dynamic scaling, speculative execution, and reduced processing overhead**, ensuring **high throughput and consistency**.
+The **Solayer Chain** transaction processing pipeline adopts a **microservices architecture**, decoupling **signature verification, deduplication, scheduling, banking, and storage** into independent services. This design enables **dynamic scaling, speculative execution, and reduced processing overhead**, ensuring **high throughput and consistency**.
 
 <br />
 
 ## **Decoupling Transaction Processing with Microservices**
 
-Unlike traditional **monolithic blockchain architectures**, InfiniSVM decomposes key stages into **independent microservices** running across an **elastic compute fabric**:
+Unlike traditional **monolithic blockchain architectures**, Solayer Chain decomposes key stages into **independent microservices** running across an **elastic compute fabric**:
 
 1. **Signature Verification & Deduplication**  
    - Offloaded to **distributed microservices**, reducing bottlenecks at the execution layer.  
@@ -26,7 +26,7 @@ Unlike traditional **monolithic blockchain architectures**, InfiniSVM decomposes
 
 ## **Speculative Execution & Conflict Resolution**
 
-A key insight in **InfiniSVM** is that **most transactions do not require full re-execution** if they do not introduce **read-write conflicts**.  
+A key insight in **Solayer Chain** is that **most transactions do not require full re-execution** if they do not introduce **read-write conflicts**.  
 
 1. **Pre-Execution & Snapshotting**
    - Transactions are **speculatively executed**, capturing **intermediate execution snapshots** at **account access boundaries**.
@@ -52,4 +52,4 @@ This **pipeline architecture** and **microservices approach** significantly enha
 - **Higher transaction throughput** through **parallel speculative execution** and **adaptive scaling**.  
 - **Reduced latency** for **read-only transactions**, finalized at the network edge.
 
-By **decoupling execution into microservices**, leveraging **speculative pre-execution**, and **intelligently resolving conflicts**, InfiniSVM achieves **high-performance transaction processing** with **minimal contention and maximal efficiency**.
+By **decoupling execution into microservices**, leveraging **speculative pre-execution**, and **intelligently resolving conflicts**, Solayer Chain achieves **high-performance transaction processing** with **minimal contention and maximal efficiency**.

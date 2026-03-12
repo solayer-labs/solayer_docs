@@ -2,16 +2,16 @@
 title: "Cross-Chain Contract Calls"
 ---
 
-**Solayer** introduces a **bi-directional native bridge** and an advanced **cross-chain contract execution model** powered by **InfiniSVM**. This enables **seamless asset transfers, function calls, and atomic interactions between Solana and InfiniSVM**.
+**Solayer** introduces a **bi-directional native bridge** and an advanced **cross-chain contract execution model** powered by **Solayer Chain**. This enables **seamless asset transfers, function calls, and atomic interactions between Solana and Solayer Chain**.
 
 <br />
 
 ## **Bi-Directional Native Bridge**
 
-The **native bridge** inside the **sequencer** facilitates **message and asset transfers** between **Solana and InfiniSVM**, offering:
+The **native bridge** inside the **sequencer** facilitates **message and asset transfers** between **Solana and Solayer Chain**, offering:
 
 - **Re-org Resilience via an Insurance Fund**  
-  - If the **total value of relayed assets** (measured via an **oracle**) is **below the insurance fund size**, assets become **immediately available** on InfiniSVM.  
+  - If the **total value of relayed assets** (measured via an **oracle**) is **below the insurance fund size**, assets become **immediately available** on Solayer Chain.  
   - If the value exceeds the fund, assets are **released post-finalization** for added security.  
 
 - **Instant vs. Finalized Relays**  
@@ -22,7 +22,7 @@ The **native bridge** inside the **sequencer** facilitates **message and asset t
 
 ## **Cross-Chain Contract Execution via Account Mirroring**
 
-InfiniSVM introduces **cross-chain program calls** through **account mirroring**, where each **program and account** has a corresponding **Program Derived Address (PDA) on Solana**. This architecture enables:
+Solayer Chain introduces **cross-chain program calls** through **account mirroring**, where each **program and account** has a corresponding **Program Derived Address (PDA) on Solana**. This architecture enables:
 
 - **MainnetCall Instruction for Atomic Operations**  
   - Programs can **transfer funds, dispatch cross-chain function calls, and execute complex logic spanning both networks** in a **single atomic operation**.  
@@ -39,14 +39,14 @@ InfiniSVM introduces **cross-chain program calls** through **account mirroring**
 
 By **combining the bridge and cross-chain execution model**, developers can build solutions such as:
 - **Single Transaction Cross-Chain Swaps**  
-  - Execute a **Solana-InfiniSVM asset swap in one atomic transaction**.
+  - Execute a **Solana-Solayer Chain asset swap in one atomic transaction**.
   
 - **Cross-Chain Yield Vault Rebalancing**  
-  - Automatically **rebalance assets between Solana and InfiniSVM for optimal yield strategies**.
+  - Automatically **rebalance assets between Solana and Solayer Chain for optimal yield strategies**.
 
 - **Seamless Cross-Chain DeFi Interactions**  
   - Enable **liquidity pooling, lending, and staking** across **both networks** without fragmented liquidity.
 
 <br />
 
-The **InfiniSVM-powered cross-chain execution model** enables **secure, atomic, and re-org-resilient interactions between Solana and InfiniSVM**. By leveraging **account mirroring, deterministic execution, and a trust-minimized bridge**, it **enhances interoperability** while **maintaining performance and security**.
+The **Solayer Chain-powered cross-chain execution model** enables **secure, atomic, and re-org-resilient interactions between Solana and Solayer Chain**. By leveraging **account mirroring, deterministic execution, and a trust-minimized bridge**, it **enhances interoperability** while **maintaining performance and security**.

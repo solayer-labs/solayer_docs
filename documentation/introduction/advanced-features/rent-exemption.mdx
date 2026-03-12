@@ -2,18 +2,18 @@
 title: "Rent Exemption Compatibility"
 ---
 
-InfiniSVM uses **1% of Solana's rent** for account storage, making it **99% cheaper** to create accounts. However, this difference requires developers to use the correct instructions to avoid overpaying rent when creating tokens and accounts.
+Solayer Chain uses **1% of Solana's rent** for account storage, making it **99% cheaper** to create accounts. However, this difference requires developers to use the correct instructions to avoid overpaying rent when creating tokens and accounts.
 
 ## Why This Matters
 
 Solana programs can fetch rent in two ways:
 
-| Method | Behavior | Result on InfiniSVM |
+| Method | Behavior | Result on Solayer Chain |
 |--------|----------|---------------------|
-| `Rent::get()` syscall | Fetches rent from runtime | **Correct** - uses InfiniSVM's 1% rent |
+| `Rent::get()` syscall | Fetches rent from runtime | **Correct** - uses Solayer Chain's 1% rent |
 | `Rent::default()` | Uses hardcoded Solana values | **Wrong** - charges 100x too much |
 
-Instructions that rely on the **Rent sysvar account** internally use `Rent::from_account_info()`, which behaves like `Rent::default()` and returns Solana's hardcoded rent values. This causes **100x overpayment** on InfiniSVM.
+Instructions that rely on the **Rent sysvar account** internally use `Rent::from_account_info()`, which behaves like `Rent::default()` and returns Solana's hardcoded rent values. This causes **100x overpayment** on Solayer Chain.
 
 ## Token Program Instructions
 
@@ -84,7 +84,7 @@ async function createMint(
 ): Promise<PublicKey> {
   const mint = Keypair.generate();
 
-  // Query rent from the chain - gets InfiniSVM's correct rent
+  // Query rent from the chain - gets Solayer Chain's correct rent
   const lamports = await connection.getMinimumBalanceForRentExemption(MINT_SIZE);
 
   const transaction = new Transaction().add(
@@ -240,7 +240,7 @@ fn get_rent_correct() -> Result<Rent, ProgramError> {
 
 // INCORRECT: Returns hardcoded Solana rent values
 fn get_rent_wrong() -> Rent {
-    Rent::default() // DO NOT USE - ignores InfiniSVM's rent
+    Rent::default() // DO NOT USE - ignores Solayer Chain's rent
 }
 ```
 
@@ -272,4 +272,4 @@ fn get_rent_wrong() -> Rent {
 - `InitializeAccount`
 - `InitializeMultisig`
 
-By following these guidelines, your applications will correctly use InfiniSVM's 99% cheaper rent and avoid overpaying for account creation.
+By following these guidelines, your applications will correctly use Solayer Chain's 99% cheaper rent and avoid overpaying for account creation.

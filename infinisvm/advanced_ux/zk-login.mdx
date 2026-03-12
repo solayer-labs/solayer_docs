@@ -2,7 +2,7 @@
 title: "ZK-Login"
 ---
 
-**InfiniSVM** introduces **ZK-Login**, allowing users to **authenticate and sign transactions using OAuth providers** such as **Google, X (formerly Twitter), Reddit, and others**. This enables **seamless Web2 onboarding** without requiring users to manage **private keys directly**.
+**Solayer Chain** introduces **ZK-Login**, allowing users to **authenticate and sign transactions using OAuth providers** such as **Google, X (formerly Twitter), Reddit, and others**. This enables **seamless Web2 onboarding** without requiring users to manage **private keys directly**.
 
 <br />
 
@@ -16,18 +16,18 @@ ZK-Login leverages **OAuth-based authentication** combined with **zero-knowledge
 
 2. **Zero-Knowledge Proof Generation**  
    - Instead of exposing OAuth credentials, the system **generates a ZKP** proving **ownership of the OAuth account**.  
-   - This proof is **used to derive a deterministic InfiniSVM wallet address**.
+   - This proof is **used to derive a deterministic Solayer Chain wallet address**.
 
 3. **Transaction Signing & Submission**  
-   - The ZKP-generated key **signs InfiniSVM transactions**.
-   - The transaction is broadcast to the **InfiniSVM network**, where validators **verify the ZKP** to confirm authenticity.
+   - The ZKP-generated key **signs Solayer Chain transactions**.
+   - The transaction is broadcast to the **Solayer Chain network**, where validators **verify the ZKP** to confirm authenticity.
 
 <br />
 
 ## **Advantages of ZK-Login**
 
 - **Seamless User Experience**  
-   - Users can **interact with InfiniSVM** without managing **private keys or seed phrases**.  
+   - Users can **interact with Solayer Chain** without managing **private keys or seed phrases**.  
 
 - **Web2 Compatibility**  
    - Leverages **existing OAuth authentication** for **frictionless onboarding**.  
@@ -36,7 +36,7 @@ ZK-Login leverages **OAuth-based authentication** combined with **zero-knowledge
    - OAuth credentials are **never exposed**; only the **ZKP** is submitted for verification.  
 
 - **Deterministic Wallet Address**  
-   - The same **OAuth login always maps to the same InfiniSVM wallet**, ensuring **persistence across sessions**.  
+   - The same **OAuth login always maps to the same Solayer Chain wallet**, ensuring **persistence across sessions**.  
 
 <br />
 
@@ -53,4 +53,4 @@ ZK-Login leverages **OAuth-based authentication** combined with **zero-knowledge
 
 <br />
 
-**InfiniSVM’s ZK-Login** brings **Web2-style authentication** to blockchain, enabling **OAuth-based logins** without compromising **security or decentralization**. By combining **zero-knowledge proofs** with **deterministic key derivation**, ZK-Login ensures **seamless user onboarding, private key abstraction, and scalable authentication** for **next-generation decentralized applications**.
+**Solayer Chain’s ZK-Login** brings **Web2-style authentication** to blockchain, enabling **OAuth-based logins** without compromising **security or decentralization**. By combining **zero-knowledge proofs** with **deterministic key derivation**, ZK-Login ensures **seamless user onboarding, private key abstraction, and scalable authentication** for **next-generation decentralized applications**.

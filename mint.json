@@ -31,7 +31,7 @@
             "url": "susd"
         },
         {
-            "name": "Emerald Card",
+            "name": "Solayer Pay",
             "url": "emerald-card"
         },
         {
@@ -69,7 +69,7 @@
         {
             "group": "Introduction",
             "pages": [
-                "documentation/infinisvm",
+                "documentation/solayer-chain",
                 "documentation/introduction/why-hardware-acceleration",
                 "documentation/devnet/explorer",
                 "documentation/devnet/faucet"
@@ -198,7 +198,7 @@
             ]
         },
         {
-            "group": "Emerald Card Overview",
+            "group": "Solayer Pay Overview",
             "pages": [
                 "emerald-card/overview",
                 "emerald-card/card"
@@ -259,7 +259,11 @@
     "redirects": [
         {
             "source": "/",
-            "destination": "/documentation/infinisvm"
+            "destination": "/documentation/solayer-chain"
+        },
+        {
+            "source": "/documentation/infinisvm",
+            "destination": "/documentation/solayer-chain"
         }
     ]
 }

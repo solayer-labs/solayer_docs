@@ -95,10 +95,6 @@
         {
             "group": "Advanced Features",
             "pages": [
-                "documentation/introduction/advanced-features/hooks",
-                "documentation/introduction/advanced-features/jumbo-transactions",
-                "documentation/introduction/advanced-features/cross-chain-calls",
-                "documentation/introduction/advanced-features/wallet-integration",
                 "documentation/introduction/advanced-features/rent-exemption"
             ]
         },

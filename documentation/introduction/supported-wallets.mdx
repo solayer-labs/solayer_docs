@@ -1,0 +1,84 @@
+---
+title: "Supported Wallets"
+description: "Wallets compatible with Solayer Chain"
+---
+
+Solayer Chain is SVM-compatible, which means any Solana-compatible wallet works out of the box. Among them, **WalletConnect (Reown)** and **Nightly** offer native integration support.
+
+---
+
+## WalletConnect (Reown AppKit)
+
+[Reown AppKit](https://reown.com/appkit) is the standard wallet connection protocol supporting Solana and SVM-based chains, including Solayer Chain.
+
+**Supported frameworks:** React, Next.js, Vue, JavaScript, React Native
+
+### Quick Setup
+
+1. Get a Project ID from [Reown Dashboard](https://dashboard.reown.com)
+2. Install the SDK for your framework
+3. Configure with Solana network settings
+
+<CardGroup cols={2}>
+  <Card
+    title="Reown AppKit — Solana"
+    icon="link"
+    href="https://docs.reown.com/appkit/networks/solana#solana"
+  >
+    Framework-specific setup guides for AppKit with Solana
+  </Card>
+  <Card
+    title="Solana Adapter (Advanced)"
+    icon="plug"
+    href="https://docs.reown.com/advanced/providers/solana-adapter#solana-adapter"
+  >
+    Lower-level Solana adapter for Wallet Adapter library users
+  </Card>
+</CardGroup>
+
+<Note>
+  If you're new to the Wallet Adapter library, Reown recommends using **AppKit** directly for a simpler multichain setup.
+</Note>
+
+---
+
+## Nightly Wallet
+
+[Nightly](https://nightly.app) is a non-custodial wallet with native Solana and SVM support, compatible with Solayer Chain.
+
+### Detection
+
+Nightly follows the [Wallet Standard](https://github.com/wallet-standard/wallet-standard), making it detectable via `@wallet-standard/core`.
+
+```bash
+npm install @wallet-standard/core
+# or
+yarn add @wallet-standard/core
+```
+
+```javascript
+import { getWallets } from '@wallet-standard/core'
+import { isWalletAdapterCompatibleStandardWallet } from '@solana/wallet-adapter-base'
+
+const { get } = getWallets()
+const allWallets = get()
+
+// Filter for Solana-compatible wallets (includes Nightly)
+const solanaWallets = allWallets.filter(isWalletAdapterCompatibleStandardWallet)
+```
+
+You can also access Nightly directly via `window.nightly.solana`.
+
+<Card
+  title="Nightly Wallet Docs — Solana Detection"
+  icon="book"
+  href="https://docs.nightly.app/docs/solana/solana/detection"
+>
+  Full guide for detecting and integrating Nightly Wallet on Solana
+</Card>
+
+---
+
+## Wallet Compatibility
+
+Since Solayer Chain uses a DApp-first model, wallets don't need to natively support the chain for transaction execution. See [Wallet-Agnostic Integration](/documentation/introduction/advanced-features/wallet-integration) for details.

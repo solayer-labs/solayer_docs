@@ -71,6 +71,7 @@
             "pages": [
                 "documentation/solayer-chain",
                 "documentation/introduction/why-hardware-acceleration",
+                "documentation/introduction/supported-wallets",
                 "documentation/devnet/explorer",
                 "documentation/devnet/faucet"
             ]

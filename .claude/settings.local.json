@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(GH_CONFIG_DIR=/Users/duke/.gh_config gh api repos/de-duke/card/contents/users_to_supabase.py | python3 -c \"import sys,json,base64; print\\(base64.b64decode\\(json.load\\(sys.stdin\\)['content']\\).decode\\(\\)\\)\")",
+      "Bash(GH_CONFIG_DIR=/Users/duke/.gh_config gh api repos/de-duke/card/git/trees/8961b60a43c8d87a8dca5081facafa7c29e0c77c?recursive=1 | python3 -c \"import sys,json; [print\\(f['path']\\) for f in json.load\\(sys.stdin\\)['tree']]\")",
+      "Bash(GH_CONFIG_DIR=/Users/duke/.gh_config gh api \"repos/de-duke/card/contents/scripts\" | python3 -c \"import sys,json; [print\\(f['name']\\) for f in json.load\\(sys.stdin\\)]\")",
+      "Bash(GH_CONFIG_DIR=/Users/duke/.gh_config gh api \"repos/de-duke/card/contents/.github\" | python3 -c \"import sys,json; [print\\(f['name']\\) for f in json.load\\(sys.stdin\\)]\")",
+      "Bash(sleep 60 && GH_CONFIG_DIR=/Users/duke/.gh_config gh run view 23039032306 --repo de-duke/card 2>&1)"
+    ]
+  }
+}

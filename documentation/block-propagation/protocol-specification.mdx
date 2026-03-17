@@ -5,7 +5,7 @@ Solayer Chain uses gRPC to communicate for synchronization purposes, including s
 In addition to gRPC streaming, Solayer Chain also uses HTTP to serve snapshots that allows for verifier and RPC nodes to sync. The HTTP service is expected to be exposed to public users, with CDN and PCDN enabled. 
 
 ## Protobuf Definition
-The protobuf definition below specifies the gRPC service interface and message formats used for Solayer Chain synchronization. The protocol uses bincode+zstd for transaction data to optimize network bandwidth and includes comprehensive metadata to support both streaming and repair operations. 
+The protobuf definition below specifies the gRPC service interface and message formats used for Solayer Chain synchronization. The protocol uses bincode+zstd for transaction data to optimize network bandwidth and includes detailed metadata to support both streaming and repair operations.
 
 Key methods and streaming endpoints:
 - **GetLatestSlot**: Retrieves current slot information for synchronization (equivalent to Solana RPC `getSlot` with `confirmed` finality).

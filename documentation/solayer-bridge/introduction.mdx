@@ -30,13 +30,13 @@ We chose to develop sBridge in-house because existing bridging solutions lacked 
 
 Unlike other bridges, we also have a fully database-less implementation for sBridge. By maximizing the PDA of SVM, we manage to not store anything locally, even for indexing bridge transactions purpose. This helps reduce security back possibilities and opens for more development opportunities on top of it.
 
-The unique cross-chain call functionality also unlocks new capabilities in interchain operability, enabling atomic transactions across multiple chains in a single bundled operation. The architecture is also designed with future extensibility in mind, supporting dynamic validator sets, additional message types, and programmable token minting.
+The unique cross-chain call functionality also enables new capabilities in interchain operability, allowing atomic transactions across multiple chains in a single bundled operation. The architecture is also designed with future extensibility in mind, supporting dynamic validator sets, additional message types, and programmable token minting.
 
 
 ## Key Features
 
 - **Secure Asset Transfers:** Ensure asset safety across different SVM chains
-- **Cross-chain Execution:** Support for atomic transactions and seamless multi-chain interactions
+- **Cross-chain Execution:** Support for atomic transactions and multi-chain interactions
 - **Guardian Network:** Decentralized validation through threshold signature aggregation
 - **No-database Design:** By maximizing SVM PDA, the system does not have any centralized database involved at any point
 
@@ -101,4 +101,4 @@ This enables **multi-leg transactions** like:
 
 ---
 
-This documentation provides a comprehensive guide to understanding and implementing the Solayer Bridge effectively.
+This documentation provides a full guide to understanding and implementing the Solayer Bridge effectively.

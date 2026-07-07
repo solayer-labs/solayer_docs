@@ -121,6 +121,15 @@
             ]
         },
         {
+            "group": "LAYER Staking",
+            "pages": [
+                "documentation/staking/overview",
+                "documentation/staking/run-a-validator",
+                "documentation/staking/delegate",
+                "documentation/staking/reference"
+            ]
+        },
+        {
             "group": "Solayer Bridge",
             "pages": [
                 "documentation/solayer-bridge/introduction",

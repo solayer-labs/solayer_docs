@@ -1,0 +1,314 @@
+---
+title: "Run a Validator"
+description: "Run a devnet staking node and register as a validator"
+---
+
+<Note>
+This page targets **devnet**. For a mainnet-alpha RPC node (different
+endpoints and build flags), see
+[Mainnet Alpha Node](/documentation/run-a-node/mainnet-alpha). Start with the
+[LAYER Staking Overview](/documentation/staking/overview) if you haven't read
+it yet.
+</Note>
+
+## What "running a staking node" means here
+
+There are **two separate things** that together make you a "validator":
+
+1. **Run an `rpc-v2` node** — a follower RPC that syncs from the project's
+   central sequencer over gRPC and serves Solana-compatible JSON-RPC. This is
+   what you operate as infrastructure. The node binary itself has **no
+   built-in staking logic**.
+2. **Hold a "validator identity" pubkey** that the project's admin has
+   registered in the `infini-stake` program. That on-chain registration is
+   what makes the identity eligible to be delegated to.
+
+The build/run steps below set up #1. The
+[registration step](#get-your-identity-registered-as-a-validator) sets up #2.
+[Self-delegating](#self-delegate-to-start-earning) makes the identity
+actually earn.
+
+<Info>
+**Economics callout.** Your on-chain income has **two** parts: rewards on
+your **own self-delegation**, plus the **commission** (0–100%, in bps) you
+take out of *other* delegators' rewards. The admin sets your initial
+commission at registration; you change it any time via `set_commission`
+(future rewards only) and withdraw what's accrued via `claim_commission`.
+Any extra off-chain compensation for running infrastructure is separate.
+</Info>
+
+## Build the node
+
+The node software lives in the
+[solayer-rpc repository](https://github.com/solayer-labs/solayer-rpc); the
+required toolchain is pinned in its `rust-toolchain.toml`. For devnet, build
+without the `mainnet` feature:
+
+```bash
+git clone https://github.com/solayer-labs/solayer-rpc
+cd solayer-rpc
+rustup show                          # pulls the pinned Rust toolchain
+cargo build --release -p rpc-v2
+```
+
+The binary lands at `target/release/rpc-v2`. The sequencer binary
+(`target/release/sequencer`) is for the project; you don't run it.
+
+**System requirements (rough guidance):**
+- Linux x86_64 (macOS works for development).
+- 8 GB RAM or more (16 GB comfortable).
+- 200 GB+ disk for slots/chaindata growth on devnet; consider a dedicated
+  SSD/NVMe.
+- Stable public IPv4 if you want other RPC nodes to peer with you (set
+  `--grpc-advertise-addr`).
+
+## Generate your validator identity keypair
+
+The "validator identity" is a Solana keypair you control. It's used by the
+staking program (never by the node binary) for three things:
+
+- The admin registers its **public key** via
+  `register_validator(identity, commission_bps)`.
+- You can **self-delegate** to it from any wallet (using its secret key is
+  convenient but not required — anyone holding the stake token can delegate
+  to this identity).
+- It is the **only** signer allowed to call `set_commission` (change your
+  commission rate) and `claim_commission` (mint accrued commission to your own
+  token account) — both bound to the keypair by the `["validator", identity]`
+  PDA seeds, and commission pays out to an ATA this identity owns. So the
+  **secret key is required** to manage and collect commission, not just
+  convenient.
+
+Generate with the Solana CLI:
+
+```bash
+solana-keygen new \
+  --no-bip39-passphrase \
+  -o ~/.config/solana/infinisvm-validator.json
+solana-keygen pubkey ~/.config/solana/infinisvm-validator.json
+# → this pubkey is what you'll send to the admin for registration
+```
+
+<Warning>
+Keep the secret key safe. It is your validator identity for as long as
+you're in the allowlist. Deactivation is **permanent** — if you lose the
+key, the admin can register you under a new pubkey, but the old one cannot
+be reactivated.
+</Warning>
+
+<Note>
+The node software (`rpc-v2`) does **not** read this keypair. There is no
+`--identity-keypair` flag on `rpc-v2`. Keep it separate from any node-host
+credentials.
+</Note>
+
+## Run rpc-v2 against the devnet sequencer
+
+Minimal invocation, connecting to the project's devnet sequencer
+(`devnet-seed-1.solayer.org`). Replace `<SEQUENCER_PUBKEY>` and `<YOUR_PUBLIC_IP>` with
+real values; ask the team for the sequencer pubkey.
+
+```bash
+mkdir -p /var/lib/infinisvm/{slots,chaindata,logs}
+
+RUST_LOG=info ./target/release/rpc-v2 \
+  --sequencer-grpc-server-addr http://devnet-seed-1.solayer.org:5005 \
+  --sequencer-http-server-addr http://devnet-seed-1.solayer.org:6005 \
+  --sequencer-rpc-server-addr  http://devnet-seed-1.solayer.org:8899 \
+  --rpc-registry-addrs         http://devnet-seed-1.solayer.org:6005 \
+  --sequencer-pubkey           <SEQUENCER_PUBKEY> \
+  --grpc-listen-addr           0.0.0.0:15005 \
+  --grpc-advertise-addr        <YOUR_PUBLIC_IP>:15005 \
+  --listen-addr                0.0.0.0:18899 \
+  --metric-addr                127.0.0.1:3002 \
+  --local-slots-path           /var/lib/infinisvm/slots \
+  --local-db-path              /var/lib/infinisvm/chaindata \
+  --start-slot                 latest \
+  2>&1 | tee /var/lib/infinisvm/logs/rpc-v2.log
+```
+
+**What each flag does (highlights):**
+
+- `--sequencer-grpc-server-addr` — primary gRPC upstream for block sync.
+- `--sequencer-http-server-addr` / `--sequencer-rpc-server-addr` — snapshot
+  bootstrap and JSON-RPC fallback to the sequencer.
+- `--rpc-registry-addrs` — registry to register yourself with, comma-separated
+  if you want to point at multiple.
+- `--sequencer-pubkey` — required; rpc-v2 verifies the sequencer's
+  finalization signature with this. A mismatch makes the node refuse to
+  finalize blocks.
+- `--grpc-listen-addr` — where your node serves gRPC sync to *downstream*
+  subscribers (peers, indexers).
+- `--grpc-advertise-addr` — the public address you announce to the registry
+  so other nodes can dial you. Set to your public IP/DNS if exposed.
+- `--listen-addr` — your Solana-compatible JSON-RPC for clients (web3.js,
+  Anchor, etc.).
+- `--metric-addr` — Prometheus metrics endpoint.
+- `--start-slot latest` — start tailing from the current tip. Avoid
+  `checkpoint` (would need S3 access to `s3://solayer-devnet`).
+
+### Optional: Cassandra indexer + S3
+
+These are **not required** for a follower that just syncs + serves RPC. They
+add:
+
+- `--cassandra-hosts host1:9042,host2:9042 --cassandra-replication-factor N` —
+  enables indexed historical queries (transaction-by-signature, etc.). Stand
+  up your own ScyllaDB/Cassandra cluster if you need this.
+- `--s3-path`, `--s3-access-key-id` (env `S3_ACCESS_KEY_ID`), `--s3-secret-key`
+  (env `S3_SECRET_KEY`), `--s3-region` — for snapshot/slot backfill from S3.
+  Project-internal on devnet today; skip unless you've been given creds.
+
+### systemd unit (example)
+
+```ini
+# /etc/systemd/system/rpc-v2.service
+[Unit]
+Description=infinisvm rpc-v2
+After=network-online.target
+
+[Service]
+User=infinisvm
+WorkingDirectory=/opt/infinisvm
+Environment=RUST_LOG=info
+ExecStart=/opt/infinisvm/target/release/rpc-v2 \
+  --sequencer-grpc-server-addr http://devnet-seed-1.solayer.org:5005 \
+  --sequencer-http-server-addr http://devnet-seed-1.solayer.org:6005 \
+  --sequencer-rpc-server-addr  http://devnet-seed-1.solayer.org:8899 \
+  --rpc-registry-addrs         http://devnet-seed-1.solayer.org:6005 \
+  --sequencer-pubkey           <SEQUENCER_PUBKEY> \
+  --grpc-listen-addr           0.0.0.0:15005 \
+  --grpc-advertise-addr        <YOUR_PUBLIC_IP>:15005 \
+  --listen-addr                0.0.0.0:18899 \
+  --metric-addr                127.0.0.1:3002 \
+  --local-slots-path           /var/lib/infinisvm/slots \
+  --local-db-path              /var/lib/infinisvm/chaindata \
+  --start-slot                 latest
+Restart=always
+RestartSec=5
+LimitNOFILE=200000
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now rpc-v2
+sudo journalctl -fu rpc-v2
+```
+
+## Verify the node is syncing
+
+**JSON-RPC `getSlot` should advance**:
+
+```bash
+watch -n 1 'curl -s http://127.0.0.1:18899 \
+  -H content-type:application/json \
+  -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"getSlot\",\"params\":[]}"'
+```
+
+Compare against the public sequencer:
+
+```bash
+curl -s http://devnet-seed-1.solayer.org:8899 \
+  -H content-type:application/json \
+  -d '{"jsonrpc":"2.0","id":1,"method":"getSlot","params":[]}'
+```
+
+Your lag should be small (single-digit slots in steady state) once caught up.
+
+**Prometheus metrics**:
+
+```bash
+curl -s http://127.0.0.1:3002/metrics | head -50
+```
+
+**Peer/registry status** (uses the `registry-probe` helper binary from the
+same repo):
+
+```bash
+./target/release/registry-probe registry --addr http://devnet-seed-1.solayer.org:6005
+./target/release/registry-probe node --grpc http://127.0.0.1:15005
+```
+
+**Common failure modes:**
+
+| Symptom | Likely cause |
+|---|---|
+| Node exits with "signature verification failed" | Wrong `--sequencer-pubkey`. Re-fetch from the team. |
+| `failed to connect to gRPC` | Sequencer host/port unreachable. Check egress to `devnet-seed-1.solayer.org:5005`. |
+| Slot frozen / never advances | Upstream momentarily down, or `--start-slot` is in the wrong mode. Try `latest`. |
+| Disk fills up | Slots/chaindata grow. Mount a larger volume; rotate logs. |
+
+## Get your identity registered as a validator
+
+Validator allowlisting is admin-controlled and off-chain. Once your node is
+syncing and your identity keypair is ready:
+
+1. **Contact the project team.** Send them:
+   - Your validator identity **pubkey**.
+   - Your node's `--grpc-advertise-addr` so they can verify it's reachable.
+   - Any operator metadata they ask for (contact, name to display, etc.).
+
+2. **Admin runs `register_validator(identity, commission_bps)`.** This creates
+   a `Validator` PDA at seeds `["validator", identity]` with `active = true`
+   and your commission rate set to `commission_bps` (basis points, capped at
+   `MAX_COMMISSION_BPS = 10000` = 100%; otherwise rejected with
+   `InvalidCommission`). You can change the rate later via `set_commission`.
+
+3. **Verify on-chain.** Once registered:
+
+   ```ts
+   import * as anchor from "@coral-xyz/anchor";
+   import { Connection, PublicKey } from "@solana/web3.js";
+   import IDL from "./infini_stake.json"; // download: /documentation/staking/infini_stake.json
+
+   const STAKE_PROGRAM_ID = new PublicKey(
+     "mi7DC6qnESgL6TWdQn7xJBKqWwv2YiZVeoVuhpXhLvz",
+   );
+   const l2 = new Connection("https://devnet-rpc.solayer.org", "confirmed");
+   const provider = new anchor.AnchorProvider(
+     l2, new anchor.Wallet(anchor.web3.Keypair.generate()), {});
+   const program = new anchor.Program(IDL as anchor.Idl, provider);
+
+   const myIdentity = new PublicKey("<your validator identity pubkey>");
+   const [validatorPda] = PublicKey.findProgramAddressSync(
+     [Buffer.from("validator"), myIdentity.toBuffer()],
+     STAKE_PROGRAM_ID,
+   );
+   const v = await program.account.validator.fetch(validatorPda);
+   console.log("active:", v.active, "total_stake:", v.totalStake.toString());
+   ```
+
+<Note>
+The node binary doesn't know about — and isn't notified by — this
+registration. It's purely an on-chain effect.
+</Note>
+
+## Self-delegate to start earning
+
+Your on-chain staking income has two parts: rewards on your own
+self-delegation, plus the commission you take from any other delegators (set
+by the admin at registration, adjustable via `set_commission`, collected via
+`claim_commission`). To earn on your own stake, follow
+[Delegate LAYER](/documentation/staking/delegate) from your validator's
+perspective:
+
+1. Acquire **LAYER on the L2** (devnet mint in the
+   [overview](/documentation/staking/overview#network-endpoints--addresses)).
+   LAYER is L2-native, so you may already hold it there; if what you hold is
+   the **wrapped** form on Solana (L1),
+   [bridge it back to L2](/documentation/staking/delegate#bridge-wrapped-layer-l1-to-l2)
+   first.
+2. **Delegate to your own identity pubkey** — the `validator_identity` you
+   pass to the delegation PDA is your validator's pubkey; the `owner`
+   (signer) can be the same keypair or a different wallet that holds the
+   stake token.
+
+After delegation the rewards accumulate continuously and you can `claim` to
+your wallet whenever you want.
+
+Your **commission** on *other* delegators' stake accrues separately — mint it
+to your own token account any time with `claim_commission` (see the
+[reference](/documentation/staking/reference)).

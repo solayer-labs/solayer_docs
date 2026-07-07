@@ -1,0 +1,94 @@
+---
+title: "Staking Reference"
+description: "PDA seeds, instruction accounts, error codes, and FAQ"
+---
+
+## PDA seeds & instruction account checklist
+
+**PDA seeds (all under the staking program):**
+
+| Account | Seeds |
+|---|---|
+| `Config` (singleton) | `["config"]` |
+| `Validator` | `["validator", validator_identity]` |
+| `StakeDelegation` (your position) | `["delegation", owner, validator_identity]` |
+| `stake_vault` | ATA of the `Config` PDA for `stake_mint` (also stored in `Config.stake_vault`) |
+
+**Instruction account checklist:**
+
+| Instruction | Accounts |
+|---|---|
+| `delegate(amount)` | config, validator*, delegation, ownerTokenAccount, stakeVault, stakeMint, owner(signer), systemProgram, tokenProgram |
+| `claimRewards()` | config, validator, delegation, ownerTokenAccount, stakeMint, owner(signer), tokenProgram |
+| `requestUnstake(amount)` | config, validator, delegation, ownerTokenAccount, stakeMint, owner(signer), tokenProgram |
+| `completeUnstake()` | config, delegation, stakeVault, ownerTokenAccount, owner(signer), tokenProgram |
+
+\* validator must be **active** for `delegate`.
+
+**Validator-operator instructions** — signed by the validator **identity**
+wallet, not the admin (the `["validator", identity]` seeds bind the signer):
+
+| Instruction | Accounts |
+|---|---|
+| `setCommission(newCommissionBps)` | config, validator, identity(signer) |
+| `claimCommission()` | config, validator, identityTokenAccount, stakeMint, identity(signer), tokenProgram |
+
+Admin-only instructions (not used directly by operators or delegators):
+`initialize`, `set_apy`, `propose_admin`, `accept_admin`,
+`register_validator`, `deactivate_validator`.
+
+## Error codes
+
+| Error | Meaning / fix |
+|---|---|
+| `InvalidAmount` | Amount was `0`, or unstake amount exceeded your stake. |
+| `ValidatorInactive` | The validator was deactivated — you can't add new stake to it. (You can still claim and unstake.) |
+| `PendingUnstakeExists` | You already have a cooldown in flight on this position. Complete it first. |
+| `NoPendingUnstake` | `completeUnstake` with nothing pending. |
+| `CooldownNotElapsed` | `completeUnstake` called before the 7-day cooldown finished. |
+| `NotAdmin` | Admin-only path called by non-admin (shouldn't hit this as an operator/delegator). |
+| `InvalidCommission` | `register_validator` / `set_commission` got a rate above 100% (`> 10000` bps). |
+| `InvalidApy` / `AlreadyInactive` / `Overflow` | Admin-side or near-impossible cases. |
+
+## FAQ
+
+- **Do I have to run a node to delegate?** No. Delegators only need LAYER on
+  the L2 and a wallet. Running a node is for operators who want to be
+  registered as a validator.
+- **Do I earn from other people's delegations?** Yes — as a validator you take
+  a **commission** (0–100%, in bps) out of your delegators' rewards. The admin
+  sets your initial rate at registration; you can change it any time with
+  `set_commission` (future rewards only) and mint what's accrued to your own
+  token account with `claim_commission`.
+- **Do I earn on stake that's in cooldown?** No. From the moment you
+  `requestUnstake`, that portion stops accruing. Your remaining `amount`
+  keeps earning (if the validator is still active).
+- **What if my validator gets deactivated?** Your rewards freeze at the
+  deactivation point, but you can still `claimRewards` what accrued and
+  `requestUnstake` / `completeUnstake` normally. To keep earning, unstake and
+  delegate to an active validator. Deactivation is permanent — the operator
+  would have to be re-registered under a fresh identity pubkey.
+- **Can I delegate to several validators?** Yes — one `StakeDelegation` per
+  validator, all independent. Repeat the
+  [delegate flow](/documentation/staking/delegate#delegate) with each
+  validator's identity.
+- **Where do rewards land?** Directly in your LAYER ATA, on claim and
+  on every `delegate` / `requestUnstake` (which settle pending first).
+- **Can I cancel a pending unstake?** No (v1). Wait out the cooldown,
+  withdraw, then re-delegate if you want back in.
+- **My rpc-v2 node serves a different JSON-RPC port than the public devnet
+  RPC. Do I have to use the public one for staking txs?** No. Once your node
+  is caught up, point your client at `http://<your-node>:18899` instead of
+  `https://devnet-rpc.solayer.org` — it's the same network.
+
+## See also
+
+- Bridge SDK: [`@solayer-labs/bridge-sdk`](https://www.npmjs.com/package/@solayer-labs/bridge-sdk)
+  on npm, and [Solayer Bridge](/documentation/solayer-bridge/introduction) in
+  these docs.
+- Node software: the
+  [solayer-rpc repository](https://github.com/solayer-labs/solayer-rpc)
+  (`rpc-v2`, `registry-probe`).
+- Staking program (`infini-stake`): program ID
+  `mi7DC6qnESgL6TWdQn7xJBKqWwv2YiZVeoVuhpXhLvz`; IDL:
+  [`infini_stake.json`](/documentation/staking/infini_stake.json).

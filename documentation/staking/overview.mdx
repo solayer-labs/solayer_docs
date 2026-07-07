@@ -1,0 +1,112 @@
+---
+title: "LAYER Staking Overview"
+description: "How LAYER staking works on the Solayer chain (devnet)"
+---
+
+<Warning>
+**Status: pre-launch.** The staking program (`infini-stake`, ID
+`mi7DC6qnESgL6TWdQn7xJBKqWwv2YiZVeoVuhpXhLvz`) is **not yet
+deployed/initialized on devnet**. The node-run and bridge steps are executable
+today; the `delegate` / `claim` / `unstake` flows light up once the program is
+deployed and initialized. Values that only exist post-launch (live `Config`
+values, validator identities, etc.) are marked **TBD** or as `<placeholder>`;
+token/bridge addresses are **devnet** values.
+</Warning>
+
+This section covers how to **run a staking node** (operator) and how to
+**stake LAYER to a validator** (delegator) on the Solayer chain.
+
+<Info>
+The Solayer chain is SVM-compatible — `@solana/web3.js`, `@solana/spl-token`,
+and `@coral-xyz/anchor` work against the L2 RPC exactly as they do on Solana.
+</Info>
+
+| If you're a… | Read |
+|---|---|
+| Node operator who wants to run a validator | This page, then [Run a Validator](/documentation/staking/run-a-validator) |
+| Token holder who wants to delegate | This page, then [Delegate LAYER](/documentation/staking/delegate) |
+| Integrator / debugging | [Reference](/documentation/staking/reference) |
+
+## How staking works
+
+- You stake **one SPL token** — **LAYER**, the stake token. It is both the
+  asset you stake and the asset you earn rewards in. There is no separate
+  reward token.
+- You **delegate** your tokens to a **validator** (an operator the project has
+  registered). You can split across several validators; each `(you, validator)`
+  pair is an independent position.
+- Rewards accrue **continuously** at the gross APY the admin sets, and are
+  **minted directly to your wallet** when you claim. No epochs, no manual
+  compounding.
+- Each validator charges a **commission** (0–100%, set in basis points) on its
+  delegators' rewards, so your *effective* APY is `apy * (1 - commission)`. The
+  admin sets a validator's initial rate at registration; the validator can
+  change it any time via `set_commission` (only future rewards are affected)
+  and collects it on-chain via `claim_commission`.
+- Unstaking has a **cooldown** (7 days by default). You request, wait, then
+  withdraw. The portion in cooldown stops earning immediately.
+
+The staking program (`infini-stake`) runs **on the L2**, and it accepts the
+**L2-native LAYER mint**. LAYER's home chain is the L2 — it is a
+Solayer-native token, not a Solana token bridged in — so if you already hold
+LAYER on the L2 you can delegate straight away, no bridging needed. Only
+holders of the **wrapped** form on Solana (L1) have to
+[bridge it back](/documentation/staking/delegate#bridge-wrapped-layer-l1-to-l2)
+first.
+
+A "validator" in this program is just a registered pubkey on-chain — an
+**identity**. The node software (`rpc-v2`) does not sign anything for the
+staking program; the admin allowlists who counts as a validator out-of-band.
+Running a node is the *service* that earns you a spot on that allowlist.
+
+### Lifecycle at a glance
+
+```
+  (L1) wrapped LAYER ──bridge──▶ (L2) hold LAYER ──delegate──▶ earning rewards
+   (skip if you already hold                                          │
+    LAYER on the L2)            claim_rewards ◀── anytime ────────────┤
+                                                                      │
+   withdrawn ◀── complete_unstake ◀── wait 7d ◀── request_unstake ────┘
+```
+
+## Network endpoints & addresses
+
+| Thing | Value |
+|---|---|
+| L1 RPC (Solana devnet) | `https://api.devnet.solana.com` |
+| L2 RPC (Solayer devnet, public) | `https://devnet-rpc.solayer.org` |
+| L2 explorer | `https://explorer.solayer.org` |
+| **Sequencer gRPC** (rpc-v2 upstream) | `http://devnet-seed-1.solayer.org:5005` |
+| **Sequencer HTTP registry** | `http://devnet-seed-1.solayer.org:6005` |
+| **Sequencer JSON-RPC** (upstream fallback) | `http://devnet-seed-1.solayer.org:8899` |
+| Sequencer pubkey (for signature verification) | **TBD** — request from the team |
+| Bridge program (both chains) | `6kpxYKjqe8z66hnDHbbjhEUxha46cnz2UqrneGECmFBg` |
+| Bridge handler PDA (same address on both chains) | `55uVZhH3jk95dLdnsJwMAG72pecMwa8MTjVH4ni7osBy` |
+| Bridge SDK (npm) | `@solayer-labs/bridge-sdk` |
+| Staking program (`infini-stake`, L2) | `mi7DC6qnESgL6TWdQn7xJBKqWwv2YiZVeoVuhpXhLvz` |
+| **Stake token: LAYER** — native **L2** mint (devnet) | `LAYER4xPpTCb3QL8S9u41EAhAX7mhBn8Q6xMTwY2Yzc` (9 decimals) |
+| Wrapped LAYER — **L1** mint (devnet, bridge-derived) | `CJYj22nRQ7uQAV6Rmvn4sy2NduBiFwLNqdqkmH6hWDEF` |
+
+The stake token is **LAYER**, and it is **Solayer-L2-native**: the L2 mint
+above is the token's home, and the L1 mint is only a **wrapped**
+representation created by the bridge (its mint authority is the bridge
+handler PDA). The token/bridge addresses are **devnet** values — mainnet may
+differ, and the canonical source of truth once the program is initialized is
+`Config.stake_mint` (see
+[Check your position](/documentation/staking/delegate#check-your-position--the-deployment)).
+
+### Post-launch values (TBD)
+
+These only exist after the staking program is deployed and `initialize`d:
+
+- **`Config.stake_mint`** — expected to be the **native L2 LAYER mint** above.
+  Whatever you hold or receive on L2 must equal this value, or `delegate`
+  rejects it. (The L1 mint is only the wrapped form — the program does not
+  accept it.)
+- **Validator identity pubkey(s)** — registered validators you can delegate to.
+
+The program **IDL** is already available:
+[`infini_stake.json`](/documentation/staking/infini_stake.json) (served from
+these docs, generated from the program source). You'll need it for the
+TypeScript snippets in the [Delegate LAYER](/documentation/staking/delegate)
+page.

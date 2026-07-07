@@ -1,0 +1,364 @@
+---
+title: "Delegate LAYER"
+description: "Stake LAYER to a validator, claim rewards, and unstake (devnet)"
+---
+
+If you're a token holder, this is the page you want. If you're an operator,
+this is also how you
+[self-delegate](/documentation/staking/run-a-validator#self-delegate-to-start-earning).
+
+## Prerequisites
+
+- A Solana wallet/keypair (the **same** keypair works on L1 and L2 — same
+  address space).
+- **LAYER in your wallet** — either already on the **L2** (the common case,
+  since LAYER is L2-native), or the **wrapped** form on L1 devnet (mint in the
+  [overview](/documentation/staking/overview#network-endpoints--addresses)),
+  which you bridge back below.
+- **SOL on L2** for L2 tx fees (native gas on the Solayer chain is SOL). If
+  you have none yet, seed it while bridging via the `additionalSolGas`
+  parameter, or bridge SOL separately.
+- **SOL on L1 devnet** — only if you're bridging from L1: it pays the bridge
+  tx + L1 fees (`solana airdrop 2 -u devnet`).
+- Node 18+ and these packages in your project:
+
+  ```bash
+  npm install @solayer-labs/bridge-sdk @coral-xyz/anchor \
+              @solana/web3.js @solana/spl-token
+  ```
+
+If you **already hold LAYER on the L2**, you don't need the bridge at all —
+skip straight to [Delegate](#delegate).
+
+## Bridge wrapped LAYER L1 to L2
+
+**Skip this section if you already hold LAYER on the L2** — since LAYER is
+L2-native, many holders never touch the bridge. Go straight to
+[Delegate](#delegate).
+
+LAYER's home mint lives on the L2; the Solana (L1) form is a **wrapped**
+representation created by the bridge. For a Solayer-native token the bridge
+directions are therefore the *reverse* of what you may know from
+Solana-native tokens:
+
+- **L2 → L1**: native LAYER is **locked in the L2 bridge vault**, and wrapped
+  LAYER is **minted on L1** by the bridge handler (which holds the wrapped
+  mint's authority).
+- **L1 → L2** (this section): your wrapped LAYER is **burned on L1**, and
+  native LAYER is **released from the L2 bridge vault** to your L2 address.
+
+You submit one transaction on L1; an off-chain **guardian** set observes it,
+multi-sig signs, and completes the release on L2. The whole thing is
+asynchronous — your L2 tokens appear once the guardians complete it (seconds
+to a couple of minutes).
+
+<Warning>
+**The L2 side pays out of a vault, not a mint.** An L1 → L2 release only
+works if the L2 bridge vault holds enough native LAYER — i.e. at least that
+much was previously bridged L2 → L1, or the team has seeded the vault. If
+the vault is short, your L1 burn still succeeds but the L2 completion
+cannot execute (`InsufficientFunds` on the bridge) until liquidity exists.
+You can check first: the vault is the LAYER ATA of the bridge handler PDA on
+the L2.
+</Warning>
+
+<Warning>
+**Bridge the wrapped form of LAYER, not just any token.** Once the staking
+program is live, it only accepts deposits of `Config.stake_mint` — the
+**native L2 LAYER mint**. For a Solayer-native token this is **not** the
+PDA-derived `["mint", bridgeHandler, l1Mint]` address (that derivation only
+applies to tokens whose home chain is the *source* chain, e.g. Solana-native
+tokens being wrapped onto the L2); what you receive on L2 is the original
+native mint recorded in the bridge's `TokenInfo` account. After bridging,
+confirm the mint you received **equals `Config.stake_mint`** (see
+[Check your position](#check-your-position--the-deployment)). If they
+differ, you bridged the wrong token and cannot stake it.
+</Warning>
+
+<Info>
+Only **legacy SPL Token (Token-2020)** mints and native SOL are bridgeable.
+**Token-2022 is not supported.**
+</Info>
+
+### Submit the bridge on L1
+
+```ts
+import { BridgeClient, Chain } from "@solayer-labs/bridge-sdk";
+import {
+  Connection, Keypair, PublicKey, sendAndConfirmTransaction,
+} from "@solana/web3.js";
+import { getAssociatedTokenAddressSync } from "@solana/spl-token";
+import * as anchor from "@coral-xyz/anchor";
+
+const l1 = new Connection("https://api.devnet.solana.com", "confirmed");
+
+// Your wallet (load from file in real usage; same pubkey is your L2 address).
+const wallet = Keypair.fromSecretKey(/* ... */);
+
+// Wrapped LAYER mint on L1 (devnet). This is what gets burned.
+const L1_WRAPPED_LAYER = new PublicKey(
+  "CJYj22nRQ7uQAV6Rmvn4sy2NduBiFwLNqdqkmH6hWDEF",
+);
+
+const bridge = new BridgeClient({
+  connection: l1,
+  userPublicKey: wallet.publicKey,
+  chain: Chain.Solana,                  // bridging FROM Solana
+  commitment: "confirmed",
+});
+
+const params = {
+  bridgeProofNonce: new anchor.BN(Date.now()),   // any unique nonce
+  amount: new anchor.BN(1_000_000_000),          // base units — respect decimals
+  recipient: wallet.publicKey,                   // who receives on L2 (you)
+  additionalSolGas: new anchor.BN(5_000_000),    // optional: seed ~0.005 SOL on L2
+};
+
+const accounts = {
+  mint: L1_WRAPPED_LAYER,
+  signerVault: getAssociatedTokenAddressSync(L1_WRAPPED_LAYER, wallet.publicKey),
+};
+
+const tx = await bridge.createBridgeAssetSourceChainTransaction(params, accounts);
+const l1Sig = await sendAndConfirmTransaction(l1, tx, [wallet]);
+console.log("L1 bridge tx:", l1Sig);
+```
+
+Because wrapped LAYER is a bridge-created token (not native to L1), this
+transaction **burns** it from your L1 account — the LAYER you'll receive on
+L2 comes out of the L2 bridge vault, not a mint.
+
+`additionalSolGas` is useful on your first bridge: it gives the recipient L2
+SOL to pay for the upcoming `delegate`/`claim` txs. Leave it `0` if you
+already have L2 SOL.
+
+<Note>
+Bridging native SOL instead? Use
+`bridge.createBridgeAssetSourceChainSolTransaction({ bridgeProofNonce, amount, recipient })`.
+</Note>
+
+### Wait for the L2 release to complete
+
+The guardians create a "bridge proof" on L2 when the vault release is done.
+Poll for it using the L1 signature:
+
+```ts
+import { getTargetChainBridgeTxIdFromSourceTxId } from "@solayer-labs/bridge-sdk";
+
+const l2 = new Connection("https://devnet-rpc.solayer.org", "confirmed");
+
+let l2Sig: string | null = null;
+while (!l2Sig) {
+  l2Sig = await getTargetChainBridgeTxIdFromSourceTxId(l1Sig, Chain.Solana, l2);
+  if (!l2Sig) await new Promise((r) => setTimeout(r, 3000));
+}
+console.log("Bridged! L2 completion tx:", l2Sig);
+```
+
+### Confirm what you received on L2
+
+What lands on L2 is LAYER's **original native mint** — on devnet
+`LAYER4xPpTCb3QL8S9u41EAhAX7mhBn8Q6xMTwY2Yzc` — as recorded in the bridge's
+on-chain `TokenInfo` pairing (`solana_mint` = wrapped, `solayer_mint` =
+native). It is *not* a PDA-derived wrapped mint. Check your balance and, once
+the staking program is initialized, verify against the canonical
+`Config.stake_mint`:
+
+```ts
+import { getAssociatedTokenAddressSync, getAccount } from "@solana/spl-token";
+
+// Native LAYER mint on the L2 (devnet). Once the staking program is
+// initialized, read the canonical value from Config.stake_mint instead.
+const L2_LAYER_MINT = new PublicKey(
+  "LAYER4xPpTCb3QL8S9u41EAhAX7mhBn8Q6xMTwY2Yzc",
+);
+
+const l2Ata = getAssociatedTokenAddressSync(L2_LAYER_MINT, wallet.publicKey);
+console.log("Balance:", (await getAccount(l2, l2Ata)).amount.toString());
+// The mint you received MUST equal Config.stake_mint. If not, you
+// bridged the wrong token and cannot stake it.
+```
+
+<Note>
+The bridge SDK's `get_target_mint` helper derives
+`["mint", bridgeHandler, sourceMint]`, which is only meaningful for tokens
+being bridged *away from their home chain* (e.g. a Solana-native token
+heading to the L2). Don't rely on it for the wrapped-LAYER → native-LAYER
+direction documented here — confirm the mint against `Config.stake_mint`
+(or the bridge SDK docs) instead.
+</Note>
+
+## Delegate
+
+Everything from here runs against the **L2 RPC**. We use `@coral-xyz/anchor`
+with the staking program's IDL. Set up the client and PDA helpers once:
+
+```ts
+import * as anchor from "@coral-xyz/anchor";
+import { Connection, Keypair, PublicKey, SystemProgram } from "@solana/web3.js";
+import {
+  TOKEN_PROGRAM_ID, getAssociatedTokenAddressSync,
+} from "@solana/spl-token";
+import IDL from "./infini_stake.json"; // download: /documentation/staking/infini_stake.json
+
+const STAKE_PROGRAM_ID = new PublicKey(
+  "mi7DC6qnESgL6TWdQn7xJBKqWwv2YiZVeoVuhpXhLvz",
+);
+const l2 = new Connection("https://devnet-rpc.solayer.org", "confirmed");
+
+const wallet = new anchor.Wallet(Keypair.fromSecretKey(/* ... */));
+const provider = new anchor.AnchorProvider(l2, wallet, { commitment: "confirmed" });
+
+// infini-stake is built with Anchor v2: the program ID comes from the IDL's
+// `address` field, so the constructor takes (idl, provider). On older Anchor
+// (0.29) use `new anchor.Program(IDL, STAKE_PROGRAM_ID, provider)` instead.
+const program = new anchor.Program(IDL as anchor.Idl, provider);
+
+const me = wallet.publicKey;
+
+// --- PDAs ---
+const [configPda] = PublicKey.findProgramAddressSync(
+  [Buffer.from("config")], STAKE_PROGRAM_ID);
+
+const validatorPda = (identity: PublicKey) =>
+  PublicKey.findProgramAddressSync(
+    [Buffer.from("validator"), identity.toBuffer()], STAKE_PROGRAM_ID)[0];
+
+const delegationPda = (owner: PublicKey, identity: PublicKey) =>
+  PublicKey.findProgramAddressSync(
+    [Buffer.from("delegation"), owner.toBuffer(), identity.toBuffer()],
+    STAKE_PROGRAM_ID)[0];
+
+// Read config to learn the stake mint + vault (don't hardcode).
+const config = await program.account.config.fetch(configPda);
+const stakeMint = config.stakeMint as PublicKey;
+const stakeVault = config.stakeVault as PublicKey; // = ATA(configPda, stakeMint)
+const myAta = getAssociatedTokenAddressSync(stakeMint, me);
+```
+
+Now delegate. `VALIDATOR_IDENTITY` is the pubkey of the validator you chose;
+the validator must be **active**.
+
+```ts
+const VALIDATOR_IDENTITY = new PublicKey("<validator identity pubkey>"); // TBD
+
+const amount = new anchor.BN(1_000_000_000); // base units; must be > 0
+
+await program.methods
+  .delegate(amount)
+  .accounts({
+    config: configPda,
+    validator: validatorPda(VALIDATOR_IDENTITY),
+    delegation: delegationPda(me, VALIDATOR_IDENTITY),
+    ownerTokenAccount: myAta,
+    stakeVault,
+    stakeMint,
+    owner: me,
+    systemProgram: SystemProgram.programId,
+    tokenProgram: TOKEN_PROGRAM_ID,
+  })
+  .rpc();
+```
+
+What happens: your `amount` is transferred from your ATA into the program
+vault, a `StakeDelegation` account is created (first time only), and any
+already-accrued rewards are settled to your wallet. From this moment your
+position earns the configured APY **less your validator's commission**
+(effective `apy * (1 - commission)`). Calling `delegate` again on the same
+validator tops up the same position.
+
+## Claim, request unstake, complete unstake
+
+### Claim rewards (anytime)
+
+Mints your accrued rewards to your ATA. Safe to call whenever; if nothing
+has accrued it's a no-op.
+
+```ts
+await program.methods
+  .claimRewards()
+  .accounts({
+    config: configPda,
+    validator: validatorPda(VALIDATOR_IDENTITY),
+    delegation: delegationPda(me, VALIDATOR_IDENTITY),
+    ownerTokenAccount: myAta,
+    stakeMint,
+    owner: me,
+    tokenProgram: TOKEN_PROGRAM_ID,
+  })
+  .rpc();
+```
+
+### Request unstake (starts the cooldown)
+
+Moves `amount` of your active stake into a cooldown bucket. It **stops
+earning immediately**; your remaining stake keeps earning. Pending rewards
+are settled in the same call. Only **one** pending unstake per position at a
+time — wait for the current one to complete before requesting another.
+
+```ts
+const unstakeAmount = new anchor.BN(500_000_000); // ≤ delegation.amount
+
+await program.methods
+  .requestUnstake(unstakeAmount)
+  .accounts({
+    config: configPda,
+    validator: validatorPda(VALIDATOR_IDENTITY),
+    delegation: delegationPda(me, VALIDATOR_IDENTITY),
+    ownerTokenAccount: myAta,
+    stakeMint,
+    owner: me,
+    tokenProgram: TOKEN_PROGRAM_ID,
+  })
+  .rpc();
+```
+
+### Complete unstake (after the cooldown)
+
+After `Config.cooldown_seconds` (7 days by default) have passed since the
+request, withdraw the cooled-down tokens from the vault back to your ATA.
+
+```ts
+await program.methods
+  .completeUnstake()
+  .accounts({
+    config: configPda,
+    delegation: delegationPda(me, VALIDATOR_IDENTITY),
+    stakeVault,
+    ownerTokenAccount: myAta,
+    owner: me,
+    tokenProgram: TOKEN_PROGRAM_ID,
+  })
+  .rpc();
+```
+
+Calling before the cooldown elapses fails with `CooldownNotElapsed`; calling
+with nothing pending fails with `NoPendingUnstake`.
+
+## Check your position & the deployment
+
+```ts
+// Global config — APY, cooldown, the canonical stake mint/vault, totals.
+const config = await program.account.config.fetch(configPda);
+console.log("APY (bps):", config.apyBps);
+console.log("Cooldown (s):", config.cooldownSeconds.toString());
+console.log("Stake mint:", config.stakeMint.toBase58());
+// ↑ the native L2 LAYER mint — the token you hold/received must equal it
+console.log("Total active stake:", config.totalActiveStake.toString());
+
+// A validator — is it active, its commission, how much is delegated to it.
+const v = await program.account.validator.fetch(validatorPda(VALIDATOR_IDENTITY));
+console.log("Validator active:", v.active, "total stake:", v.totalStake.toString());
+console.log("Commission (bps):", v.commissionBps); // effective APY = apy * (1 - commissionBps/10000)
+
+// Your position with this validator.
+const d = await program.account.stakeDelegation.fetch(delegationPda(me, VALIDATOR_IDENTITY));
+console.log("Staked:", d.amount.toString());
+console.log("Pending unstake:", d.pendingUnstake.toString());
+console.log("Unstake ready at (unix):", d.unstakeReadyTs.toString());
+```
+
+<Note>
+Amounts are in the token's **base units**. Divide by `10 ** decimals` (read
+`decimals` from the mint via `getMint`) for human-readable values.
+</Note>
